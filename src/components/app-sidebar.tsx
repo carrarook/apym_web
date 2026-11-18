@@ -170,6 +170,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           url: "/dashboard/marketplace",
           icon: Store,
         },
+        {
+          title: "Employees",
+          url: "/dashboard/employees",
+          icon: UserPlus,
+        },
       ],
     },
     {
@@ -201,11 +206,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           icon: ListTodo,
           badge: counts.adminTasks,
           badgeColor: "bg-violet-500/10 text-violet-700 dark:text-violet-400",
-        },
-        {
-          title: "Employees",
-          url: "/dashboard/employees",
-          icon: UserPlus,
         },
         {
           title: "Trainers",

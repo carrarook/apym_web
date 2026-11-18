@@ -5,9 +5,12 @@ import { auth } from "@/lib/auth";
 import { ApiErrors } from "@/lib/api-handler";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
 import { requirePermission, PermissionError, type Permission } from "@/lib/permissions";
+import { resolveGymAuthorization } from "@/lib/security/gym-authorization";
+import type { GymAuthorizationContext } from "@/lib/rbac/types";
 
 export type ProtectedRouteContext = {
   session: Session;
+  authorization: GymAuthorizationContext;
 };
 
 export type ProtectedRouteOptions = {
@@ -34,9 +37,12 @@ export function withProtectedRoute(
       return ApiErrors.unauthorized();
     }
 
+    const authorization = await resolveGymAuthorization(session.user.id, null, request);
+    if (!authorization) return ApiErrors.forbidden("Active gym access required");
+
     if (options.permission) {
       try {
-        requirePermission(session, options.permission);
+        requirePermission(authorization, options.permission);
       } catch (e) {
         if (e instanceof PermissionError) {
           return ApiErrors.forbidden(
@@ -47,6 +53,6 @@ export function withProtectedRoute(
       }
     }
 
-    return handler(request, { session });
+    return handler(request, { session, authorization });
   };
 }

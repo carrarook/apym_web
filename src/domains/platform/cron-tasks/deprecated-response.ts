@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { auth } from "@/lib/auth";
 import { verifyCronRequest } from "@/lib/cron-auth";
 import { ApiErrors } from "@/lib/api-handler";
 import { deprecatedCronResponse } from "@/lib/cron/deprecated-response";
@@ -12,11 +11,9 @@ export async function handleDeprecatedCronGet(request: NextRequest) {
   return deprecatedCronResponse();
 }
 
-/** @deprecated Use GET /api/cron/unified — cron auth or admin session. */
+/** @deprecated Use GET /api/cron/unified — cron auth only; no session is a platform identity. */
 export async function handleDeprecatedCronGetWithAdmin(request: NextRequest) {
-  const session = await auth();
-  const isAdmin = session?.user?.role === "ADMIN";
-  if (!verifyCronRequest(request) && !isAdmin) {
+  if (!verifyCronRequest(request)) {
     return ApiErrors.unauthorized();
   }
   return deprecatedCronResponse();

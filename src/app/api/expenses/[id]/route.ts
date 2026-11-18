@@ -16,6 +16,7 @@ const mutatingBodySchema = z.object({
   nextDueDate: z.string().refine((v) => !Number.isNaN(Date.parse(v)), "Invalid date").optional(),
 }).passthrough();
 import { auth } from "@/lib/auth";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { prisma } from "@/lib/prisma";
 import {
   readRequestedGymIdFromRequest,
@@ -43,7 +44,7 @@ export async function PUT(
     }
 
     // Only admins can update expenses
-    if (session.user.role !== "ADMIN") {
+    if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) {
       return ApiErrors.forbidden("Admin access required");
     }
 
@@ -139,7 +140,7 @@ export async function DELETE(
       return ApiErrors.unauthorized();
     }
 
-    if (session.user.role !== "ADMIN") {
+    if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) {
       return ApiErrors.forbidden("Admin access required");
     }
 

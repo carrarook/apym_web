@@ -1,31 +1,18 @@
-import type { Session } from "next-auth";
 import type { Permission } from "@/lib/permissions";
 import { PermissionError } from "@/lib/permissions";
 import { accountRoleHasPermission } from "@/lib/rbac/account-roles";
-import type { EffectivePermissionContext } from "@/lib/rbac/types";
+import type { GymAuthorizationContext } from "@/lib/rbac/types";
 import {
   agentHasScope,
   type AgentScope,
 } from "@/lib/rbac/agent-scopes";
 import type { AuthPrincipal, OAuthAuthPrincipal } from "@/lib/rbac/types";
 
-export function buildSessionPermissionContext(
-  session: Session,
-  accountMemberRole: EffectivePermissionContext["accountMemberRole"],
-): EffectivePermissionContext {
-  return {
-    accountMemberRole,
-    userRole: session.user.role,
-  };
-}
-
 export function requireSessionPermission(
-  session: Session,
+  context: GymAuthorizationContext,
   permission: Permission,
-  accountMemberRole: EffectivePermissionContext["accountMemberRole"],
 ): void {
-  const ctx = buildSessionPermissionContext(session, accountMemberRole);
-  if (!accountRoleHasPermission(ctx, permission)) {
+  if (!accountRoleHasPermission(context, permission)) {
     throw new PermissionError(permission);
   }
 }

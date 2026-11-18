@@ -14,12 +14,13 @@ const fixMemberDateSchema = z
   });
 
 import { auth } from "@/lib/auth";
+import { requireGymPermissionForRequest } from "@/lib/security/gym-authorization";
 import { prisma } from "@/lib/prisma";
 import {
   readRequestedGymIdFromRequest,
   resolveGymIdForUser,
 } from "@/lib/gym-scope";
-import { requirePermission, PermissionError } from "@/lib/permissions";
+import { PermissionError } from "@/lib/permissions";
 import { createLogger } from "@/lib/logger";
 import { ApiErrors } from "@/lib/api-handler";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
@@ -47,7 +48,7 @@ export async function fixMemberDateHandler(request: NextRequest) {
     }
 
     // Check permissions
-    requirePermission(session, "canEditMembers");
+    await requireGymPermissionForRequest(session, request, "canEditMembers");
 
     const parsedBody = await parseJsonBody(request, fixMemberDateSchema);
     if (!parsedBody.ok) return parsedBody.response;

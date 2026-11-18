@@ -1,9 +1,10 @@
 import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { requireGymPermissionForRequest } from "@/lib/security/gym-authorization";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
 import { createLogger } from "@/lib/logger";
 import { ApiErrors, successResponse } from "@/lib/api-response";
-import { requirePermission, PermissionError } from "@/lib/permissions";
+import { PermissionError } from "@/lib/permissions";
 import { BusinessRuleViolation } from "@/lib/crud-business-validation";
 import { deleteWalkInVisit } from "@/domains/attendance/services/walk-in-visit.service";
 import { getGymContext, GymContextError } from "@/domains/tenancy";
@@ -23,7 +24,7 @@ export async function DELETE(
       return ApiErrors.unauthorized();
     }
     try {
-      requirePermission(session, "canEditMembers");
+      await requireGymPermissionForRequest(session, request, "canEditMembers");
     } catch (error) {
       if (error instanceof PermissionError) {
         return ApiErrors.forbidden();

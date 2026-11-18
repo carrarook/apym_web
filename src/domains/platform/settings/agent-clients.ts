@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { ApiErrors } from "@/lib/api-handler";
@@ -29,7 +30,7 @@ const clientIdBodySchema = z.object({
 export async function listAgentClientsHandler(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) return ApiErrors.unauthorized();
-  if (session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin access required");
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
   const gymId = await requireApiGymId(session, request);
   if (gymId instanceof NextResponse) return gymId;
@@ -53,7 +54,7 @@ export async function listAgentClientsHandler(request: NextRequest) {
 export async function createAgentClientHandler(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) return ApiErrors.unauthorized();
-  if (session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin access required");
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
   const gymId = await requireApiGymId(session, request);
   if (gymId instanceof NextResponse) return gymId;
@@ -99,7 +100,7 @@ export async function revokeAgentClientHandler(
 ) {
   const session = await auth();
   if (!session?.user?.id) return ApiErrors.unauthorized();
-  if (session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin access required");
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
   const gymId = await requireApiGymId(session, request);
   if (gymId instanceof NextResponse) return gymId;
@@ -116,7 +117,7 @@ export async function mintAgentClientTokenHandler(
 ) {
   const session = await auth();
   if (!session?.user?.id) return ApiErrors.unauthorized();
-  if (session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin access required");
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
   const gymId = await requireApiGymId(session, request);
   if (gymId instanceof NextResponse) return gymId;
@@ -148,7 +149,7 @@ export async function mintAgentClientTokenHandler(
 export async function connectAgentClientHandler(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) return ApiErrors.unauthorized();
-  if (session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin access required");
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
   const gymId = await requireApiGymId(session, request);
   if (gymId instanceof NextResponse) return gymId;
@@ -170,7 +171,7 @@ export async function connectAgentClientHandler(request: NextRequest) {
 export async function testAgentClientHandler(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) return ApiErrors.unauthorized();
-  if (session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin access required");
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
   const gymId = await requireApiGymId(session, request);
   if (gymId instanceof NextResponse) return gymId;

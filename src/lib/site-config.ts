@@ -1,11 +1,10 @@
 /**
  * Central branding for the self-hostable product (white-label via env).
  *
- * Decision #20: "Fitness360" is the default end-user app name and is
- * white-labelable; the "Gymkhana" platform/company brand must NOT appear
- * in product chrome. Self-hosters override NEXT_PUBLIC_APP_NAME at build time.
+ * APYM panel branding is white-labelable; self-hosters can override the
+ * end-user app name with NEXT_PUBLIC_APP_NAME at build time.
  */
-export const APP_NAME = (process.env.NEXT_PUBLIC_APP_NAME || "Fitness360").trim();
+export const APP_NAME = (process.env.NEXT_PUBLIC_APP_NAME || "APYM").trim();
 
 /** Short descriptor shown beside the app name in chrome. */
 export const APP_TAGLINE = "Gym Management";

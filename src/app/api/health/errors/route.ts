@@ -6,10 +6,10 @@ import {
 
 export const GET = createApiHandler(async () => getHealthErrorsHandler(), {
   rateLimit: "lenient",
-  adminOnly: true,
+  platformOnly: true,
 });
 
 export const DELETE = createApiHandler(async () => clearHealthErrorsHandler(), {
   rateLimit: "strict",
-  adminOnly: true,
+  platformOnly: true,
 });

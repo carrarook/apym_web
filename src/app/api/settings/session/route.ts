@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { parseJsonBody } from "@/lib/security/parse-json-body";
 import { auth } from "@/lib/auth";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { prisma } from "@/lib/prisma";
 import { ApiErrors } from "@/lib/api-handler";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
@@ -73,7 +74,7 @@ export async function PUT(request: NextRequest) {
     if (!session?.user?.id) {
       return ApiErrors.unauthorized();
     }
-    if (session.user.role !== "ADMIN") {
+    if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) {
       return ApiErrors.forbidden();
     }
 

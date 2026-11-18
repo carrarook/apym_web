@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { auth } from '@/lib/auth';
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { createLogger } from "@/lib/logger";
 import { ApiErrors, getErrorMessage } from "@/lib/api-handler";
 import { successResponse } from "@/lib/api-response";
@@ -19,8 +20,7 @@ export async function POST(request: NextRequest) {
       return ApiErrors.unauthorized();
     }
 
-    const role = session.user.role;
-    if (role !== "ADMIN" && role !== "SUB_ADMIN") {
+    if (!(await gymRequestHasPermission(session, request, "canSendWhatsAppReminders"))) {
       return ApiErrors.forbidden();
     }
 

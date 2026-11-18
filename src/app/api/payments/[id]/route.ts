@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
-import { requirePermission, PermissionError } from "@/lib/permissions";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
+import { requireGymPermissionForRequest } from "@/lib/security/gym-authorization";
+import { PermissionError } from "@/lib/permissions";
 import { createLogger } from "@/lib/logger";
 import { ApiErrors } from "@/lib/api-handler";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
@@ -21,7 +23,7 @@ export async function PATCH(
   try {
     const session = await auth();
     if (!session) return ApiErrors.unauthorized();
-    requirePermission(session, "canEditPayments");
+    await requireGymPermissionForRequest(session, request, "canEditPayments");
     const { id } = await params;
     return updatePaymentHandler(request, id);
   } catch (err) {
@@ -43,7 +45,7 @@ export async function DELETE(
   try {
     const session = await auth();
     if (!session) return ApiErrors.unauthorized();
-    if (session.user.role !== "ADMIN") {
+    if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) {
       return ApiErrors.forbidden("Admin access required");
     }
     const { id } = await params;

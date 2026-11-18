@@ -1,15 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { requireGymPermissionForRequest } from "@/lib/security/gym-authorization";
 import { cachedJson } from "@/lib/api-cache";
 import { listMembersHandler } from "@/domains/members/handlers/list-members";
 import { admitMemberHandler } from "@/domains/members/handlers/admit-member";
 import { getMemberQueries } from "@/domains/members/adapters";
 import { toApiListMember } from "@/domains/members/mappers/to-api-list-member";
-import { requirePermission, PermissionError } from "@/lib/permissions";
+import { PermissionError } from "@/lib/permissions";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
 import { createLogger } from "@/lib/logger";
 import { ApiErrors } from "@/lib/api-handler";
 import { successResponse } from "@/lib/api-response";
+import { resolveGymAuthorization } from "@/lib/security/gym-authorization";
+import { hasPermission } from "@/lib/permissions";
+import { listTrainerMembers } from "@/domains/members/adapters/prisma-member-queries";
 
 const logger = createLogger("api-members");
 
@@ -19,11 +23,19 @@ export async function GET(request: NextRequest) {
 
   try {
     const session = await auth();
-    if (!session) {
+    if (!session?.user?.id) {
       return ApiErrors.unauthorized();
     }
 
-    requirePermission(session, "canViewMembers");
+    const authorization = await resolveGymAuthorization(session.user.id, null, request);
+    if (!authorization) return ApiErrors.forbidden("Active gym access required");
+    if (hasPermission(authorization, "canViewAssignedMembers")) {
+      const members = await listTrainerMembers(session.user.id, authorization.gymId);
+      return cachedJson({ members });
+    }
+    if (!hasPermission(authorization, "canViewMembers")) {
+      return ApiErrors.permissionDenied("canViewMembers");
+    }
 
     const response = await listMembersHandler(request, getMemberQueries());
     if (!response.ok) {
@@ -56,7 +68,7 @@ export async function POST(request: NextRequest) {
       return ApiErrors.unauthorized();
     }
 
-    requirePermission(session, "canEditMembers");
+    await requireGymPermissionForRequest(session, request, "canRegisterMembers");
 
     const response = await admitMemberHandler(request);
     const data = await response.json().catch(() => ({}));
@@ -73,7 +85,7 @@ export async function POST(request: NextRequest) {
     return successResponse(data, response.status);
   } catch (error) {
     if (error instanceof PermissionError) {
-      return ApiErrors.permissionDenied("canEditMembers");
+      return ApiErrors.permissionDenied("canRegisterMembers");
     }
     logger.error("Failed to create member", error as Error);
     return ApiErrors.internal("Failed to create member");

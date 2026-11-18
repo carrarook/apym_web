@@ -79,6 +79,7 @@ next-env.d.ts
 
 # Separate repositories - not tracked in main repo
 /fit360-backend/
+/apym_web_wiki/
 
 # Temporary docs and reports
 REPOSITORY_CLEANUP_REPORT.md

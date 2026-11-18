@@ -1,4 +1,5 @@
 import type { NextRequest } from "next/server";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
@@ -50,7 +51,7 @@ const resetSchema = z.object({
 async function requireAdminGym(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) return { error: ApiErrors.unauthorized() as NextResponse };
-  if (session.user.role !== "ADMIN") {
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) {
     return { error: ApiErrors.forbidden("Admin access required") as NextResponse };
   }
 

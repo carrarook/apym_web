@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { prisma } from "@/lib/prisma";
 import { parseWhatsAppPayments, ParsedMemberPayment } from "@/lib/whatsapp-payment-parser";
 import { ensurePaymentProcessedOnce, markPaymentProcessed, createIdempotencyKey } from "@/lib/idempotency";
@@ -26,8 +27,8 @@ export async function importPaymentsFromWhatsAppHandler(request: NextRequest) {
     if (!session?.user?.id) {
       return ApiErrors.unauthorized();
     }
-    if (session.user?.role !== "ADMIN") {
-      return ApiErrors.forbidden("Admin access required");
+    if (!(await gymRequestHasPermission(session, request, "canEditPayments"))) {
+      return ApiErrors.forbidden("Account manager access required");
     }
 
     const gymId = await resolveGymIdForUser(

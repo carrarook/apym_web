@@ -1,12 +1,8 @@
 import type { NextRequest } from "next/server";
 import type { Session } from "next-auth";
 import { auth } from "@/lib/auth";
-import {
-  getAccountMemberRole,
-  resolveAccountIdForUser,
-} from "@/lib/account-scope";
-import { readRequestedAccountIdFromRequest } from "@/lib/account-scope";
-import { resolveGymIdForUser, readRequestedGymIdFromRequest } from "@/lib/gym-scope";
+import { readRequestedGymIdFromRequest } from "@/lib/gym-scope";
+import { resolveGymAuthorization } from "@/lib/security/gym-authorization";
 import { resolveBearerAccessToken } from "@/lib/oauth/tokens";
 import type { AuthPrincipal, OAuthAuthPrincipal } from "@/lib/rbac/types";
 
@@ -42,27 +38,22 @@ export async function resolveSessionPrincipal(
   session: Session,
   request: NextRequest,
 ): Promise<AuthPrincipal | null> {
-  const accountId = await resolveAccountIdForUser(
-    session.user.id,
-    readRequestedAccountIdFromRequest(request),
-  );
-  const gymId = await resolveGymIdForUser(
+  const authorization = await resolveGymAuthorization(
     session.user.id,
     readRequestedGymIdFromRequest(request),
     request,
   );
-  const accountMemberRole =
-    accountId != null
-      ? await getAccountMemberRole(session.user.id, accountId)
-      : null;
+  if (!authorization) return null;
 
   return {
     kind: "session",
     userId: session.user.id,
     userRole: session.user.role,
-    accountMemberRole,
-    accountId,
-    gymId,
+    accountMemberRole: authorization.accountMemberRole,
+    gymStaffRole: authorization.gymStaffRole,
+    userActive: authorization.userActive,
+    accountId: authorization.accountId,
+    gymId: authorization.gymId,
   };
 }
 

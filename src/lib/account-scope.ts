@@ -5,7 +5,6 @@ import {
   ACCOUNT_COOKIE_NAME,
   ACCOUNT_HEADER_NAME,
 } from "@/lib/account-constants";
-import { DEFAULT_DEMO_ACCOUNT_ID } from "@/lib/gym-constants";
 
 export type AccountOption = {
   id: string;
@@ -21,47 +20,21 @@ export function readRequestedAccountIdFromRequest(request: NextRequest): string 
   return null;
 }
 
-/**
- * Accounts the user may access (franchise / agency multi-org).
- */
+/** Accounts with an active persisted membership; legacy User.accountId is not authorization. */
 export async function listAccountsForUser(userId: string): Promise<AccountOption[]> {
   const memberships = await prisma.accountMembership.findMany({
-    where: { userId, isActive: true },
+    where: { userId },
     include: { Account: { select: { id: true, name: true } } },
     orderBy: { Account: { name: "asc" } },
   });
 
-  if (memberships.length > 0) {
-    return memberships.map((m) => ({
-      id: m.Account.id,
-      name: m.Account.name,
-      role: m.role,
+  return memberships
+    .filter((membership) => membership.isActive)
+    .map((membership) => ({
+      id: membership.Account.id,
+      name: membership.Account.name,
+      role: membership.role,
     }));
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { accountId: true },
-  });
-  if (user?.accountId) {
-    const account = await prisma.account.findUnique({
-      where: { id: user.accountId },
-      select: { id: true, name: true },
-    });
-    if (account) {
-      return [{ id: account.id, name: account.name, role: "ADMIN" }];
-    }
-  }
-
-  if (process.env.NODE_ENV !== "production") {
-    const demo = await prisma.account.findUnique({
-      where: { id: DEFAULT_DEMO_ACCOUNT_ID },
-      select: { id: true, name: true },
-    });
-    if (demo) return [{ id: demo.id, name: demo.name, role: "OWNER" }];
-  }
-
-  return [];
 }
 
 export async function resolveAccountIdForUser(
@@ -84,15 +57,8 @@ export async function getAccountMemberRole(
     where: { userId_accountId: { userId, accountId } },
     select: { role: true, isActive: true },
   });
-  if (membership?.isActive) return membership.role;
+  if (membership) return membership.isActive ? membership.role : null;
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { accountId: true, role: true },
-  });
-  if (user?.accountId === accountId) {
-    return user.role === "ADMIN" ? "ADMIN" : "STAFF";
-  }
   return null;
 }
 
@@ -101,5 +67,11 @@ export async function userCanAccessAccount(
   accountId: string,
 ): Promise<boolean> {
   const role = await getAccountMemberRole(userId, accountId);
-  return role !== null;
+  if (role === null) return false;
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { isActive: true },
+  });
+  return user?.isActive === true;
 }

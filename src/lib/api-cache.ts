@@ -1,21 +1,9 @@
 import { NextResponse } from "next/server";
 
-/**
- * Cache duration in seconds for API responses.
- * Browser will serve cached response on page refresh within this window.
- */
-const CACHE_MAX_AGE = 60; // 1 minute
-
-/**
- * Add cache headers to a JSON response.
- * Use for GET endpoints - reduces refetch on page refresh.
- */
+/** Return user-specific API data without a browser cache across identity or gym changes. */
 export function cachedJson<T>(data: T, init?: ResponseInit): NextResponse {
   const headers = new Headers(init?.headers);
-  headers.set(
-    "Cache-Control",
-    `private, max-age=${CACHE_MAX_AGE}, stale-while-revalidate=${CACHE_MAX_AGE}`
-  );
+  headers.set("Cache-Control", "private, no-store, max-age=0");
   return NextResponse.json(data, { ...init, headers });
 }
 

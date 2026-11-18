@@ -1,11 +1,12 @@
 import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { requireGymPermissionForRequest } from "@/lib/security/gym-authorization";
 import { noStoreJson } from "@/lib/api-cache";
 import { ApiErrors } from "@/lib/api-handler";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
 import { requireApiGymId } from "@/lib/api/gym-context";
 import { prisma } from "@/lib/prisma";
-import { requirePermission, PermissionError } from "@/lib/permissions";
+import { PermissionError } from "@/lib/permissions";
 import { todayIST } from "@/lib/date-only";
 import { isoDateOnlyString } from "@/lib/gym-operational-days";
 import { loadAttendanceBootstrapRecords } from "@/domains/attendance/services/bootstrap";
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest) {
     if (!session?.user) return ApiErrors.unauthorized();
 
     try {
-      requirePermission(session, "canViewMembers");
+      await requireGymPermissionForRequest(session, request, "canViewMembers");
     } catch (error) {
       if (error instanceof PermissionError) return ApiErrors.forbidden();
       throw error;

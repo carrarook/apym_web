@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { cachedJson } from "@/lib/api-cache";
 import { listPlansHandler } from "@/domains/memberships/handlers/list-plans";
 import { getPlanQueries } from "@/domains/memberships/adapters";
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
     if (!session?.user?.id) {
       return ApiErrors.unauthorized();
     }
-    if (session.user.role !== "ADMIN") {
+    if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) {
       return ApiErrors.forbidden("Admin access required");
     }
 

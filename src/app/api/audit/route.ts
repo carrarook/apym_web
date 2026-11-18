@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { cachedJson } from "@/lib/api-cache";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
 import { createLogger } from "@/lib/logger";
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
 
     const result = await listAuditLogs({
       gymId,
-      userId: session.user.role !== "ADMIN" ? session.user.id : undefined,
+      userId: session.user.id,
       action,
       limit,
       offset,

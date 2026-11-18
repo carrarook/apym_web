@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { ApiErrors } from "@/lib/api-handler";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
 import {
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
 
   const session = await auth();
   if (!session?.user?.id) return ApiErrors.unauthorized();
-  if (session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin required");
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
   const gymId = await resolveGymIdForUser(session.user.id, readRequestedGymIdFromRequest(request));
   if (!gymId) return ApiErrors.badRequest("No gym selected");

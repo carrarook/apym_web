@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -24,7 +25,7 @@ export async function restoreEntityHandler(
 ) {
   const session = await auth();
   if (!session?.user?.id) return ApiErrors.unauthorized();
-  if (session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin required");
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
   const gymId = await resolveGymIdForUser(
     session.user.id,

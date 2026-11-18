@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { ApiErrors, successResponse } from "@/lib/api-response";
 import { getApiGymId } from "@/lib/api/gym-context";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
@@ -45,7 +46,7 @@ export async function PATCH(
 
   const session = await auth();
   if (!session?.user?.id) return ApiErrors.unauthorized();
-  if (session.user.role !== "ADMIN") {
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) {
     return ApiErrors.forbidden("Admin access required");
   }
 

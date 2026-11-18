@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { ChallengeStatus, ChallengeType, Prisma } from "@prisma/client";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
@@ -70,7 +71,7 @@ export async function listChallengesHandler(request: NextRequest) {
 export async function createChallengeHandler(request: NextRequest) {
   const ctx = await resolveGym(request);
   if ("error" in ctx) return ctx.error;
-  if (ctx.session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin access required");
+  if (!(await gymRequestHasPermission(ctx.session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
   const parsedBody = await parseJsonBody(request, mutatingBodySchema);
   if (!parsedBody.ok) return parsedBody.response;
@@ -103,7 +104,7 @@ export async function createChallengeHandler(request: NextRequest) {
 export async function updateChallengeHandler(request: NextRequest) {
   const ctx = await resolveGym(request);
   if ("error" in ctx) return ctx.error;
-  if (ctx.session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin access required");
+  if (!(await gymRequestHasPermission(ctx.session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
   const parsedBody = await parseJsonBody(request, mutatingBodySchema);
   if (!parsedBody.ok) return parsedBody.response;
@@ -129,7 +130,7 @@ export async function updateChallengeHandler(request: NextRequest) {
 export async function deleteChallengeHandler(request: NextRequest) {
   const ctx = await resolveGym(request);
   if ("error" in ctx) return ctx.error;
-  if (ctx.session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin access required");
+  if (!(await gymRequestHasPermission(ctx.session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
   const challengeId = request.nextUrl.searchParams.get("challengeId");
   if (!challengeId) return ApiErrors.validationError("Challenge ID required");

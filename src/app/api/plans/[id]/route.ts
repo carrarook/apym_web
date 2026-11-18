@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
 import { createLogger } from "@/lib/logger";
 import { ApiErrors } from "@/lib/api-handler";
@@ -9,12 +10,12 @@ import { getPlanCommands } from "@/domains/memberships/adapters";
 
 const logger = createLogger("api-plans");
 
-async function requireAdmin() {
+async function requireAdmin(request: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
     return { error: ApiErrors.unauthorized() };
   }
-  if (session.user.role !== "ADMIN") {
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) {
     return { error: ApiErrors.forbidden("Admin access required") };
   }
   return { session };
@@ -28,7 +29,7 @@ export async function PUT(
   if (rl) return rl;
 
   try {
-    const gate = await requireAdmin();
+    const gate = await requireAdmin(request);
     if ("error" in gate) return gate.error;
 
     const { id } = await params;
@@ -47,7 +48,7 @@ export async function DELETE(
   if (rl) return rl;
 
   try {
-    const gate = await requireAdmin();
+    const gate = await requireAdmin(request);
     if ("error" in gate) return gate.error;
 
     const { id } = await params;

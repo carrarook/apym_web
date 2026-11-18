@@ -1,16 +1,15 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { hash } from "bcryptjs";
-import { Role } from "@prisma/client";
 import type { NextRequest } from "next/server";
 import type { Session } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { ApiErrors } from "@/lib/api-handler";
 import { createLogger } from "@/lib/logger";
 import {
-  resolveAccountIdForRequest,
   userBelongsToAccount,
 } from "@/lib/account-user-scope";
+import { resolveAccountManagerAuthorization } from "@/lib/security/account-management";
 
 const logger = createLogger("platform-users");
 
@@ -19,23 +18,16 @@ export const updateUserBodySchema = z
     contactNumber: z.string().optional(),
     password: z.string().optional(),
     name: z.string().optional(),
-    role: z.nativeEnum(Role).optional(),
-    isActive: z.boolean().optional(),
   })
-  .passthrough();
+  .strict();
 
 async function requireAdminAccount(
   session: Session,
   request: NextRequest,
 ): Promise<string | NextResponse> {
-  if (session.user?.role !== "ADMIN") {
-    return ApiErrors.unauthorized();
-  }
-  const accountId = await resolveAccountIdForRequest(session.user.id, request);
-  if (!accountId) {
-    return ApiErrors.badRequest("No account context available.");
-  }
-  return accountId;
+  const manager = await resolveAccountManagerAuthorization(session, request);
+  if (!manager) return ApiErrors.forbidden("Account owner or admin access required");
+  return manager.accountId;
 }
 
 export async function getUserForAccount(
@@ -80,9 +72,17 @@ export async function updateUserForAccount(
     return ApiErrors.notFound("User");
   }
 
-  const { contactNumber, password, name, role, isActive } = body;
+  const { contactNumber, password, name } = body;
   const existingUser = await prisma.user.findUnique({ where: { id: userId } });
   if (!existingUser) return ApiErrors.notFound("User");
+
+  const memberships = await prisma.accountMembership.findMany({
+    where: { userId },
+    select: { accountId: true },
+  });
+  if (memberships.length !== 1 || memberships[0]?.accountId !== accountId) {
+    return ApiErrors.forbidden("Shared global identities cannot be edited from one account");
+  }
 
   if (contactNumber && contactNumber !== existingUser.contactNumber) {
     const contactTaken = await prisma.user.findUnique({
@@ -96,8 +96,8 @@ export async function updateUserForAccount(
   const updateData: Record<string, unknown> = {};
   if (contactNumber) updateData.contactNumber = contactNumber;
   if (name) updateData.name = name;
-  if (role) updateData.role = role;
-  if (typeof isActive === "boolean") updateData.isActive = isActive;
+  // User.role and User.isActive are global identity compatibility fields; staff
+  // permissions and account access are managed through memberships/assignments.
   if (password) updateData.passwordHash = await hash(password, 12);
 
   const user = await prisma.user.update({
@@ -133,14 +133,32 @@ export async function deleteUserForAccount(
     return ApiErrors.validationError("Cannot delete your own account");
   }
 
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) return ApiErrors.notFound("User");
-  if (user.role === Role.ADMIN) {
-    return ApiErrors.validationError("Cannot delete admin users");
+  const membership = await prisma.accountMembership.findUnique({
+    where: { userId_accountId: { userId, accountId } },
+    select: { role: true, isActive: true },
+  });
+  if (!membership) return ApiErrors.notFound("User");
+  if (membership.role === "OWNER" || membership.role === "ADMIN") {
+    return ApiErrors.validationError("Account owners and admins cannot be removed here");
   }
 
-  await prisma.user.delete({ where: { id: userId } });
-  return NextResponse.json({ message: "User deleted successfully" });
+  const now = new Date();
+  await prisma.$transaction([
+    prisma.gymStaffAssignment.updateMany({
+      where: { userId, accountId, isActive: true },
+      data: {
+        isActive: false,
+        deactivatedById: session.user.id,
+        deactivatedAt: now,
+        updatedById: session.user.id,
+      },
+    }),
+    prisma.accountMembership.update({
+      where: { userId_accountId: { userId, accountId } },
+      data: { isActive: false },
+    }),
+  ]);
+  return NextResponse.json({ message: "Account access revoked" });
 }
 
 export function logUserRouteError(action: string, error: unknown) {

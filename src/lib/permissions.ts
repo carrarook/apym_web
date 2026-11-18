@@ -1,18 +1,23 @@
-import type { AccountMemberRole } from "@prisma/client";
-import { Session } from "next-auth";
+import type { Session } from "next-auth";
 import { accountRoleHasPermission } from "@/lib/rbac/account-roles";
-import type { EffectivePermissionContext } from "@/lib/rbac/types";
+import type { GymAuthorizationContext } from "@/lib/rbac/types";
 
 /**
- * Role-based access control (RBAC): legacy User.role plus AccountMembership role (ADR-002).
- * When `accountMemberRole` is provided (active account), it takes precedence over User.role.
+ * Business permissions derive only from a server-validated account/gym context.
  */
 
 export type Permission =
   | "canViewMembers"
   | "canEditMembers"
+  | "canRegisterMembers"
+  | "canViewAttendance"
+  | "canManageAttendance"
   | "canViewPayments"
   | "canEditPayments"
+  | "canCreatePayments"
+  | "canViewAssignedMembers"
+  | "canViewAssignedWorkouts"
+  | "canPrescribeWorkouts"
   | "canViewRenewals"
   | "canEditRenewals"
   | "canViewReminders"
@@ -30,22 +35,15 @@ export class PermissionError extends Error {
 }
 
 /**
- * Check if user has a specific permission.
- * ADMIN users have all permissions by default.
- * SUB_ADMIN users have limited permissions.
+ * Session is accepted temporarily so unmigrated handlers stay type-compatible,
+ * but it grants nothing. Task 4 migrates those call sites to the gym context.
  */
 export function hasPermission(
-  session: Session | null,
+  context: GymAuthorizationContext | Session | null,
   permission: Permission,
-  accountMemberRole: AccountMemberRole | null = null,
 ): boolean {
-  if (!session?.user) return false;
-
-  const ctx: EffectivePermissionContext = {
-    accountMemberRole,
-    userRole: session.user.role,
-  };
-  return accountRoleHasPermission(ctx, permission);
+  if (!isGymAuthorizationContext(context)) return false;
+  return accountRoleHasPermission(context, permission);
 }
 
 /**
@@ -53,11 +51,10 @@ export function hasPermission(
  * Use in API routes to enforce permissions.
  */
 export function requirePermission(
-  session: Session | null,
+  context: GymAuthorizationContext | Session | null,
   permission: Permission,
-  accountMemberRole: AccountMemberRole | null = null,
 ): void {
-  if (!hasPermission(session, permission, accountMemberRole)) {
+  if (!hasPermission(context, permission)) {
     throw new PermissionError(permission);
   }
 }
@@ -65,22 +62,35 @@ export function requirePermission(
 /**
  * Check multiple permissions (AND logic).
  */
-export function hasAllPermissions(session: Session | null, permissions: Permission[]): boolean {
-  return permissions.every((p) => hasPermission(session, p));
+export function hasAllPermissions(context: GymAuthorizationContext | Session | null, permissions: Permission[]): boolean {
+  return permissions.every((p) => hasPermission(context, p));
 }
 
 /**
  * Check if user has any of the permissions (OR logic).
  */
-export function hasAnyPermission(session: Session | null, permissions: Permission[]): boolean {
-  return permissions.some((p) => hasPermission(session, p));
+export function hasAnyPermission(context: GymAuthorizationContext | Session | null, permissions: Permission[]): boolean {
+  return permissions.some((p) => hasPermission(context, p));
 }
 
 /**
  * Require any of the permissions or throw.
  */
-export function requireAnyPermission(session: Session | null, permissions: Permission[]): void {
-  if (!hasAnyPermission(session, permissions)) {
+export function requireAnyPermission(context: GymAuthorizationContext | Session | null, permissions: Permission[]): void {
+  if (!hasAnyPermission(context, permissions)) {
     throw new PermissionError(permissions[0]);
   }
+}
+
+function isGymAuthorizationContext(
+  value: GymAuthorizationContext | Session | null,
+): value is GymAuthorizationContext {
+  return Boolean(
+    value &&
+      "userId" in value &&
+      "accountId" in value &&
+      "gymId" in value &&
+      "gymStaffRole" in value &&
+      "userActive" in value,
+  );
 }

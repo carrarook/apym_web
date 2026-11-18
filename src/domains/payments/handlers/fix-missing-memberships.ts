@@ -6,6 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
@@ -33,7 +34,7 @@ export async function fixMissingMembershipsHandler(request: NextRequest) {
     if (!session?.user?.id) {
       return ApiErrors.unauthorized();
     }
-    if (session.user.role !== "ADMIN") {
+    if (!(await gymRequestHasPermission(session, request, "canEditPayments"))) {
       return ApiErrors.forbidden("Admin access required");
     }
 

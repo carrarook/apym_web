@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { prisma } from "@/lib/prisma";
 import {
   readRequestedGymIdFromRequest,
@@ -76,7 +77,7 @@ export async function DELETE(
       return ApiErrors.unauthorized();
     }
 
-    if (session.user.role !== "ADMIN") {
+    if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) {
       return ApiErrors.forbidden("Admin access required");
     }
 

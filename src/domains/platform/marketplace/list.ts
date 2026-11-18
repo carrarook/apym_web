@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
+import { requireGymPermissionForRequest } from "@/lib/security/gym-authorization";
 import { ApiErrors } from "@/lib/api-handler";
-import { requirePermission, PermissionError } from "@/lib/permissions";
+import { PermissionError } from "@/lib/permissions";
 import { listMarketplaceInstalls } from "@/lib/marketplace/install";
 import { ALL_MARKETPLACE_APPS } from "@/data/marketplace/catalog";
 import { getApiGymId } from "@/lib/api/gym-context";
@@ -9,7 +10,7 @@ import type { Session } from "next-auth";
 
 export async function listMarketplaceHandler(request: NextRequest, session: Session) {
   try {
-    requirePermission(session, "canEditMembers");
+    await requireGymPermissionForRequest(session, request, "canEditMembers");
   } catch (error) {
     if (error instanceof PermissionError) return ApiErrors.forbidden();
     throw error;

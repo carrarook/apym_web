@@ -10,12 +10,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { Session } from "next-auth";
 import { auth } from "./auth";
 import { withRateLimit, Tier } from "./middleware/rate-limit";
-import { requirePermission, Permission, PermissionError } from "./permissions";
+import { hasPermission, requirePermission, Permission, PermissionError } from "./permissions";
 import { ApiErrors, getErrorMessage, parseBodyWithLimit, validateEnum } from "./api-response";
 import { BusinessRuleViolation } from "./crud-business-validation";
 import { createLogger } from "./logger";
 import { mapPrismaKnownError } from "@/lib/prisma-errors";
 import { z } from "zod";
+import { resolveGymAuthorization } from "@/lib/security/gym-authorization";
+import type { GymAuthorizationContext } from "@/lib/rbac/types";
 
 const logger = createLogger("api-handler");
 
@@ -28,10 +30,13 @@ interface HandlerOptions {
   public?: boolean;
   /** Require admin role */
   adminOnly?: boolean;
+  /** Reserved for a future platform operator identity; account roles never satisfy it. */
+  platformOnly?: boolean;
 }
 
 type HandlerContext<T = unknown> = {
   session: Session;
+  authorization: GymAuthorizationContext | null;
   body: T;
   params: Record<string, string>;
 };
@@ -53,6 +58,7 @@ export function createApiHandler<T = unknown>(
     permission = null,
     public: isPublic = false,
     adminOnly = false,
+    platformOnly = false,
   } = options;
 
   return async (request: NextRequest, routeContext?: { params?: Promise<Record<string, string>> }) => {
@@ -67,15 +73,24 @@ export function createApiHandler<T = unknown>(
         return ApiErrors.unauthorized();
       }
 
-      // Admin check
-      if (adminOnly && session?.user?.role !== "ADMIN") {
-        return ApiErrors.forbidden("Admin access required");
+      if (platformOnly) return ApiErrors.forbidden("Platform operator access required");
+
+      const authorization = session?.user?.id
+        ? await resolveGymAuthorization(session.user.id, null, request)
+        : null;
+      if (!isPublic && (permission || adminOnly) && !authorization) {
+        return ApiErrors.forbidden("Active gym access required");
+      }
+
+      // Legacy adminOnly means an account manager capability, never platform authority.
+      if (adminOnly && (!authorization || !hasPermission(authorization, "canEditMembers"))) {
+        return ApiErrors.forbidden("Account manager access required");
       }
 
       // Permission check
-      if (permission && session) {
+      if (permission && authorization) {
         try {
-          requirePermission(session, permission);
+          requirePermission(authorization, permission);
         } catch (error) {
           if (error instanceof PermissionError) {
             return ApiErrors.permissionDenied(permission);
@@ -98,6 +113,7 @@ export function createApiHandler<T = unknown>(
       // Execute handler
       return await handler(request, {
         session: session!,
+        authorization,
         body,
         params,
       });

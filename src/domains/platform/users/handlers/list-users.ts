@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { hash } from "bcryptjs";
-import { Role } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { cachedJson } from "@/lib/api-cache";
 import { prisma } from "@/lib/prisma";
@@ -13,6 +12,7 @@ import {
   resolveAccountIdForRequest,
 } from "@/lib/account-user-scope";
 import { parseJsonBody } from "@/lib/security/parse-json-body";
+import { resolveAccountManagerAuthorization } from "@/lib/security/account-management";
 
 const logger = createLogger("api-users");
 
@@ -20,23 +20,18 @@ const mutatingBodySchema = z
   .object({
     contactNumber: z.string().optional(),
     name: z.string().optional(),
-    role: z.nativeEnum(Role).optional(),
-    isActive: z.boolean().optional(),
+    password: z.string().optional(),
   })
-  .passthrough();
+  .strict();
 
 export async function listUsersHandler(request: NextRequest) {
   try {
     const session = await auth();
 
-    if (!session || session.user?.role !== "ADMIN") {
-      return ApiErrors.unauthorized();
-    }
-
-    const accountId = await resolveAccountIdForRequest(session.user.id, request);
-    if (!accountId) {
-      return ApiErrors.badRequest("No account context available.");
-    }
+    if (!session?.user?.id) return ApiErrors.unauthorized();
+    const manager = await resolveAccountManagerAuthorization(session, request);
+    if (!manager) return ApiErrors.forbidden("Account owner or admin access required");
+    const accountId = manager.accountId;
 
     const userIds = await listUserIdsForAccount(accountId);
     if (userIds.length === 0) {
@@ -70,24 +65,18 @@ export async function createUserHandler(request: NextRequest) {
   try {
     const session = await auth();
 
-    if (!session || session.user?.role !== "ADMIN") {
-      return ApiErrors.unauthorized();
-    }
-
-    const accountId = await resolveAccountIdForRequest(session.user.id, request);
-    if (!accountId) {
-      return ApiErrors.badRequest("No account context available.");
-    }
+    if (!session?.user?.id) return ApiErrors.unauthorized();
+    const manager = await resolveAccountManagerAuthorization(session, request);
+    if (!manager) return ApiErrors.forbidden("Account owner or admin access required");
+    const accountId = manager.accountId;
 
     const parsedBody = await parseJsonBody(request, mutatingBodySchema);
     if (!parsedBody.ok) return parsedBody.response;
     const body = parsedBody.data as {
       contactNumber?: string;
       name?: string;
-      role?: Role;
-      isActive?: boolean;
     };
-    const { contactNumber, name, role, isActive = true } = body;
+    const { contactNumber, name } = body;
 
     if (!contactNumber || !name) {
       return ApiErrors.validationError("Contact number and name are required");
@@ -107,7 +96,6 @@ export async function createUserHandler(request: NextRequest) {
     logger.info("Creating new user with generated password", {
       contactNumber,
       name,
-      role,
     });
 
     const user = await prisma.user.create({
@@ -116,13 +104,12 @@ export async function createUserHandler(request: NextRequest) {
         passwordHash,
         mustChangePassword: true,
         name,
-        role: role || Role.SUB_ADMIN,
-        isActive,
+        isActive: true,
         accountId,
         AccountMembership: {
           create: {
             accountId,
-            role: role === Role.ADMIN ? "ADMIN" : "STAFF",
+            role: "STAFF",
             isActive: true,
           },
         },

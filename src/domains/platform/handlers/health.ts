@@ -1,13 +1,11 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { parseJsonBody } from "@/lib/security/parse-json-body";
-import { ErrorMonitor } from "@/lib/error-monitor";
 import { prisma } from "@/lib/prisma";
 import { ApiErrors } from "@/lib/api-handler";
 import { successResponse } from "@/lib/api-response";
 import { inngest } from "@/inngest/client";
 import { createLogger } from "@/lib/logger";
-import { auth } from "@/lib/auth";
 
 const logger = createLogger("health");
 
@@ -40,56 +38,13 @@ export async function healthCheckHandler(request: NextRequest) {
     },
   };
 
-  const session = await auth();
-  if (!session?.user?.id || session.user.role !== "ADMIN") {
-    return successResponse(basicResponse);
-  }
-
-  const monitor = ErrorMonitor.getInstance();
-  const stats = monitor.getStats();
-  const errorLog = monitor.getErrorLog();
-
-  return successResponse({
-    ...basicResponse,
-    services: {
-      ...basicResponse.services,
-      inngest: "healthy",
-      errorMonitor: "active",
-    },
-    errorMonitor: {
-      stats,
-      recentErrors: errorLog.slice(-10),
-    },
-  });
+  return successResponse(basicResponse);
 }
 
 /** Manually trigger error fix (Admin only). */
 export async function healthFixHandler(request: NextRequest) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return ApiErrors.unauthorized();
-    }
-    if (session.user.role !== "ADMIN") {
-      return ApiErrors.forbidden("Admin access required");
-    }
-
-    const parsedBody = await parseJsonBody(request, mutatingBodySchema);
-    if (!parsedBody.ok) return parsedBody.response;
-    const body = parsedBody.data as Record<string, unknown>;
-    const { errorType, errorMessage } = body;
-
-    await inngest.send({
-      name: "error/build.detected",
-      data: {
-        errorType: String(errorType ?? "manual"),
-        errorMessage: String(errorMessage ?? "Manual fix triggered"),
-      },
-    });
-
-    return successResponse({
-      message: "Fix job triggered",
-    });
+    return ApiErrors.forbidden("Platform operator access required");
   } catch (error: unknown) {
     logger.error("Health fix error:", error instanceof Error ? error : undefined);
     return ApiErrors.internal("Failed to trigger fix");

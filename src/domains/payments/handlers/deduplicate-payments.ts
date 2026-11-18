@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 
 import { z } from "zod";
 import { parseJsonBody } from "@/lib/security/parse-json-body";
@@ -39,7 +40,7 @@ export async function deduplicatePaymentsHandler(request: NextRequest) {
     if (!session?.user?.id) {
       return ApiErrors.unauthorized();
     }
-    if (session.user.role !== "ADMIN") {
+    if (!(await gymRequestHasPermission(session, request, "canEditPayments"))) {
       return ApiErrors.forbidden("Admin access required");
     }
 

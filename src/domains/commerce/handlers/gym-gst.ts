@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -35,7 +36,7 @@ const patchSchema = z.object({
 export async function patchGymGstHandler(request: NextRequest) {
   const session = await auth();
   if (!session?.user) return ApiErrors.unauthorized();
-  if (session.user.role !== "ADMIN") {
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) {
     return ApiErrors.forbidden("Admin access required");
   }
 

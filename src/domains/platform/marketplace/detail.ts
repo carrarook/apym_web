@@ -1,9 +1,10 @@
 import { NextRequest } from "next/server";
+import { requireGymPermissionForRequest } from "@/lib/security/gym-authorization";
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { ApiErrors, successResponse } from "@/lib/api-response";
-import { requirePermission, PermissionError } from "@/lib/permissions";
+import { PermissionError } from "@/lib/permissions";
 import { getMarketplaceApp } from "@/data/marketplace/catalog";
 import { setMarketplaceInstall } from "@/lib/marketplace/install";
 import { getApiGymId } from "@/lib/api/gym-context";
@@ -21,7 +22,7 @@ export async function patchMarketplaceInstallHandler(
   if (!session?.user) return ApiErrors.unauthorized();
 
   try {
-    requirePermission(session, "canEditMembers");
+    await requireGymPermissionForRequest(session, request, "canEditMembers");
   } catch (error) {
     if (error instanceof PermissionError) return ApiErrors.forbidden();
     throw error;

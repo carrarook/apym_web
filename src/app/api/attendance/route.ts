@@ -1,10 +1,11 @@
 import { NextRequest } from 'next/server';
 import { cachedJson } from '@/lib/api-cache';
 import { auth } from '@/lib/auth';
+import { requireGymPermissionForRequest } from "@/lib/security/gym-authorization";
 import { withRateLimit } from '@/lib/middleware/rate-limit';
 import { createLogger } from "@/lib/logger";
 import { ApiErrors, successResponse } from "@/lib/api-response";
-import { requirePermission, PermissionError } from "@/lib/permissions";
+import { PermissionError } from "@/lib/permissions";
 import { recordAttendanceHandler } from "@/domains/attendance/handlers/record-attendance";
 import { listAttendanceHandler } from "@/domains/attendance/handlers/list-attendance";
 import { getAttendanceService } from "@/domains/attendance/adapters";
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-      requirePermission(session, "canViewMembers");
+      await requireGymPermissionForRequest(session, request, "canViewMembers");
     } catch (error) {
       if (error instanceof PermissionError) {
         return ApiErrors.forbidden();
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      requirePermission(session, "canEditMembers");
+      await requireGymPermissionForRequest(session, request, "canManageAttendance");
     } catch (error) {
       if (error instanceof PermissionError) {
         return ApiErrors.forbidden();

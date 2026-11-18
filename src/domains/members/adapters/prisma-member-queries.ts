@@ -15,6 +15,32 @@ import type {
 } from "../types";
 import { memberApiDetailInclude } from "../types";
 
+export async function listTrainerMembers(trainerId: string, gymId: string, now = new Date()) {
+  const delegations = await prisma.trainerClient.findMany({
+    where: {
+      trainerId,
+      gymId,
+      isActive: true,
+      startDate: { lte: now },
+      OR: [{ endDate: null }, { endDate: { gte: now } }],
+      Member: { deletedAt: null },
+    },
+    select: { memberId: true },
+  });
+  return prisma.member.findMany({
+    where: { id: { in: delegations.map(({ memberId }) => memberId) }, gymId, deletedAt: null },
+    select: { id: true, name: true, phone: true, status: true, joinDate: true },
+    orderBy: { name: "asc" },
+  });
+}
+
+export async function getTrainerVisibleMember(memberId: string, gymId: string) {
+  return prisma.member.findFirst({
+    where: { id: memberId, gymId, deletedAt: null },
+    select: { id: true, name: true, phone: true, status: true, joinDate: true },
+  });
+}
+
 type MemberListRow = {
   id: string;
   name: string;

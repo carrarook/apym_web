@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireGymPermissionForRequest, resolveGymAuthorization } from "@/lib/security/gym-authorization";
+import { hasPermission } from "@/lib/permissions";
+import { hasActiveTrainerDelegation } from "@/lib/security/trainer-delegation";
 import { z } from "zod";
 import type { Session } from "next-auth";
 import { auth } from "@/lib/auth";
 import { parseJsonBody } from "@/lib/security/parse-json-body";
 import { ApiErrors } from "@/lib/api-handler";
 import { successResponse } from "@/lib/api-response";
-import { requirePermission, PermissionError } from "@/lib/permissions";
+import { PermissionError } from "@/lib/permissions";
 import { requireApiGymId } from "@/lib/api/gym-context";
 import { memberBelongsToGym } from "@/lib/gym-scope";
 import {
@@ -53,15 +56,18 @@ async function requireMemberAccess(
   request: NextRequest,
   memberId: string,
 ): Promise<string | NextResponse> {
-  try {
-    requirePermission(session, "canViewMembers");
-  } catch (error) {
-    if (error instanceof PermissionError) return ApiErrors.forbidden();
-    throw error;
-  }
+  const authorization = await resolveGymAuthorization(session.user.id, null, request);
+  if (!authorization) return ApiErrors.forbidden("Active gym access required");
+  const trainerRead = hasPermission(authorization, "canViewAssignedWorkouts");
+  const managerRead = hasPermission(authorization, "canEditMembers");
+  if (!trainerRead && !managerRead) return ApiErrors.forbidden();
 
-  const gymId = await requireApiGymId(session, request);
-  if (gymId instanceof NextResponse) return gymId;
+  const gymId = authorization.gymId;
+  if (trainerRead && !(await hasActiveTrainerDelegation({
+    trainerId: session.user.id,
+    memberId,
+    gymId,
+  }))) return ApiErrors.notFound("Member");
 
   const allowed = await memberBelongsToGym(memberId, gymId);
   if (!allowed) return ApiErrors.notFound("Member");
@@ -92,7 +98,7 @@ export async function createWorkoutHandler(request: NextRequest) {
   if (!session?.user) return ApiErrors.unauthorized();
 
   try {
-    requirePermission(session, "canEditMembers");
+    await requireGymPermissionForRequest(session, request, "canEditMembers");
   } catch (error) {
     if (error instanceof PermissionError) return ApiErrors.forbidden();
     throw error;
@@ -141,7 +147,7 @@ export async function deleteWorkoutHandler(request: NextRequest) {
   if (!session?.user) return ApiErrors.unauthorized();
 
   try {
-    requirePermission(session, "canEditMembers");
+    await requireGymPermissionForRequest(session, request, "canEditMembers");
   } catch (error) {
     if (error instanceof PermissionError) return ApiErrors.forbidden();
     throw error;

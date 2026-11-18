@@ -27,9 +27,11 @@ import {
   DashboardQuickEntryPanel,
 } from "@/components/dashboard/dashboard-quick-entry";
 
+const logger = createLogger("dashboard-payments");
+
 interface Payment {
   id: string;
-  amount: string;
+  amount: number;
   method: PaymentMethod;
   status: PaymentStatus;
   reference: string | null;
@@ -37,7 +39,7 @@ interface Payment {
   packageDuration: string | null;
   isPersonalTrainer: boolean;
   friendsFamilyDiscount: boolean;
-  monthlyRate: string | null;
+  monthlyRate: number | null;
   studentGymfloPlan: boolean;
   specialOccasion: string | null;
   receivedAt: string;
@@ -209,13 +211,17 @@ export default function PaymentsPage() {
   params.append("includeStats", "false");
   const paymentsUrl = `/api/payments?${params}`;
 
-  const { data, isLoading, error, mutate: fetchPayments } = useSWR(paymentsUrl, swrFetcher, {
-    revalidateOnMount: true,
-  });
+  const { data, isLoading, error, mutate: fetchPayments } = useSWR<
+    { payments?: Payment[] } | Payment[]
+  >(paymentsUrl, swrFetcher, { revalidateOnMount: true });
 
   useEffect(() => {
     if (data) {
-      const paymentsArray = Array.isArray(data.payments) ? data.payments : Array.isArray(data) ? data : [];
+      const paymentsArray = Array.isArray(data)
+        ? data
+        : Array.isArray(data.payments)
+          ? data.payments
+          : [];
       setPayments(paymentsArray);
     }
   }, [data]);
@@ -409,7 +415,7 @@ export default function PaymentsPage() {
           )}
           <Button
             type="button"
-            onClick={fetchPayments}
+            onClick={() => void fetchPayments()}
             disabled={isLoading}
             className="inline-flex items-center gap-1.5 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-all disabled:opacity-50 text-sm font-medium"
           >
@@ -573,7 +579,7 @@ export default function PaymentsPage() {
           {/* Mobile card layout */}
           <div className="sm:hidden divide-y divide-border">
             {Array.isArray(payments) && payments.map((payment) => {
-              const paymentAmount = parseFloat(payment.amount);
+              const paymentAmount = Number(payment.amount);
               const paymentDetails = parsePaymentNotes(payment.notes, paymentAmount);
               return (
                 <div key={payment.id} className="p-4 bg-card hover:bg-muted/30 transition-colors">
@@ -622,7 +628,7 @@ export default function PaymentsPage() {
               </thead>
               <tbody className="bg-card divide-y divide-border">
                 {Array.isArray(payments) && payments.map((payment) => {
-                  const paymentAmount = parseFloat(payment.amount);
+                  const paymentAmount = Number(payment.amount);
                   const paymentDetails = parsePaymentNotes(payment.notes, paymentAmount);
                   return (
                     <tr key={payment.id} className="hover:bg-muted/50 transition-colors">

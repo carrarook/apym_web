@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -9,7 +9,6 @@ import { DashboardPageHeader } from "@/components/dashboard/dashboard-page-heade
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SelectNative } from "@/components/ui/select-native";
-import { CheckboxInput } from "@/components/ui/checkbox-input";
 import { useActionQueue } from "@/hooks/use-action-queue";
 
 const logger = createLogger("dashboard-employees");
@@ -38,37 +37,53 @@ interface User {
   updatedAt: string;
 }
 
+type GymStaffRole = "MANAGER" | "TRAINER" | "RECEPTION";
+interface GymOption { id: string; name: string; }
+interface GymStaffRow {
+  id: string;
+  name: string;
+  email: string | null;
+  contactNumber: string;
+  accountRole: string;
+  assignment: { id: string; role: GymStaffRole; isActive?: boolean } | null;
+}
+
 import type { Permission } from "@/lib/permissions";
 
 const ALL_PERMISSIONS: Permission[] = [
-  "canViewMembers",
-  "canEditMembers",
-  "canViewPayments",
-  "canEditPayments",
-  "canViewRenewals",
-  "canEditRenewals",
-  "canViewReminders",
-  "canEditReminders",
-  "canViewReports",
-  "canViewWhatsAppReminders",
-  "canSendWhatsAppReminders",
-  "canSendBulkReminders",
+  "canViewMembers", "canEditMembers", "canRegisterMembers", "canViewAttendance", "canManageAttendance",
+  "canViewPayments", "canEditPayments", "canCreatePayments", "canViewAssignedMembers",
+  "canViewAssignedWorkouts", "canPrescribeWorkouts", "canViewRenewals", "canEditRenewals",
+  "canViewReminders", "canEditReminders", "canViewReports", "canViewWhatsAppReminders",
+  "canSendWhatsAppReminders", "canSendBulkReminders",
 ];
 
-const ADMIN_PERMISSIONS = new Set(ALL_PERMISSIONS);
-const EMPLOYEE_PERMISSIONS = new Set<Permission>([
-  "canViewMembers",
-  "canViewPayments",
-  "canViewRenewals",
-  "canViewReminders",
-  "canViewReports",
+const MANAGER_PERMISSIONS = new Set<Permission>([
+  "canViewMembers", "canEditMembers", "canRegisterMembers", "canViewAttendance", "canManageAttendance",
+  "canViewPayments", "canEditPayments", "canCreatePayments", "canViewRenewals", "canEditRenewals",
+  "canViewReminders", "canEditReminders", "canViewReports", "canViewWhatsAppReminders",
+  "canSendWhatsAppReminders", "canSendBulkReminders",
+]);
+const TRAINER_PERMISSIONS = new Set<Permission>([
+  "canViewAssignedMembers", "canViewAssignedWorkouts", "canPrescribeWorkouts",
+]);
+const RECEPTION_PERMISSIONS = new Set<Permission>([
+  "canViewMembers", "canRegisterMembers", "canViewAttendance", "canManageAttendance",
+  "canViewPayments", "canCreatePayments",
 ]);
 
 const PERMISSION_LABELS: Record<Permission, string> = {
   canViewMembers: "View members",
   canEditMembers: "Edit members",
+  canRegisterMembers: "Register members",
+  canViewAttendance: "View attendance",
+  canManageAttendance: "Manage attendance",
   canViewPayments: "View payments",
   canEditPayments: "Edit payments",
+  canCreatePayments: "Create payments",
+  canViewAssignedMembers: "View assigned members",
+  canViewAssignedWorkouts: "View assigned workout history",
+  canPrescribeWorkouts: "Prescribe workouts",
   canViewRenewals: "View renewals",
   canEditRenewals: "Edit renewals",
   canViewReminders: "View reminders",
@@ -83,6 +98,11 @@ export default function EmployeesPage() {
   const { data: session } = useSession();
   const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
+  const [gyms, setGyms] = useState<GymOption[]>([]);
+  const [selectedGymId, setSelectedGymId] = useState("");
+  const [gymStaff, setGymStaff] = useState<GymStaffRow[]>([]);
+  const [staffRoleDrafts, setStaffRoleDrafts] = useState<Record<string, GymStaffRole>>({});
+  const [loadingStaff, setLoadingStaff] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -90,8 +110,6 @@ export default function EmployeesPage() {
     contactNumber: "",
     password: "",
     name: "",
-    role: "SUB_ADMIN" as "ADMIN" | "SUB_ADMIN",
-    isActive: true,
   });
   const [submitting, setSubmitting] = useState(false);
   const [generatedPassword, setGeneratedPassword] = useState<string | null>(null);
@@ -99,21 +117,83 @@ export default function EmployeesPage() {
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
   const { enqueueAction, isQueued } = useActionQueue();
 
-  useEffect(() => {
-    // Check if user is admin
-    if (session?.user?.role !== "ADMIN") {
-      router.push("/dashboard");
-      return;
+  const loadGyms = useCallback(async () => {
+    try {
+      const response = await fetch("/api/gyms");
+      if (!response.ok) return;
+      const data = await response.json();
+      const options = Array.isArray(data.gyms) ? data.gyms : [];
+      setGyms(options);
+      if (options.length) setSelectedGymId((current) => current || options[0].id);
+    } catch (error) {
+      logger.error("Error loading academies:", error as Error);
     }
-    fetchUsers();
-  }, [session, router]);
+  }, []);
 
-  const fetchUsers = async () => {
+  const loadGymStaff = useCallback(async (gymId: string) => {
+    setLoadingStaff(true);
+    try {
+      const response = await fetch(`/api/gyms/${encodeURIComponent(gymId)}/staff`);
+      if (response.status === 401 || response.status === 403) {
+        router.push("/dashboard");
+        return;
+      }
+      if (!response.ok) throw new Error("Could not load academy staff");
+      const data = await response.json();
+      setGymStaff(data.staff ?? []);
+      setStaffRoleDrafts(Object.fromEntries(
+        (data.staff ?? []).map((row: GymStaffRow) => [row.id, row.assignment?.role ?? "RECEPTION"]),
+      ));
+    } catch (error) {
+      logger.error("Error loading academy staff:", error as Error);
+      toast.error("Failed to load academy roles");
+    } finally {
+      setLoadingStaff(false);
+    }
+  }, [router]);
+
+  const saveGymRole = async (row: GymStaffRow) => {
+    if (!selectedGymId) return;
+    try {
+      const response = await fetch(`/api/gyms/${encodeURIComponent(selectedGymId)}/staff`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: row.id, role: staffRoleDrafts[row.id] ?? "RECEPTION" }),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to update academy role");
+      }
+      toast.success("Academy role saved");
+      await loadGymStaff(selectedGymId);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to update academy role");
+    }
+  };
+
+  const revokeGymRole = async (row: GymStaffRow) => {
+    if (!selectedGymId || !row.assignment) return;
+    try {
+      const response = await fetch(
+        `/api/gyms/${encodeURIComponent(selectedGymId)}/staff/${encodeURIComponent(row.assignment.id)}`,
+        { method: "DELETE" },
+      );
+      if (!response.ok) throw new Error("Failed to revoke academy role");
+      toast.success("Academy role revoked");
+      await loadGymStaff(selectedGymId);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to revoke academy role");
+    }
+  };
+
+  const fetchUsers = useCallback(async () => {
     try {
       const response = await fetch("/api/users");
       if (response.ok) {
         const data = await response.json();
         setUsers(data);
+      } else if (response.status === 401 || response.status === 403) {
+        router.push("/dashboard");
       }
     } catch (error) {
       logger.error("Error fetching users:", error as Error);
@@ -121,7 +201,17 @@ export default function EmployeesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    if (!session?.user?.id) return;
+    void loadGyms();
+    void fetchUsers();
+  }, [session?.user?.id, loadGyms, fetchUsers]);
+
+  useEffect(() => {
+    if (selectedGymId) void loadGymStaff(selectedGymId);
+  }, [selectedGymId, loadGymStaff]);
 
   const handleOpenForm = (user?: User) => {
     if (user) {
@@ -130,8 +220,6 @@ export default function EmployeesPage() {
         contactNumber: user.contactNumber,
         password: "",
         name: user.name,
-        role: user.role,
-        isActive: user.isActive,
       });
     } else {
       setEditingUser(null);
@@ -139,8 +227,6 @@ export default function EmployeesPage() {
         contactNumber: "",
         password: "",
         name: "",
-        role: "SUB_ADMIN",
-        isActive: true,
       });
     }
     setGeneratedPassword(null);
@@ -272,7 +358,7 @@ export default function EmployeesPage() {
 
       <DashboardPageHeader
         title="Employee management"
-        description="Manage employees and configure their permissions"
+        description="Manage account identities and academy specific roles"
         actions={
           <Button onClick={() => handleOpenForm()} className="gap-2">
             <Plus className="h-4 w-4" />
@@ -280,6 +366,48 @@ export default function EmployeesPage() {
           </Button>
         }
       />
+
+      <section className="rounded-lg border border-border bg-card p-5 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="font-semibold">Academy roles</h2>
+            <p className="text-sm text-muted-foreground">Assign a separate operational role for each academy.</p>
+          </div>
+          <SelectNative value={selectedGymId} onChange={(event) => setSelectedGymId(event.target.value)}>
+            <option value="">Select academy</option>
+            {gyms.map((gym) => <option key={gym.id} value={gym.id}>{gym.name}</option>)}
+          </SelectNative>
+        </div>
+        {loadingStaff ? <p className="text-sm text-muted-foreground">Loading academy roles…</p> : (
+          <div className="space-y-2">
+            {gymStaff.map((row) => (
+              <div key={row.id} className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3">
+                <div>
+                  <div className="font-medium">{row.name}</div>
+                  <div className="text-xs text-muted-foreground">{row.email ?? row.contactNumber}</div>
+                </div>
+                {row.accountRole === "OWNER" || row.accountRole === "ADMIN" ? (
+                  <span className="text-sm text-muted-foreground">Account manager</span>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <SelectNative
+                      value={staffRoleDrafts[row.id] ?? "RECEPTION"}
+                      onChange={(event) => setStaffRoleDrafts((current) => ({ ...current, [row.id]: event.target.value as GymStaffRole }))}
+                    >
+                      <option value="MANAGER">Manager</option>
+                      <option value="TRAINER">Trainer</option>
+                      <option value="RECEPTION">Reception</option>
+                    </SelectNative>
+                    <Button type="button" onClick={() => void saveGymRole(row)} className="gap-1"><Save className="h-4 w-4" />Save</Button>
+                    {row.assignment && <Button type="button" onClick={() => void revokeGymRole(row)} className="text-red-600"><Trash2 className="h-4 w-4" /></Button>}
+                  </div>
+                )}
+              </div>
+            ))}
+            {!gymStaff.length && <p className="text-sm text-muted-foreground">No active account members found.</p>}
+          </div>
+        )}
+      </section>
 
       {/* Users List */}
       <div className="bg-card rounded-lg shadow overflow-hidden border border-border">
@@ -397,8 +525,9 @@ export default function EmployeesPage() {
             <thead className="bg-muted">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Permission</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase">Admin</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase">Employee</th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase">Manager</th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase">Trainer</th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase">Reception</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -406,14 +535,21 @@ export default function EmployeesPage() {
                 <tr key={perm} className="hover:bg-muted/50">
                   <td className="px-4 py-2.5 text-foreground">{PERMISSION_LABELS[perm]}</td>
                   <td className="px-4 py-2.5 text-center">
-                    {ADMIN_PERMISSIONS.has(perm) ? (
+                    {MANAGER_PERMISSIONS.has(perm) ? (
                       <span className="text-green-600 font-bold">✓</span>
                     ) : (
                       <span className="text-muted-foreground">—</span>
                     )}
                   </td>
                   <td className="px-4 py-2.5 text-center">
-                    {EMPLOYEE_PERMISSIONS.has(perm) ? (
+                    {TRAINER_PERMISSIONS.has(perm) ? (
+                      <span className="text-green-600 font-bold">✓</span>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-2.5 text-center">
+                    {RECEPTION_PERMISSIONS.has(perm) ? (
                       <span className="text-green-600 font-bold">✓</span>
                     ) : (
                       <span className="text-muted-foreground">—</span>
@@ -497,41 +633,6 @@ export default function EmployeesPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Role
-                  </label>
-                  <SelectNative
-                    value={formData.role}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        role: e.target.value as "ADMIN" | "SUB_ADMIN",
-                      })
-                    }
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background text-foreground"
-                  >
-                    <option value="SUB_ADMIN">Employee</option>
-                    <option value="ADMIN">Admin</option>
-                  </SelectNative>
-                </div>
-
-                <div className="flex items-center">
-                  <CheckboxInput
-                    id="isActive"
-                    checked={formData.isActive}
-                    onChange={(e) =>
-                      setFormData({ ...formData, isActive: e.target.checked })
-                    }
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-border rounded"
-                  />
-                  <label
-                    htmlFor="isActive"
-                    className="ml-2 block text-sm text-foreground"
-                  >
-                    Active
-                  </label>
-                </div>
               </div>
 
 

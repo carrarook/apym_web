@@ -1,4 +1,5 @@
 import type { NextRequest } from "next/server";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { parseJsonBody } from "@/lib/security/parse-json-body";
@@ -35,7 +36,7 @@ export async function getSettingsHandler(request: NextRequest) {
     const gymId = await requireApiGymId(session, request);
     if (gymId instanceof Response) return gymId;
 
-    const isAdmin = session.user.role === "ADMIN";
+    const isAdmin = await gymRequestHasPermission(session, request, "canEditMembers");
     const keysParam = request.nextUrl.searchParams.get("keys");
     let requestedKeys = keysParam ? keysParam.split(",").map((k) => k.trim()) : [];
 
@@ -67,7 +68,7 @@ export async function putSettingsHandler(request: NextRequest) {
     if (!session?.user?.id) {
       return ApiErrors.unauthorized();
     }
-    if (session.user.role !== "ADMIN") {
+    if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) {
       return ApiErrors.forbidden("Admin access required");
     }
 

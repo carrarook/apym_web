@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { ApiErrors } from "@/lib/api-handler";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
 import { getGymContext, GymContextError } from "@/domains/tenancy";
@@ -73,7 +74,7 @@ export async function DELETE(
     const { gymId } = await getGymContext(request);
     const session = await auth();
     if (!session?.user?.id) return ApiErrors.unauthorized();
-    if (session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin required");
+    if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
     const { id } = await params;
     const lead = await prisma.lead.findFirst({ where: { id, gymId, deletedAt: null } });

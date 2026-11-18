@@ -1472,6 +1472,62 @@
         ]
       }
     },
+    "/gyms/{gymId}/staff/{assignmentId}": {
+      "patch": {
+        "summary": "PATCH /gyms/{gymId}/staff/{assignmentId}",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "DELETE /gyms/{gymId}/staff/{assignmentId}",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
+    "/gyms/{gymId}/staff": {
+      "get": {
+        "summary": "GET /gyms/{gymId}/staff",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "POST /gyms/{gymId}/staff",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ]
+      }
+    },
     "/gyms": {
       "get": {
         "summary": "GET /gyms",

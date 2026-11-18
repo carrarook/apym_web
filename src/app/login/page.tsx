@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthDivider, OAuthButtons } from "@/components/auth/OAuthButtons";
-import { MARKETING_SITE_URL, MARKETING_SITE_LABEL } from "@/lib/site-config";
+import { APP_NAME, MARKETING_SITE_URL, MARKETING_SITE_LABEL } from "@/lib/site-config";
 import {
   WHATSAPP_MARKETING_LINE,
   WHATSAPP_TESTIMONIAL_LINE,
@@ -100,7 +100,7 @@ function LoginForm() {
                 </div>
               </a>
               <h1 className="text-2xl font-bold tracking-tight mb-2">Welcome back</h1>
-              <p className="text-white/50">Sign in to your Fitness360 account</p>
+              <p className="text-white/50">Sign in to your {APP_NAME} account</p>
             </div>
 
             {/* Login Card */}

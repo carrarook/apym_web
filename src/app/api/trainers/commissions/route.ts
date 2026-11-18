@@ -18,6 +18,9 @@ import { createLogger } from "@/lib/logger";
 import { ApiErrors } from "@/lib/api-handler";
 import { withRateLimit } from "@/lib/middleware/rate-limit";
 import { getGymContext, GymContextError } from "@/domains/tenancy";
+import { updateCommissionSchema } from "@/domains/trainers/commission-validation";
+import { resolveGymAuthorization, gymRequestHasPermission } from "@/lib/security/gym-authorization";
+import { hasPermission } from "@/lib/permissions";
 
 const logger = createLogger("api-trainers");
 
@@ -28,11 +31,17 @@ export async function GET(request: NextRequest) {
 
   try {
     const session = await auth();
-    if (!session?.user) {
+    if (!session?.user?.id) {
       return ApiErrors.unauthorized();
     }
 
-    const { gymId } = await getGymContext(request);
+    const authorization = await resolveGymAuthorization(session.user.id, null, request);
+    if (!authorization) return ApiErrors.forbidden("Active gym access required");
+    const trainerView = hasPermission(authorization, "canViewAssignedMembers");
+    if (!trainerView && !hasPermission(authorization, "canViewReports")) {
+      return ApiErrors.forbidden("Commission access required");
+    }
+    const gymId = authorization.gymId;
 
     const searchParams = request.nextUrl.searchParams;
     const trainerId = searchParams.get('trainerId');
@@ -42,7 +51,10 @@ export async function GET(request: NextRequest) {
 
     const where: Prisma.TrainerCommissionWhereInput = { gymId };
     
-    if (trainerId) {
+    if (trainerView) {
+      if (trainerId && trainerId !== session.user.id) return ApiErrors.forbidden();
+      where.trainerId = session.user.id;
+    } else if (trainerId) {
       where.trainerId = trainerId;
     }
     
@@ -119,6 +131,9 @@ export async function POST(request: NextRequest) {
       return ApiErrors.unauthorized();
     }
 
+    if (!(await gymRequestHasPermission(session, request, "canEditPayments"))) {
+      return ApiErrors.forbidden("Account manager access required");
+    }
     const { gymId } = await getGymContext(request);
 
     const parsedBody = await parseJsonBody(request, createCommissionSchema);
@@ -134,17 +149,20 @@ export async function POST(request: NextRequest) {
       where: { id: gymId },
       select: { accountId: true },
     });
+    const trainerAssignment = await prisma.gymStaffAssignment.findFirst({
+      where: { userId: trainerId, gymId, accountId: gym?.accountId, role: "TRAINER", isActive: true },
+      select: { id: true, AccountMembership: { select: { isActive: true } } },
+    });
     const trainer = await prisma.user.findFirst({
-      where: { id: trainerId, isTrainer: true, accountId: gym?.accountId },
+      where: { id: trainerId, isActive: true },
       select: {
         id: true,
         name: true,
-        isTrainer: true,
         commissionRate: true,
       },
     });
 
-    if (!trainer || !trainer.isTrainer) {
+    if (!trainer || !trainerAssignment?.AccountMembership.isActive) {
       return ApiErrors.validationError("Invalid trainer");
     }
 
@@ -212,16 +230,14 @@ export async function PATCH(request: NextRequest) {
       return ApiErrors.unauthorized();
     }
 
+    if (!(await gymRequestHasPermission(session, request, "canEditPayments"))) {
+      return ApiErrors.forbidden("Account manager access required");
+    }
     const { gymId } = await getGymContext(request);
 
-    const parsedBody = await parseJsonBody(request, mutatingBodySchema);
+    const parsedBody = await parseJsonBody(request, updateCommissionSchema);
     if (!parsedBody.ok) return parsedBody.response;
-    const body = parsedBody.data as any;
-    const { commissionId, isPaid } = body;
-
-    if (!commissionId) {
-      return ApiErrors.validationError("Commission ID required");
-    }
+    const { commissionId, isPaid } = parsedBody.data;
 
     const existing = await prisma.trainerCommission.findFirst({
       where: { id: commissionId, gymId },

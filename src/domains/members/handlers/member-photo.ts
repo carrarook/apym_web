@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireGymPermissionForRequest } from "@/lib/security/gym-authorization";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ApiErrors } from "@/lib/api-handler";
-import { requirePermission, PermissionError } from "@/lib/permissions";
+import { PermissionError } from "@/lib/permissions";
 import {
   readRequestedGymIdFromRequest,
   resolveGymIdForUser,
@@ -17,7 +18,7 @@ export async function uploadMemberPhotoHandler(request: NextRequest) {
   if (!session?.user?.id) return ApiErrors.unauthorized();
 
   try {
-    requirePermission(session, "canEditMembers");
+    await requireGymPermissionForRequest(session, request, "canEditMembers");
   } catch (error) {
     if (error instanceof PermissionError) {
       return ApiErrors.forbidden("Permission denied: cannot edit members");

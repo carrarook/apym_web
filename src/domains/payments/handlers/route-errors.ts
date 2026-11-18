@@ -8,7 +8,7 @@ const logger = createLogger("api-payments");
 
 export function mapCreatePaymentRouteError(error: unknown) {
   if (error instanceof PermissionError) {
-    return ApiErrors.permissionDenied("canEditPayments");
+    return ApiErrors.permissionDenied("canCreatePayments");
   }
   if (error instanceof BusinessRuleViolation && error.code === "PAYMENT_DUPLICATE") {
     try {

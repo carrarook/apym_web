@@ -359,26 +359,18 @@ export async function handleQuickEntryPost(request: NextRequest) {
       return ApiErrors.unauthorized();
     }
 
-    // Verify user exists
-    let receivedById = session.user.id;
+    // Keep the audit actor tied to the authenticated identity.
     const dbUser = await prisma.user.findUnique({
       where: { id: session.user.id },
       select: { id: true },
     });
-    
     if (!dbUser) {
-      const fallback = await prisma.user.findFirst({
-        where: { role: "ADMIN", isActive: true },
-        select: { id: true },
-      });
-      if (!fallback) {
-        return NextResponse.json(
-          { error: "Your account was not found. Please log out and log in again." },
-          { status: 401 }
-        );
-      }
-      receivedById = fallback.id;
+      return NextResponse.json(
+        { error: "Your account was not found. Please log out and log in again." },
+        { status: 401 }
+      );
     }
+    const receivedById = session.user.id;
 
     const gymId = await resolveGymIdForUser(
       session.user.id,

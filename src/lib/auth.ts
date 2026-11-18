@@ -38,7 +38,6 @@ const googleProvider =
     ? Google({
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        allowDangerousEmailAccountLinking: true,
       })
     : null;
 
@@ -47,7 +46,6 @@ const githubProvider =
     ? GitHub({
         clientId: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        allowDangerousEmailAccountLinking: true,
       })
     : null;
 
@@ -143,18 +141,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return true;
       }
 
-      const email =
-        (profile as { email?: string } | undefined)?.email ??
-        user.email ??
-        null;
-      if (!email) {
-        return false;
+      const providerProfile = (profile ?? {}) as { email?: string | null; email_verified?: boolean; name?: string };
+      let email = providerProfile.email ?? user.email ?? null;
+      let emailVerified = account.provider === "google" && providerProfile.email_verified === true;
+
+      if (account.provider === "github" && account.access_token) {
+        try {
+          const response = await fetch("https://api.github.com/user/emails", {
+            headers: {
+              Authorization: `Bearer ${account.access_token}`,
+              Accept: "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+              "User-Agent": "Gymkhana-APYM-Web",
+            },
+          });
+          if (response.ok) {
+            const emails = await response.json() as Array<{ email?: string; primary?: boolean; verified?: boolean }>;
+            const verifiedPrimary = emails.find((entry) => entry.primary && entry.verified && entry.email);
+            if (verifiedPrimary?.email) {
+              email = verifiedPrimary.email;
+              emailVerified = true;
+            }
+          }
+        } catch {
+          emailVerified = false;
+        }
       }
 
       const name =
         user.name ??
-        (profile as { name?: string } | undefined)?.name ??
-        email.split("@")[0] ??
+        providerProfile.name ??
+        email?.split("@")[0] ??
         "Owner";
 
       try {
@@ -162,6 +179,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           provider: account.provider,
           providerUserId: account.providerAccountId,
           email,
+          emailVerified,
           name,
         });
 

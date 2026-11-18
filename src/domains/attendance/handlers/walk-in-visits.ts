@@ -1,8 +1,9 @@
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { requireGymPermissionForRequest } from "@/lib/security/gym-authorization";
 import { createLogger } from "@/lib/logger";
 import { ApiErrors, successResponse } from "@/lib/api-response";
-import { requirePermission, PermissionError } from "@/lib/permissions";
+import { PermissionError } from "@/lib/permissions";
 import { createWalkInVisitSchema, walkInVisitQuerySchema } from "@/lib/validators";
 import { BusinessRuleViolation } from "@/lib/crud-business-validation";
 import {
@@ -23,7 +24,7 @@ export async function getWalkInVisitsHandler(request: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user) return ApiErrors.unauthorized();
-    requirePermission(session, "canViewMembers");
+    await requireGymPermissionForRequest(session, request, "canViewMembers");
 
     const { gymId } = await getGymContext(request);
     const params = Object.fromEntries(request.nextUrl.searchParams.entries());
@@ -55,7 +56,7 @@ export async function postWalkInVisitHandler(request: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user) return ApiErrors.unauthorized();
-    requirePermission(session, "canEditMembers");
+    await requireGymPermissionForRequest(session, request, "canRegisterMembers");
 
     const { gymId } = await getGymContext(request);
     const body = await request.json();

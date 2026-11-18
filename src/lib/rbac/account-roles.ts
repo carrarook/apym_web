@@ -1,22 +1,27 @@
-import type { AccountMemberRole, Role } from "@prisma/client";
 import type { Permission } from "@/lib/permissions";
 import type { EffectivePermissionContext } from "@/lib/rbac/types";
+import { resolveApymPanelProfile } from "@/lib/apym/profiles";
 
 export type { EffectivePermissionContext };
 
-const STAFF_READ_PERMISSIONS: Permission[] = [
+const RECEPTION_PERMISSIONS: Permission[] = [
   "canViewMembers",
+  "canRegisterMembers",
+  "canViewAttendance",
+  "canManageAttendance",
   "canViewPayments",
-  "canViewRenewals",
-  "canViewReminders",
-  "canViewReports",
+  "canCreatePayments",
 ];
 
-const FULL_PERMISSIONS: Permission[] = [
+const MANAGER_PERMISSIONS: Permission[] = [
   "canViewMembers",
   "canEditMembers",
+  "canRegisterMembers",
+  "canViewAttendance",
+  "canManageAttendance",
   "canViewPayments",
   "canEditPayments",
+  "canCreatePayments",
   "canViewRenewals",
   "canEditRenewals",
   "canViewReminders",
@@ -27,39 +32,33 @@ const FULL_PERMISSIONS: Permission[] = [
   "canSendBulkReminders",
 ];
 
-function permissionsForAccountRole(role: AccountMemberRole): Permission[] {
-  switch (role) {
-    case "OWNER":
-    case "ADMIN":
-      return FULL_PERMISSIONS;
-    case "STAFF":
-      return STAFF_READ_PERMISSIONS;
-    default:
-      return STAFF_READ_PERMISSIONS;
-  }
-}
+const TRAINER_PERMISSIONS: Permission[] = [
+  "canViewAssignedMembers",
+  "canViewAssignedWorkouts",
+  "canPrescribeWorkouts",
+];
 
-function permissionsForLegacyUserRole(role: Role): Permission[] {
-  if (role === "ADMIN") return FULL_PERMISSIONS;
-  return STAFF_READ_PERMISSIONS;
-}
-
-/**
- * Resolves dashboard permissions from account membership (preferred) or legacy User.role.
- */
 export function resolveAccountPermissions(ctx: EffectivePermissionContext): Set<Permission> {
-  if (ctx.accountMemberRole) {
-    return new Set(permissionsForAccountRole(ctx.accountMemberRole));
+  return permissionsForGymContext(ctx);
+}
+
+export function permissionsForGymContext(ctx: EffectivePermissionContext): Set<Permission> {
+  const profile = resolveApymPanelProfile(ctx);
+  switch (profile) {
+    case "manager":
+      return new Set(MANAGER_PERMISSIONS);
+    case "trainer":
+      return new Set(TRAINER_PERMISSIONS);
+    case "reception":
+      return new Set(RECEPTION_PERMISSIONS);
+    default:
+      return new Set();
   }
-  if (ctx.userRole) {
-    return new Set(permissionsForLegacyUserRole(ctx.userRole));
-  }
-  return new Set();
 }
 
 export function accountRoleHasPermission(
   ctx: EffectivePermissionContext,
   permission: Permission,
 ): boolean {
-  return resolveAccountPermissions(ctx).has(permission);
+  return permissionsForGymContext(ctx).has(permission);
 }

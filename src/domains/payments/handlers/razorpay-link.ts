@@ -1,9 +1,10 @@
 import { NextRequest } from "next/server";
+import { requireGymPermissionForRequest } from "@/lib/security/gym-authorization";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ApiErrors, successResponse } from "@/lib/api-response";
-import { requirePermission, PermissionError } from "@/lib/permissions";
+import { PermissionError } from "@/lib/permissions";
 import { isMarketplaceAppEnabled } from "@/lib/marketplace/install";
 import { createRazorpayPaymentLink } from "@/lib/payments/razorpay";
 import { getApiGymId } from "@/lib/api/gym-context";
@@ -19,7 +20,7 @@ export async function createRazorpayLinkHandler(request: NextRequest) {
   if (!session?.user) return ApiErrors.unauthorized();
 
   try {
-    requirePermission(session, "canEditPayments");
+    await requireGymPermissionForRequest(session, request, "canEditPayments");
   } catch (error) {
     if (error instanceof PermissionError) return ApiErrors.forbidden();
     throw error;

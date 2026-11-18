@@ -42,7 +42,7 @@ async function resolveAccountIdForGymListing(
 }
 
 /**
- * Gyms visible to this dashboard user (active account via membership or legacy accountId).
+ * Gyms visible in the selected account. Authorization still rechecks membership per request.
  */
 export async function listGymsForUser(userId: string, request?: NextRequest) {
   const accountId = await resolveAccountIdForGymListing(userId, request);
@@ -66,7 +66,7 @@ export async function listGymsForUser(userId: string, request?: NextRequest) {
 }
 
 /**
- * Resolves active gym for API / server logic: must belong to the user's account (or demo fallback).
+ * Resolves a preferred gym inside an account selected from active membership.
  */
 export async function resolveGymIdForUser(
   userId: string,
@@ -106,18 +106,13 @@ export async function userCanAccessGym(userId: string, gymId: string): Promise<b
     where: { userId, accountId: gym.accountId, isActive: true },
     select: { id: true },
   });
-  if (membership) return true;
+  if (!membership) return false;
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { accountId: true },
+    select: { isActive: true },
   });
-  if (user?.accountId === gym.accountId) return true;
-
-  if (isDemoModeEnabled() && gymId === DEFAULT_DEMO_GYM_ID) {
-    return true;
-  }
-  return false;
+  return user?.isActive === true;
 }
 
 /**

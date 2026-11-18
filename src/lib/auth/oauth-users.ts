@@ -8,12 +8,12 @@ import {
 export type OAuthProfile = {
   provider: string;
   providerUserId: string;
-  email: string;
-  name: string;
+  email?: string | null;
+  emailVerified?: boolean;
+  name?: string | null;
 };
 
 export async function resolveOAuthUser(profile: OAuthProfile): Promise<User> {
-  const email = normalizeAuthEmail(profile.email);
   const provider = profile.provider.toLowerCase();
   const providerUserId = profile.providerUserId;
 
@@ -27,6 +27,11 @@ export async function resolveOAuthUser(profile: OAuthProfile): Promise<User> {
     return linked.User;
   }
 
+  if (!profile.email || profile.emailVerified !== true) {
+    throw new Error("A provider-verified email is required for a new OAuth identity");
+  }
+  const email = normalizeAuthEmail(profile.email);
+
   const existingByEmail = await prisma.user.findUnique({
     where: { email },
   });
@@ -36,26 +41,12 @@ export async function resolveOAuthUser(profile: OAuthProfile): Promise<User> {
       throw new Error("Account deactivated");
     }
 
-    await prisma.userAuthProvider.upsert({
-      where: {
-        provider_providerUserId: { provider, providerUserId },
-      },
-      create: {
-        userId: existingByEmail.id,
-        provider,
-        providerUserId,
-      },
-      update: {
-        userId: existingByEmail.id,
-      },
-    });
-
-    return existingByEmail;
+    throw new Error("An account with this email already exists; sign in with its linked provider");
   }
 
   const user = await provisionOwnerAccount({
     email,
-    name: profile.name.trim() || email.split("@")[0] || "Owner",
+    name: profile.name?.trim() || email.split("@")[0] || "Owner",
   });
 
   await prisma.userAuthProvider.create({

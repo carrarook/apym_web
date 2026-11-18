@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
+import { gymRequestHasPermission } from "@/lib/security/gym-authorization";
 import { prisma } from "@/lib/prisma";
 import {
   readRequestedGymIdFromRequest,
@@ -87,7 +88,7 @@ export async function PUT(request: NextRequest) {
 
   const session = await auth();
   if (!session?.user?.id) return ApiErrors.unauthorized();
-  if (session.user.role !== "ADMIN") return ApiErrors.forbidden("Admin required");
+  if (!(await gymRequestHasPermission(session, request, "canEditMembers"))) return ApiErrors.forbidden("Account manager access required");
 
   const gymId = await resolveGymIdForUser(
     session.user.id,
