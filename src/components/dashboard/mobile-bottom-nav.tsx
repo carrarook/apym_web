@@ -1,5 +1,8 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -40,6 +43,7 @@ export function MobileSidebarCloseOnNavigate() {
 }
 
 export function MobileBottomNav() {
+  const tStatic = useStaticUiTranslations("static");
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
   const { data: session } = useSession();
@@ -47,20 +51,20 @@ export function MobileBottomNav() {
   const assumeEmployee = useAssumeEmployeeView();
   const staffLimited = assumeEmployee && isAdmin;
 
-  const tabs: Tab[] = React.useMemo(() => {
+  const tabs: Tab[] = (() => {
     const core: Tab[] = [
-      { id: "members", label: "Members", href: "/dashboard/members", icon: Users },
-      { id: "payments", label: "Pay", href: "/dashboard/payments", icon: CreditCard },
-      { id: "attendance", label: "Attend", href: "/dashboard/attendance", icon: ClipboardCheck },
+      { id: "members", label: tStatic("1cb449c11266"), href: "/dashboard/members", icon: Users },
+      { id: "payments", label: tStatic("80c37573afed"), href: "/dashboard/payments", icon: CreditCard },
+      { id: "attendance", label: tStatic("185ea72876d1"), href: "/dashboard/attendance", icon: ClipboardCheck },
     ];
 
     if (staffLimited) return core;
 
     return [
-      { id: "dashboard", label: "Home", href: "/dashboard", icon: LayoutDashboard },
+      { id: "dashboard", label: tStatic("70f8bb9a8a53"), href: "/dashboard", icon: LayoutDashboard },
       ...core,
     ];
-  }, [staffLimited]);
+  })();
 
   return (
     <nav
@@ -91,8 +95,7 @@ export function MobileBottomNav() {
           className="flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium text-muted-foreground"
         >
           <Menu className="h-5 w-5" />
-          Menu
-        </button>
+          <LocalizedText id="57f5f5efbc59" leading={""} trailing={"\n        "} /></button>
       </div>
     </nav>
   );

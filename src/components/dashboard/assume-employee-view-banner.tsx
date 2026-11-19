@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useSession } from "next-auth/react";
 import { useAssumeEmployeeView, exitAssumeEmployeeView } from "@/hooks/use-assume-employee-view";
 import { useRouter } from "next/navigation";
@@ -18,8 +19,7 @@ export function AssumeEmployeeViewBanner() {
     <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-500/40 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:bg-amber-950/40 dark:text-amber-100">
       <span className="flex items-center gap-2">
         <Eye className="h-4 w-4 shrink-0" />
-        Employee preview — sidebar shows staff-limited navigation.
-      </span>
+        <LocalizedText id="c04ecb2d0b89" leading={""} trailing={"\n      "} /></span>
       <Button
         type="button"
         size="sm"
@@ -27,8 +27,7 @@ export function AssumeEmployeeViewBanner() {
         className="border-amber-600/50"
         onClick={() => exitAssumeEmployeeView(router)}
       >
-        Exit preview
-      </Button>
+        <LocalizedText id="e9960a900463" leading={""} trailing={"\n      "} /></Button>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import useSWR from "swr";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +17,7 @@ export function ActiveTrialsPanel() {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg">Active trials & walk-ins</CardTitle>
+        <CardTitle className="text-lg"><LocalizedText id="34f4d7bb2c2a" leading={""} trailing={""} /></CardTitle>
         <p className="text-xs text-muted-foreground">
           {isLoading ? "…" : `${data?.openTrials ?? 0} open trials · ${data?.total ?? 0} visits (14d)`}
         </p>
@@ -24,7 +25,7 @@ export function ActiveTrialsPanel() {
       <CardContent>
         {isLoading && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
         {!isLoading && candidates.length === 0 && (
-          <p className="text-sm text-muted-foreground">No open free trials in the last 14 days.</p>
+          <p className="text-sm text-muted-foreground"><LocalizedText id="ed21c8d6fd56" leading={""} trailing={""} /></p>
         )}
         <ul className="space-y-2 max-h-48 overflow-y-auto">
           {candidates.slice(0, 8).map((v: {
@@ -42,10 +43,9 @@ export function ActiveTrialsPanel() {
               </div>
               {v.memberId ? (
                 <Link href={`/dashboard/members/${v.memberId}`} className="text-primary text-xs hover:underline">
-                  View
-                </Link>
+                  <LocalizedText id="69bd4ef9fbd0" leading={""} trailing={"\n                "} /></Link>
               ) : (
-                <Badge variant="secondary">Convert</Badge>
+                <Badge variant="secondary"><LocalizedText id="3f15ce79532d" leading={""} trailing={""} /></Badge>
               )}
             </li>
           ))}

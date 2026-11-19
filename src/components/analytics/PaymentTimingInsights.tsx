@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import useSWR from "swr";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
@@ -27,26 +28,23 @@ export function PaymentTimingInsights() {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg">Payment timing</CardTitle>
+        <CardTitle className="text-lg"><LocalizedText id="1dc05529e455" leading={""} trailing={""} /></CardTitle>
         <p className="text-xs text-muted-foreground">
-          When members pay — use for discount windows and preferred methods
-        </p>
+          <LocalizedText id="3e0565ab2adc" leading={""} trailing={"\n        "} /></p>
       </CardHeader>
       <CardContent className="text-sm space-y-2">
         {isLoading && (
           <p className="text-muted-foreground flex items-center gap-2">
-            <Loader2 className="h-4 w-4 animate-spin" /> Loading…
-          </p>
+            <Loader2 className="h-4 w-4 animate-spin" /> <LocalizedText id="33ce417454bf" leading={""} trailing={"\n          "} /></p>
         )}
-        {error && <p className="text-destructive text-xs">Could not load payment timing.</p>}
+        {error && <p className="text-destructive text-xs"><LocalizedText id="f91866086137" leading={""} trailing={""} /></p>}
         {data && (
           <>
             <p className="text-muted-foreground">
-              Based on {data.sampleSize} completed payments (12 months)
-            </p>
+              <LocalizedText id="77bfa67a49fe" leading={""} trailing={" "} />{data.sampleSize} <LocalizedText id="ba00d312bd8f" leading={""} trailing={"\n            "} /></p>
             {data.peakPaymentDayOfMonth != null && (
               <p>
-                Peak day of month: <strong>{data.peakPaymentDayOfMonth}</strong>
+                <LocalizedText id="76afce2354ae" leading={""} trailing={" "} /><strong>{data.peakPaymentDayOfMonth}</strong>
               </p>
             )}
             {data.suggestDiscountWindow && (
@@ -54,12 +52,12 @@ export function PaymentTimingInsights() {
             )}
             {data.preferredMethod && (
               <p>
-                Preferred method: <strong>{data.preferredMethod}</strong>
+                <LocalizedText id="34e8428cadf4" leading={""} trailing={" "} /><strong>{data.preferredMethod}</strong>
               </p>
             )}
             {data.personalizedPaymentOptions?.length > 0 && (
               <p className="text-xs">
-                Suggest: {data.personalizedPaymentOptions.join(", ")}
+                <LocalizedText id="c429acd1fc1d" leading={""} trailing={" "} />{data.personalizedPaymentOptions.join(", ")}
               </p>
             )}
           </>

@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { BillTemplate } from "@/components/bills/bill-template";
@@ -71,7 +72,7 @@ export default function PrintBillPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-muted-foreground font-medium">Loading bill...</div>
+        <div className="text-muted-foreground font-medium"><LocalizedText id="e9d9039a2fac" leading={""} trailing={""} /></div>
       </div>
     );
   }
@@ -79,7 +80,7 @@ export default function PrintBillPage() {
   if (!bill) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-red-500 font-medium">Bill not found</div>
+        <div className="text-red-500 font-medium"><LocalizedText id="7c0ad45e5c50" leading={""} trailing={""} /></div>
       </div>
     );
   }

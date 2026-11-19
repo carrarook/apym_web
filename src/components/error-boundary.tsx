@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { Component, ReactNode } from "react";
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { createLogger } from "@/lib/logger";
@@ -56,10 +57,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             </div>
             <div className="space-y-2">
               <h2 className="text-xl font-semibold text-foreground">
-                Something went wrong
-              </h2>
+                <LocalizedText id="8d886c0ba6f2" leading={""} trailing={"\n              "} /></h2>
               <p className="text-sm text-muted-foreground">
-                {this.state.error?.message || "An unexpected error occurred"}
+                {this.state.error ? <LocalizedText id="0e7155936917" /> : null}
               </p>
             </div>
             <Button
@@ -68,8 +68,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               className="gap-2"
             >
               <RefreshCw className="h-4 w-4" />
-              Try Again
-            </Button>
+              <LocalizedText id="cef2fe093b68" leading={""} trailing={"\n            "} /></Button>
           </div>
         </div>
       );

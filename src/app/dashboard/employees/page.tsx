@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -95,6 +97,7 @@ const PERMISSION_LABELS: Record<Permission, string> = {
 };
 
 export default function EmployeesPage() {
+  const tStatic = useStaticUiTranslations("static");
   const { data: session } = useSession();
   const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
@@ -146,11 +149,11 @@ export default function EmployeesPage() {
       ));
     } catch (error) {
       logger.error("Error loading academy staff:", error as Error);
-      toast.error("Failed to load academy roles");
+      toast.error(tStatic("3036f1bde9a9"));
     } finally {
       setLoadingStaff(false);
     }
-  }, [router]);
+  }, [router, tStatic]);
 
   const saveGymRole = async (row: GymStaffRow) => {
     if (!selectedGymId) return;
@@ -162,12 +165,12 @@ export default function EmployeesPage() {
       });
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to update academy role");
+        throw new Error(error.error || tStatic("9c7ed679fbe7"));
       }
-      toast.success("Academy role saved");
+      toast.success(tStatic("89f24195a173"));
       await loadGymStaff(selectedGymId);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to update academy role");
+      toast.error(error instanceof Error ? error.message : tStatic("9c7ed679fbe7"));
     }
   };
 
@@ -178,11 +181,11 @@ export default function EmployeesPage() {
         `/api/gyms/${encodeURIComponent(selectedGymId)}/staff/${encodeURIComponent(row.assignment.id)}`,
         { method: "DELETE" },
       );
-      if (!response.ok) throw new Error("Failed to revoke academy role");
-      toast.success("Academy role revoked");
+      if (!response.ok) throw new Error(tStatic("fab970d68e9b"));
+      toast.success(tStatic("6ea6c6608ea5"));
       await loadGymStaff(selectedGymId);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to revoke academy role");
+      toast.error(error instanceof Error ? error.message : tStatic("fab970d68e9b"));
     }
   };
 
@@ -197,11 +200,11 @@ export default function EmployeesPage() {
       }
     } catch (error) {
       logger.error("Error fetching users:", error as Error);
-      toast.error("Failed to fetch employees");
+      toast.error(tStatic("f7de8498b821"));
     } finally {
       setLoading(false);
     }
-  }, [router]);
+  }, [router, tStatic]);
 
   useEffect(() => {
     if (!session?.user?.id) return;
@@ -269,20 +272,20 @@ export default function EmployeesPage() {
         if (!editingUser && result.temporaryPassword) {
           setGeneratedPassword(result.temporaryPassword);
           setShowPasswordModal(true);
-          toast.success("Employee created successfully!");
+          toast.success(tStatic("ecafec8e6632"));
         } else {
-          toast.success("Employee updated successfully!");
+          toast.success(tStatic("162aa98ae9e9"));
         }
         
         await fetchUsers();
         handleCloseForm();
       } else {
         const error = await response.json();
-        toast.error(error.error || "Failed to save employee");
+        toast.error(error.error || tStatic("a55fa7603f38"));
       }
     } catch (error) {
       logger.error("Error saving employee:", error as Error);
-      toast.error("Failed to save employee");
+      toast.error(tStatic("a55fa7603f38"));
     } finally {
       setSubmitting(false);
     }
@@ -301,15 +304,15 @@ export default function EmployeesPage() {
         });
 
         if (response.ok) {
-          toast.success("Employee deleted successfully");
+          toast.success(tStatic("cd2a00b81701"));
           await fetchUsers();
         } else {
           const error = await response.json();
-          toast.error(error.error || "Failed to delete employee");
+          toast.error(error.error || tStatic("8d3859a24730"));
         }
       } catch (error) {
         logger.error("Error deleting employee:", error as Error);
-        toast.error("Failed to delete employee");
+        toast.error(tStatic("8d3859a24730"));
       } finally {
         setDeletingUserId((current) => (current === id ? null : current));
       }
@@ -319,7 +322,7 @@ export default function EmployeesPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-muted-foreground">Loading...</div>
+        <div className="text-muted-foreground"><LocalizedText id="b04ba49f8486" leading={""} trailing={""} /></div>
       </div>
     );
   }
@@ -330,18 +333,16 @@ export default function EmployeesPage() {
       {showPasswordModal && generatedPassword && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-card rounded-lg p-6 max-w-md w-full shadow-xl border border-border">
-            <h2 className="text-xl font-bold mb-4">Employee Created Successfully</h2>
+            <h2 className="text-xl font-bold mb-4"><LocalizedText id="40950b763cfa" leading={""} trailing={""} /></h2>
             <div className="bg-yellow-50 border border-yellow-200 rounded p-4 mb-4">
               <p className="text-sm text-yellow-800 mb-2">
-                <strong>Important:</strong> This password will only be shown once. Copy it and share securely.
-              </p>
+                <strong><LocalizedText id="18dd7e894b3d" leading={""} trailing={""} /></strong> <LocalizedText id="869c68cdc7d9" leading={""} trailing={"\n              "} /></p>
               <div className="bg-background border border-border rounded p-3 font-mono text-lg select-all">
                 {generatedPassword}
               </div>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
-              Employee must change this password on first login.
-            </p>
+              <LocalizedText id="f577882fad70" leading={""} trailing={"\n            "} /></p>
             <Button
               type="button"
               onClick={() => {
@@ -350,35 +351,33 @@ export default function EmployeesPage() {
               }}
               className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              I&apos;ve Saved the Password
-            </Button>
+              <LocalizedText id="d119c0375d42" leading={""} trailing={"\n            "} /></Button>
           </div>
         </div>
       )}
 
       <DashboardPageHeader
-        title="Employee management"
-        description="Manage account identities and academy specific roles"
+        title={tStatic("08f173397d30")}
+        description={tStatic("8fafbed40fe3")}
         actions={
           <Button onClick={() => handleOpenForm()} className="gap-2">
             <Plus className="h-4 w-4" />
-            Add employee
-          </Button>
+            <LocalizedText id="7c37e69272bf" leading={""} trailing={"\n          "} /></Button>
         }
       />
 
       <section className="rounded-lg border border-border bg-card p-5 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="font-semibold">Academy roles</h2>
-            <p className="text-sm text-muted-foreground">Assign a separate operational role for each academy.</p>
+            <h2 className="font-semibold"><LocalizedText id="5cf4675416b6" leading={""} trailing={""} /></h2>
+            <p className="text-sm text-muted-foreground"><LocalizedText id="e539b844b316" leading={""} trailing={""} /></p>
           </div>
           <SelectNative value={selectedGymId} onChange={(event) => setSelectedGymId(event.target.value)}>
-            <option value="">Select academy</option>
+            <option value=""><LocalizedText id="125688dc312d" leading={""} trailing={""} /></option>
             {gyms.map((gym) => <option key={gym.id} value={gym.id}>{gym.name}</option>)}
           </SelectNative>
         </div>
-        {loadingStaff ? <p className="text-sm text-muted-foreground">Loading academy roles…</p> : (
+        {loadingStaff ? <p className="text-sm text-muted-foreground"><LocalizedText id="13bdc8a3b8a6" leading={""} trailing={""} /></p> : (
           <div className="space-y-2">
             {gymStaff.map((row) => (
               <div key={row.id} className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3">
@@ -387,24 +386,24 @@ export default function EmployeesPage() {
                   <div className="text-xs text-muted-foreground">{row.email ?? row.contactNumber}</div>
                 </div>
                 {row.accountRole === "OWNER" || row.accountRole === "ADMIN" ? (
-                  <span className="text-sm text-muted-foreground">Account manager</span>
+                  <span className="text-sm text-muted-foreground"><LocalizedText id="35ff0464b9fa" leading={""} trailing={""} /></span>
                 ) : (
                   <div className="flex items-center gap-2">
                     <SelectNative
                       value={staffRoleDrafts[row.id] ?? "RECEPTION"}
                       onChange={(event) => setStaffRoleDrafts((current) => ({ ...current, [row.id]: event.target.value as GymStaffRole }))}
                     >
-                      <option value="MANAGER">Manager</option>
-                      <option value="TRAINER">Trainer</option>
-                      <option value="RECEPTION">Reception</option>
+                      <option value="MANAGER"><LocalizedText id="babe3050e2e8" leading={""} trailing={""} /></option>
+                      <option value="TRAINER"><LocalizedText id="63deca910cbd" leading={""} trailing={""} /></option>
+                      <option value="RECEPTION"><LocalizedText id="d928bfee825c" leading={""} trailing={""} /></option>
                     </SelectNative>
-                    <Button type="button" onClick={() => void saveGymRole(row)} className="gap-1"><Save className="h-4 w-4" />Save</Button>
+                    <Button type="button" onClick={() => void saveGymRole(row)} className="gap-1"><Save className="h-4 w-4" /><LocalizedText id="efc007a393f6" leading={""} trailing={""} /></Button>
                     {row.assignment && <Button type="button" onClick={() => void revokeGymRole(row)} className="text-red-600"><Trash2 className="h-4 w-4" /></Button>}
                   </div>
                 )}
               </div>
             ))}
-            {!gymStaff.length && <p className="text-sm text-muted-foreground">No active account members found.</p>}
+            {!gymStaff.length && <p className="text-sm text-muted-foreground"><LocalizedText id="12be76fdbb9d" leading={""} trailing={""} /></p>}
           </div>
         )}
       </section>
@@ -416,20 +415,15 @@ export default function EmployeesPage() {
             <thead className="bg-muted">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Name
-                </th>
+                  <LocalizedText id="709a23220f2c" leading={""} trailing={"\n                "} /></th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Contact Number
-                </th>
+                  <LocalizedText id="c209acfc3058" leading={""} trailing={"\n                "} /></th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Role
-                </th>
+                  <LocalizedText id="c3f104d13657" leading={""} trailing={"\n                "} /></th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Status
-                </th>
+                  <LocalizedText id="bae7d5be7082" leading={""} trailing={"\n                "} /></th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Actions
-                </th>
+                  <LocalizedText id="c3cd636a585b" leading={""} trailing={"\n                "} /></th>
               </tr>
             </thead>
             <tbody className="bg-card divide-y divide-border">
@@ -465,7 +459,7 @@ export default function EmployeesPage() {
                       ) : (
                         <UserCheck className="h-3 w-3" />
                       )}
-                      {user.role === "ADMIN" ? "Admin" : "Employee"}
+                      {user.role === "ADMIN" ? tStatic("4e7afebcfbae") : tStatic("079711ea16f3")}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -476,7 +470,7 @@ export default function EmployeesPage() {
                           : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
                       }`}
                     >
-                      {user.isActive ? "Active" : "Inactive"}
+                      {user.isActive ? tStatic("a733b809d2f1") : tStatic("09af574c7f20")}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -516,18 +510,17 @@ export default function EmployeesPage() {
         <div className="px-6 py-4 border-b border-border bg-muted/30">
           <h3 className="font-semibold flex items-center gap-2">
             <Shield className="h-4 w-4" />
-            Permissions matrix
-          </h3>
-          <p className="text-xs text-muted-foreground mt-1">Read-only view of role capabilities</p>
+            <LocalizedText id="6bdfa422c4d6" leading={""} trailing={"\n          "} /></h3>
+          <p className="text-xs text-muted-foreground mt-1"><LocalizedText id="460bad635d78" leading={""} trailing={""} /></p>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-border text-sm">
             <thead className="bg-muted">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Permission</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase">Manager</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase">Trainer</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase">Reception</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase"><LocalizedText id="1785713451d0" leading={""} trailing={""} /></th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase"><LocalizedText id="babe3050e2e8" leading={""} trailing={""} /></th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase"><LocalizedText id="63deca910cbd" leading={""} trailing={""} /></th>
+                <th className="px-4 py-3 text-center text-xs font-medium text-muted-foreground uppercase"><LocalizedText id="d928bfee825c" leading={""} trailing={""} /></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -568,7 +561,7 @@ export default function EmployeesPage() {
           <div className="bg-card rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto text-foreground border border-border">
             <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between">
               <h2 className="text-xl font-bold text-foreground">
-                {editingUser ? "Edit Employee" : "Add New Employee"}
+                {editingUser ? tStatic("60bdcf8f3faa") : tStatic("3a5532671df9")}
               </h2>
               <Button
                 type="button"
@@ -583,13 +576,11 @@ export default function EmployeesPage() {
               {/* Basic Information */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-foreground">
-                  Basic Information
-                </h3>
+                  <LocalizedText id="b0d5be39ae39" leading={""} trailing={"\n                "} /></h3>
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">
-                    Name *
-                  </label>
+                    <LocalizedText id="d145bb830936" leading={""} trailing={"\n                  "} /></label>
                   <Input
                     type="text"
                     required
@@ -603,8 +594,7 @@ export default function EmployeesPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">
-                    Contact Number *
-                  </label>
+                    <LocalizedText id="7752319cd670" leading={""} trailing={"\n                  "} /></label>
                   <Input
                     type="tel"
                     required
@@ -612,14 +602,14 @@ export default function EmployeesPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, contactNumber: e.target.value })
                     }
-                    placeholder="Enter contact number"
+                    placeholder={tStatic("8f0ce0325e4b")}
                     className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background text-foreground"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">
-                    Password {editingUser ? "(leave blank to keep current)" : "(default: Gympass@123!)"}
+                    <LocalizedText id="8be3c943b160" leading={""} trailing={" "} />{editingUser ? tStatic("44879bedcd11") : tStatic("5a9cfbb2dd75")}
                   </label>
                   <Input
                     type="password"
@@ -643,15 +633,14 @@ export default function EmployeesPage() {
                   onClick={handleCloseForm}
                   className="px-4 py-2 text-foreground bg-muted rounded-lg hover:bg-muted/80 transition-colors"
                 >
-                  Cancel
-                </Button>
+                  <LocalizedText id="77dfd2135f4d" leading={""} trailing={"\n                "} /></Button>
                 <Button
                   type="submit"
                   disabled={submitting}
                   className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <Save className="h-4 w-4" />
-                  {submitting ? "Saving..." : editingUser ? "Update" : "Create"}
+                  {submitting ? tStatic("ae7e887517b0") : editingUser ? tStatic("fb91e24fa52d") : tStatic("6e157c5da441")}
                 </Button>
               </div>
             </form>

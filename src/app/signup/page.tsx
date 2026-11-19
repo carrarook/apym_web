@@ -1,6 +1,8 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { signIn } from "next-auth/react";
+import { useTranslations, useTranslations as useStaticUiTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Suspense, useState } from "react";
@@ -42,6 +44,8 @@ function getSafeCallbackUrl(url: string | null): string {
 }
 
 function SignupForm() {
+  const tStatic = useStaticUiTranslations("static");
+  const t = useTranslations("auth");
   const searchParams = useSearchParams();
   const callbackUrl = getSafeCallbackUrl(searchParams.get("callbackUrl"));
   const [name, setName] = useState("");
@@ -57,7 +61,7 @@ function SignupForm() {
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("passwordMismatch"));
       return;
     }
 
@@ -73,7 +77,7 @@ function SignupForm() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        setError(data.error || data.message || "Sign up failed. Please try again.");
+        setError(t("signupFailed"));
         return;
       }
 
@@ -91,7 +95,7 @@ function SignupForm() {
 
       window.location.href = callbackUrl;
     } catch {
-      setError("An error occurred. Please try again.");
+      setError(t("genericError"));
     } finally {
       setIsLoading(false);
     }
@@ -110,7 +114,7 @@ function SignupForm() {
             className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50 rounded-md"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span className="text-sm">Back to {MARKETING_SITE_LABEL}</span>
+            <span className="text-sm"><LocalizedText id="bbe6515e3665" leading={""} trailing={" "} />{MARKETING_SITE_LABEL}</span>
           </a>
         </header>
 
@@ -122,18 +126,18 @@ function SignupForm() {
                   <Dumbbell className="h-8 w-8 text-white" />
                 </div>
               </a>
-              <h1 className="text-2xl font-bold tracking-tight mb-2">Create your account</h1>
-              <p className="text-white/50">Start managing your gym in minutes</p>
+              <h1 className="text-2xl font-bold tracking-tight mb-2">{t("createAccount")}</h1>
+              <p className="text-white/50">{t("signupDescription")}</p>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-8">
               <OAuthButtons callbackUrl={callbackUrl} disabled={isLoading} />
-              <AuthDivider label="or sign up with email" />
+              <AuthDivider label={t("orSignUpEmail")} />
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-sm text-white/70">
-                    Full name
+                    {t("fullName")}
                   </Label>
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
@@ -145,14 +149,14 @@ function SignupForm() {
                       onChange={(e) => setName(e.target.value)}
                       required
                       className="h-12 pl-11 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:border-orange-500/50 focus-visible:ring-orange-500/30 rounded-xl"
-                      placeholder="Your name"
+                      placeholder={t("yourName")}
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm text-white/70">
-                    Email
+                    {t("email")}
                   </Label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
@@ -165,14 +169,14 @@ function SignupForm() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       className="h-12 pl-11 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:border-orange-500/50 focus-visible:ring-orange-500/30 rounded-xl"
-                      placeholder="you@example.com"
+                      placeholder={t("emailPlaceholder")}
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-sm text-white/70">
-                    Password
+                    {t("password")}
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
@@ -186,13 +190,13 @@ function SignupForm() {
                       required
                       minLength={8}
                       className="h-12 pl-11 pr-11 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:border-orange-500/50 focus-visible:ring-orange-500/30 rounded-xl"
-                      placeholder="At least 8 characters"
+                      placeholder={t("minimumPassword")}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
@@ -201,7 +205,7 @@ function SignupForm() {
 
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword" className="text-sm text-white/70">
-                    Confirm password
+                    {t("confirmPassword")}
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
@@ -215,7 +219,7 @@ function SignupForm() {
                       required
                       minLength={8}
                       className="h-12 pl-11 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:border-orange-500/50 focus-visible:ring-orange-500/30 rounded-xl"
-                      placeholder="Repeat your password"
+                      placeholder={t("repeatPassword")}
                     />
                   </div>
                 </div>
@@ -237,22 +241,22 @@ function SignupForm() {
                   {isLoading ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Creating account...
+                      {t("creatingAccount")}
                     </>
                   ) : (
-                    "Create account"
+                    t("createAccount")
                   )}
                 </Button>
               </form>
             </div>
 
             <p className="text-center mt-8 text-sm text-white/50">
-              Already have an account?{" "}
+              {t("alreadyAccount")} {" "}
               <Link
                 href={`/login${callbackUrl !== "/dashboard" ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ""}`}
                 className="text-orange-400 hover:text-orange-300 font-medium transition-colors"
               >
-                Sign in
+                {t("signInLink")}
               </Link>
             </p>
           </div>
@@ -260,13 +264,13 @@ function SignupForm() {
 
         <footer className="relative z-10 p-6 text-center space-y-2">
           <p className="text-xs text-white/40">
-            By creating an account, you agree to our{" "}
+              {t("termsIntro")} {" "}
             <Link href="/terms" className="underline hover:text-white/70">
-              Terms
+              {t("terms")}
             </Link>{" "}
-            and{" "}
+            {t("and")} {" "}
             <Link href="/privacy" className="underline hover:text-white/70">
-              Privacy Policy
+              {t("privacy")}
             </Link>
             .
           </p>
@@ -279,17 +283,15 @@ function SignupForm() {
 
         <div className="relative z-10 flex flex-col items-center justify-center p-12 text-center">
           <div className="max-w-md">
-            <h2 className="text-3xl font-bold text-white mb-4">Your gym, your way</h2>
+            <h2 className="text-3xl font-bold text-white mb-4"><LocalizedText id="b6659515eaab" leading={""} trailing={""} /></h2>
             <p className="text-white/80 mb-8">
-              Free, open-source gym management. Members, billing, attendance, and WhatsApp
-              Business messaging — self-hosted or cloud.
-            </p>
+              <LocalizedText id="8418b4c46df1" leading={""} trailing={"\n            "} /></p>
             <div className="space-y-4 text-left">
               {[
-                "Your own account and gym workspace",
-                "Default membership plans ready to go",
+                tStatic("0cf431430431"),
+                tStatic("c6ebfbcd2335"),
                 WHATSAPP_MARKETING_LINE,
-                "Upgrade anytime — no vendor lock-in",
+                tStatic("fecafdbe4dfd"),
               ].map((feature, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
@@ -301,8 +303,7 @@ function SignupForm() {
             </div>
             <div className="mt-12 p-6 rounded-2xl bg-black/20 backdrop-blur-sm border border-white/10 text-left">
               <p className="text-white/90 italic mb-4">
-                &ldquo;{WHATSAPP_TESTIMONIAL_LINE}&rdquo;
-              </p>
+                <LocalizedText id="7458eb22633c" leading={""} trailing={""} />{WHATSAPP_TESTIMONIAL_LINE}<LocalizedText id="55f8f15fa29d" leading={""} trailing={"\n              "} /></p>
             </div>
           </div>
         </div>
@@ -318,7 +319,7 @@ export default function SignupPage() {
         <div className="min-h-screen bg-black flex items-center justify-center">
           <div className="flex items-center gap-3">
             <Loader2 className="h-6 w-6 animate-spin text-orange-400" />
-            <span className="text-white/60">Loading...</span>
+            <span className="text-white/60"><LocalizedText id="b04ba49f8486" leading={""} trailing={""} /></span>
           </div>
         </div>
       }

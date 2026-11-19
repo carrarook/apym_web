@@ -1,5 +1,8 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { formatCurrency } from "@/lib/utils";
@@ -91,6 +94,7 @@ interface CollectionStats {
 }
 
 export function CollectionDashboard() {
+  const tStatic = useStaticUiTranslations("static");
   const [autoRefresh, setAutoRefresh] = useState(false);
   const { data: stats, isLoading: loading, error, mutate: fetchStats } = useSWR<CollectionStats>(
     "/api/dashboard/collections",
@@ -113,9 +117,9 @@ export function CollectionDashboard() {
             <RefreshCw className="h-8 w-8 text-destructive" />
           </div>
         </div>
-        <h3 className="text-lg font-semibold text-foreground mb-2">Failed to load collection statistics</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-2"><LocalizedText id="f0ff579fbc22" leading={""} trailing={""} /></h3>
         <p className="text-sm text-muted-foreground mb-6">
-          {error?.message || "An error occurred while fetching collection data"}
+          {error?.message || tStatic("a97b2f055501")}
         </p>
         <Button
           type="button"
@@ -123,8 +127,7 @@ export function CollectionDashboard() {
           className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-xl hover:bg-red-700 transition-colors font-semibold"
         >
           <RefreshCw className="h-5 w-5" />
-          Retry
-        </Button>
+          <LocalizedText id="9f5cd8a2e880" leading={""} trailing={"\n        "} /></Button>
       </div>
     );
   }
@@ -132,8 +135,7 @@ export function CollectionDashboard() {
   if (loading || !stats) {
     return (
       <div className="rounded-lg border border-border bg-card p-12 text-center text-muted-foreground shadow-sm">
-        Loading collection statistics...
-      </div>
+        <LocalizedText id="159e1157d68e" leading={""} trailing={"\n      "} /></div>
     );
   }
 
@@ -147,19 +149,16 @@ export function CollectionDashboard() {
     return (
       <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-8 text-center">
         <h3 className="text-lg font-semibold text-foreground mb-2">
-          Collection data unavailable
-        </h3>
+          <LocalizedText id="7ef14454dbd9" leading={""} trailing={"\n        "} /></h3>
         <p className="text-sm text-muted-foreground mb-6">
-          The server returned an unexpected shape. Refresh or sign in again.
-        </p>
+          <LocalizedText id="932cac7be51f" leading={""} trailing={"\n        "} /></p>
         <Button
           type="button"
           onClick={() => fetchStats()}
           className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground hover:bg-primary/90"
         >
           <RefreshCw className="h-5 w-5" />
-          Retry
-        </Button>
+          <LocalizedText id="9f5cd8a2e880" leading={""} trailing={"\n        "} /></Button>
       </div>
     );
   }
@@ -180,8 +179,8 @@ export function CollectionDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Collection Dashboard</h2>
-          <p className="text-sm text-muted-foreground mt-1">Live collection comparisons and analytics</p>
+          <h2 className="text-2xl font-bold text-foreground"><LocalizedText id="c66f66c936c3" leading={""} trailing={""} /></h2>
+          <p className="text-sm text-muted-foreground mt-1"><LocalizedText id="1e28c195761b" leading={""} trailing={""} /></p>
         </div>
         <div className="flex items-center gap-2">
           <label className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -190,16 +189,14 @@ export function CollectionDashboard() {
               onChange={(e) => setAutoRefresh(e.target.checked)}
               className="rounded"
             />
-            Auto-refresh
-          </label>
+            <LocalizedText id="03883c6b08fd" leading={""} trailing={"\n          "} /></label>
           <Button
             type="button"
             onClick={() => fetchStats()}
             className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-            Refresh
-          </Button>
+            <LocalizedText id="56e3badc4e6c" leading={""} trailing={"\n          "} /></Button>
         </div>
       </div>
 
@@ -208,25 +205,25 @@ export function CollectionDashboard() {
         {/* Month over Month */}
         <div className="bg-card rounded-lg shadow p-6 border border-border">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-muted-foreground">Month over Month</h3>
+            <h3 className="text-sm font-medium text-muted-foreground"><LocalizedText id="f4e1ac8af899" leading={""} trailing={""} /></h3>
             <Calendar className="h-5 w-5 text-blue-500" />
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">{currentMonthName} (up to today)</span>
+              <span className="text-xs text-muted-foreground">{currentMonthName} <LocalizedText id="027862e14068" leading={""} trailing={""} /></span>
               <span className="text-sm font-semibold text-foreground">
                 {formatCurrency(stats.comparisons.monthOverMonth.current)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">{lastMonthName} (up to same day)</span>
+              <span className="text-xs text-muted-foreground">{lastMonthName} <LocalizedText id="87e351db3961" leading={""} trailing={""} /></span>
               <span className="text-sm font-semibold text-foreground">
                 {formatCurrency(stats.comparisons.monthOverMonth.last)}
               </span>
             </div>
             <div className="pt-2 border-t border-border">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Difference</span>
+                <span className="text-xs text-muted-foreground"><LocalizedText id="b16f1f66543d" leading={""} trailing={""} /></span>
                 <div className="flex items-center gap-1">
                   {stats.comparisons.monthOverMonth.difference >= 0 ? (
                     <TrendingUp className="h-4 w-4 text-green-500" />
@@ -255,12 +252,12 @@ export function CollectionDashboard() {
         {/* Year over Year */}
         <div className="bg-card rounded-lg shadow p-6 border border-border">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-muted-foreground">Year over Year</h3>
+            <h3 className="text-sm font-medium text-muted-foreground"><LocalizedText id="81409fcbb097" leading={""} trailing={""} /></h3>
             <TrendingUp className="h-5 w-5 text-purple-500" />
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">{currentMonthName} (up to today)</span>
+              <span className="text-xs text-muted-foreground">{currentMonthName} <LocalizedText id="027862e14068" leading={""} trailing={""} /></span>
               <span className="text-sm font-semibold text-foreground">
                 {formatCurrency(stats.comparisons.yearOverYear.current)}
               </span>
@@ -273,7 +270,7 @@ export function CollectionDashboard() {
             </div>
             <div className="pt-2 border-t border-border">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Difference</span>
+                <span className="text-xs text-muted-foreground"><LocalizedText id="b16f1f66543d" leading={""} trailing={""} /></span>
                 <div className="flex items-center gap-1">
                   {stats.comparisons.yearOverYear.difference >= 0 ? (
                     <TrendingUp className="h-4 w-4 text-green-500" />
@@ -300,25 +297,25 @@ export function CollectionDashboard() {
         {/* Today vs Last Month Same Day */}
         <div className="bg-card rounded-lg shadow p-6 border border-border">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-muted-foreground">Today vs Same Day</h3>
+            <h3 className="text-sm font-medium text-muted-foreground"><LocalizedText id="be74e8f65dfa" leading={""} trailing={""} /></h3>
             <span className="text-2xl font-bold text-green-500">₹</span>
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Today</span>
+              <span className="text-xs text-muted-foreground"><LocalizedText id="24345a14377f" leading={""} trailing={""} /></span>
               <span className="text-sm font-semibold text-foreground">
                 {formatCurrency(stats.comparisons.dayComparison.today)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Last month same day</span>
+              <span className="text-xs text-muted-foreground"><LocalizedText id="aea8a85f350e" leading={""} trailing={""} /></span>
               <span className="text-sm font-semibold text-foreground">
                 {formatCurrency(stats.comparisons.dayComparison.lastMonthSameDay)}
               </span>
             </div>
             <div className="pt-2 border-t border-border">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">Difference</span>
+                <span className="text-xs text-muted-foreground"><LocalizedText id="b16f1f66543d" leading={""} trailing={""} /></span>
                 <div className="flex items-center gap-1">
                   {stats.comparisons.dayComparison.difference >= 0 ? (
                     <TrendingUp className="h-4 w-4 text-green-500" />
@@ -345,7 +342,7 @@ export function CollectionDashboard() {
         {/* Current Month Total */}
         <div className="bg-card rounded-lg shadow p-6 border border-border">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-muted-foreground">Current Month</h3>
+            <h3 className="text-sm font-medium text-muted-foreground"><LocalizedText id="3d16cbd075f0" leading={""} trailing={""} /></h3>
             <span className="text-2xl font-bold text-blue-500">₹</span>
           </div>
           <div className="space-y-2">
@@ -353,13 +350,13 @@ export function CollectionDashboard() {
               <div className="text-2xl font-bold text-foreground">
                 {formatCurrency(stats.currentMonth.total)}
               </div>
-              <div className="text-xs text-muted-foreground mt-1">Total this month</div>
+              <div className="text-xs text-muted-foreground mt-1"><LocalizedText id="60eb936d5033" leading={""} trailing={""} /></div>
             </div>
             <div className="pt-2 border-t border-border">
               <div className="text-sm font-semibold text-foreground">
                 {formatCurrency(stats.currentMonth.upToToday.total)}
               </div>
-              <div className="text-xs text-muted-foreground">Up to today ({stats.currentMonth.upToToday.count} payments)</div>
+              <div className="text-xs text-muted-foreground"><LocalizedText id="6ab64e640087" leading={""} trailing={""} />{stats.currentMonth.upToToday.count} <LocalizedText id="137c4645f14b" leading={""} trailing={""} /></div>
             </div>
           </div>
         </div>
@@ -368,9 +365,9 @@ export function CollectionDashboard() {
       {/* Day by Day Comparison */}
       <div className="bg-card rounded-lg shadow border border-border">
         <div className="px-6 py-4 border-b border-border">
-          <h3 className="text-lg font-semibold text-foreground">Day-by-Day Comparison</h3>
+          <h3 className="text-lg font-semibold text-foreground"><LocalizedText id="88feb780effa" leading={""} trailing={""} /></h3>
           <p className="text-sm text-muted-foreground mt-1">
-            Comparing {currentMonthName} vs {lastMonthName} (up to day {today.getDate()})
+            <LocalizedText id="4579ba4e1b42" leading={""} trailing={" "} />{currentMonthName} <LocalizedText id="691a77cd21a3" leading={""} trailing={" "} />{lastMonthName} <LocalizedText id="9082788dca1e" leading={""} trailing={" "} />{today.getDate()})
           </p>
         </div>
         <div className="overflow-x-auto">
@@ -378,8 +375,7 @@ export function CollectionDashboard() {
             <thead className="bg-muted">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Day
-                </th>
+                  <LocalizedText id="987b9ced08d4" leading={""} trailing={"\n                "} /></th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   {currentMonthName}
                 </th>
@@ -387,26 +383,24 @@ export function CollectionDashboard() {
                   {lastMonthName}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Difference
-                </th>
+                  <LocalizedText id="b16f1f66543d" leading={""} trailing={"\n                "} /></th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  % Change
-                </th>
+                  <LocalizedText id="6324174088f5" leading={""} trailing={"\n                "} /></th>
               </tr>
             </thead>
             <tbody className="bg-card divide-y divide-border">
               {stats.dayByDay.map((dayData) => (
                 <tr key={dayData.day} className="hover:bg-muted">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
-                    Day {dayData.day}
+                    <LocalizedText id="987b9ced08d4" leading={""} trailing={" "} />{dayData.day}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-foreground">{formatCurrency(dayData.currentMonth.amount)}</div>
-                    <div className="text-xs text-muted-foreground">{dayData.currentMonth.count} payments</div>
+                    <div className="text-xs text-muted-foreground">{dayData.currentMonth.count} <LocalizedText id="40c477020282" leading={""} trailing={""} /></div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-foreground">{formatCurrency(dayData.lastMonth.amount)}</div>
-                    <div className="text-xs text-muted-foreground">{dayData.lastMonth.count} payments</div>
+                    <div className="text-xs text-muted-foreground">{dayData.lastMonth.count} <LocalizedText id="40c477020282" leading={""} trailing={""} /></div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div

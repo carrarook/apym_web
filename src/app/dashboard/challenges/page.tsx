@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useEffect, useState } from 'react';
 import { createLogger } from "@/lib/logger";
 import { DashboardPageHeader } from "@/components/dashboard/dashboard-page-header";
@@ -48,6 +50,7 @@ interface LeaderboardEntry {
 }
 
 export default function ChallengesPage() {
+  const tStatic = useStaticUiTranslations("static");
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -144,8 +147,8 @@ export default function ChallengesPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Challenges & Leaderboard"
-        description="Track member engagement and competition"
+        title={tStatic("4eeb1624b8be")}
+        description={tStatic("a85e5e5f1083")}
       />
 
       <div className="mb-2 flex gap-1 border-b border-border">
@@ -160,8 +163,7 @@ export default function ChallengesPage() {
               : "text-muted-foreground hover:text-foreground"
           )}
         >
-          Challenges
-        </Button>
+          <LocalizedText id="ff38765fb13e" leading={""} trailing={"\n        "} /></Button>
         <Button
           type="button"
           variant="ghost"
@@ -173,20 +175,17 @@ export default function ChallengesPage() {
               : "text-muted-foreground hover:text-foreground"
           )}
         >
-          Leaderboard
-        </Button>
+          <LocalizedText id="0381247a6987" leading={""} trailing={"\n        "} /></Button>
       </div>
 
       {activeTab === 'challenges' ? (
         <div className="space-y-4">
           {loading ? (
             <div className="bg-card p-8 rounded-lg shadow text-center text-muted-foreground">
-              Loading challenges...
-            </div>
+              <LocalizedText id="cfd3c00c7dca" leading={""} trailing={"\n            "} /></div>
           ) : challenges.length === 0 ? (
             <div className="bg-card p-8 rounded-lg shadow text-center text-muted-foreground">
-              No challenges found
-            </div>
+              <LocalizedText id="063505ded264" leading={""} trailing={"\n            "} /></div>
           ) : (
             challenges.map((challenge) => (
               <div key={challenge.id} className="bg-card p-6 rounded-lg shadow">
@@ -202,19 +201,19 @@ export default function ChallengesPage() {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-sm">
                   <div>
-                    <div className="text-muted-foreground">Type</div>
+                    <div className="text-muted-foreground"><LocalizedText id="3deb74565196" leading={""} trailing={""} /></div>
                     <div className="font-semibold">{challenge.type.replace('_', ' ')}</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">Start Date</div>
+                    <div className="text-muted-foreground"><LocalizedText id="9d7ab1a55796" leading={""} trailing={""} /></div>
                     <div className="font-semibold">{formatDate(challenge.startDate)}</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">End Date</div>
+                    <div className="text-muted-foreground"><LocalizedText id="84b147812589" leading={""} trailing={""} /></div>
                     <div className="font-semibold">{formatDate(challenge.endDate)}</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">Participants</div>
+                    <div className="text-muted-foreground"><LocalizedText id="cd56e0839d06" leading={""} trailing={""} /></div>
                     <div className="font-semibold">{challenge.participants.length}</div>
                   </div>
                 </div>
@@ -222,7 +221,7 @@ export default function ChallengesPage() {
                 {challenge.targetValue && (
                   <div className="mb-4 p-3 bg-blue-50 rounded">
                     <span className="text-sm font-medium text-blue-800">
-                      Target: {challenge.targetValue}
+                      <LocalizedText id="652ac2cbbafc" leading={""} trailing={" "} />{challenge.targetValue}
                     </span>
                   </div>
                 )}
@@ -230,14 +229,14 @@ export default function ChallengesPage() {
                 {challenge.prize && (
                   <div className="mb-4 p-3 bg-yellow-50 rounded">
                     <span className="text-sm font-medium text-yellow-800">
-                      🏆 Prize: {challenge.prize}
+                      <LocalizedText id="d1b310bffdec" leading={""} trailing={" "} />{challenge.prize}
                     </span>
                   </div>
                 )}
 
                 {challenge.participants.length > 0 && (
                   <div className="border-t pt-4">
-                    <h4 className="font-semibold mb-3">Top Participants</h4>
+                    <h4 className="font-semibold mb-3"><LocalizedText id="356a25c4134e" leading={""} trailing={""} /></h4>
                     <div className="space-y-2">
                       {challenge.participants.slice(0, 5).map((participant) => (
                         <div key={participant.id} className="flex items-center justify-between bg-muted p-3 rounded">
@@ -256,8 +255,7 @@ export default function ChallengesPage() {
                             <div className="font-bold text-lg">{participant.currentValue}</div>
                             {participant.isWinner && (
                               <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
-                                Winner
-                              </span>
+                                <LocalizedText id="4e3adcfe37c3" leading={""} trailing={"\n                              "} /></span>
                             )}
                           </div>
                         </div>
@@ -275,28 +273,28 @@ export default function ChallengesPage() {
           <div className="bg-card p-4 rounded-lg shadow mb-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Type</label>
+                <label className="block text-sm font-medium mb-2"><LocalizedText id="3deb74565196" leading={""} trailing={""} /></label>
                 <SelectNative
                   value={leaderboardType}
                   onChange={(e) => setLeaderboardType(e.target.value as any)}
                   className="w-full p-2 border rounded"
                 >
-                  <option value="attendance">Attendance</option>
-                  <option value="workouts">Workouts</option>
-                  <option value="challenges">Challenge Wins</option>
+                  <option value="attendance"><LocalizedText id="b689313fc18c" leading={""} trailing={""} /></option>
+                  <option value="workouts"><LocalizedText id="ccb58b229959" leading={""} trailing={""} /></option>
+                  <option value="challenges"><LocalizedText id="1d98078f49f5" leading={""} trailing={""} /></option>
                 </SelectNative>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">Period</label>
+                <label className="block text-sm font-medium mb-2"><LocalizedText id="170a28a9db6d" leading={""} trailing={""} /></label>
                 <SelectNative
                   value={leaderboardPeriod}
                   onChange={(e) => setLeaderboardPeriod(e.target.value as any)}
                   className="w-full p-2 border rounded"
                 >
-                  <option value="week">This Week</option>
-                  <option value="month">This Month</option>
-                  <option value="year">This Year</option>
-                  <option value="all-time">All Time</option>
+                  <option value="week"><LocalizedText id="4e68dca8ab90" leading={""} trailing={""} /></option>
+                  <option value="month"><LocalizedText id="0f6cc3a89ce9" leading={""} trailing={""} /></option>
+                  <option value="year"><LocalizedText id="77528c94d9a3" leading={""} trailing={""} /></option>
+                  <option value="all-time"><LocalizedText id="4745c5dce5e8" leading={""} trailing={""} /></option>
                 </SelectNative>
               </div>
             </div>
@@ -305,9 +303,9 @@ export default function ChallengesPage() {
           {/* Leaderboard */}
           <div className="bg-card rounded-lg shadow overflow-hidden">
             {loading ? (
-              <div className="p-8 text-center text-muted-foreground">Loading leaderboard...</div>
+              <div className="p-8 text-center text-muted-foreground"><LocalizedText id="f91bd71edebe" leading={""} trailing={""} /></div>
             ) : leaderboard.length === 0 ? (
-              <div className="p-8 text-center text-muted-foreground">No data available</div>
+              <div className="p-8 text-center text-muted-foreground"><LocalizedText id="0cfc430ad519" leading={""} trailing={""} /></div>
             ) : (
               <div className="divide-y">
                 {leaderboard.map((entry) => (
@@ -328,8 +326,7 @@ export default function ChallengesPage() {
                       <div className="text-sm text-muted-foreground">{entry.label}</div>
                       {entry.totalCalories !== undefined && (
                         <div className="text-xs text-muted-foreground">
-                          {entry.totalCalories} cal
-                        </div>
+                          {entry.totalCalories} <LocalizedText id="443a301c6126" leading={""} trailing={"\n                        "} /></div>
                       )}
                     </div>
                   </div>

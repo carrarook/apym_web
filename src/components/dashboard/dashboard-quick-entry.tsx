@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Loader2, Zap, CheckCircle, X, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,8 +31,7 @@ export function DashboardQuickEntryButton({
       )}
     >
       <Zap className="h-3.5 w-3.5 shrink-0" />
-      Quick Entry
-    </Button>
+      <LocalizedText id="a0d8a9c918c0" leading={""} trailing={"\n    "} /></Button>
   );
 }
 
@@ -55,6 +56,7 @@ export function DashboardQuickEntryPanel({
   onSuccess,
   onUnauthorized,
 }: DashboardQuickEntryPanelProps) {
+  const tStatic = useStaticUiTranslations("static");
   const [quickEntryText, setQuickEntryText] = useState("");
   const [quickEntryLoading, setQuickEntryLoading] = useState(false);
   const [quickEntryResult, setQuickEntryResult] = useState<QuickEntryResultState | null>(null);
@@ -246,8 +248,7 @@ export function DashboardQuickEntryPanel({
             <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-green-900 dark:text-green-100">
-                Bulk: {r.processed ?? 0} recorded
-                {(r.failed ?? 0) > 0 ? `, ${r.failed} failed` : ""}
+                <LocalizedText id="b3603d62f831" leading={""} trailing={" "} />{r.processed ?? 0} <LocalizedText id="8204fbd54fb5" leading={""} trailing={"\n                "} />{(r.failed ?? 0) > 0 ? `, ${r.failed} failed` : ""}
               </p>
               {r.message && (
                 <p className="text-xs text-green-800 dark:text-green-200 mt-0.5">{r.message}</p>
@@ -257,7 +258,7 @@ export function DashboardQuickEntryPanel({
               type="button"
               onClick={dismissQuickEntryFull}
               className="shrink-0 p-1 rounded hover:bg-green-200/50 dark:hover:bg-green-800/30 text-green-800 dark:text-green-200"
-              aria-label="Dismiss"
+              aria-label={tStatic("70afe9eff3f2")}
             >
               <X className="h-4 w-4" />
             </Button>
@@ -265,7 +266,7 @@ export function DashboardQuickEntryPanel({
 
           {r.results && r.results.length > 0 && (
             <div className="mt-2 space-y-1 max-h-48 overflow-y-auto">
-              <p className="text-xs font-semibold text-green-800 dark:text-green-200">Successful:</p>
+              <p className="text-xs font-semibold text-green-800 dark:text-green-200"><LocalizedText id="cf9c7f48cb3c" leading={""} trailing={""} /></p>
               {r.results.map((row, idx) => (
                 <div key={idx} className="text-xs text-green-700 dark:text-green-300 pl-6">
                   ✓ {row.member} — {row.methods || `₹${row.amount} ${row.method}`} ({row.date})
@@ -276,11 +277,10 @@ export function DashboardQuickEntryPanel({
 
           {r.errors && r.errors.length > 0 && (
             <div className="mt-2 space-y-2">
-              <p className="text-xs font-semibold text-red-800 dark:text-red-200">Failed lines:</p>
+              <p className="text-xs font-semibold text-red-800 dark:text-red-200"><LocalizedText id="0d7fd7a31747" leading={""} trailing={""} /></p>
               <p className="text-xs text-muted-foreground">
-                Edit the textarea and run <span className="font-medium text-foreground">Process bulk</span> again, or use{" "}
-                <span className="font-medium text-foreground">Single Mode</span> for one line.
-              </p>
+                <LocalizedText id="3d14fdfc2b46" leading={""} trailing={" "} /><span className="font-medium text-foreground"><LocalizedText id="21a0b484084e" leading={""} trailing={""} /></span> <LocalizedText id="e1571d43a326" leading={""} trailing={""} />{" "}
+                <span className="font-medium text-foreground"><LocalizedText id="952cb2f02081" leading={""} trailing={""} /></span> <LocalizedText id="f604d83b75c6" leading={""} trailing={"\n              "} /></p>
               {r.errors.map((errorRow, idx) => {
                 const flagged =
                   errorRow.invalidDate ||
@@ -300,14 +300,14 @@ export function DashboardQuickEntryPanel({
                     <span className="block">{errorRow.error}</span>
                     {errorRow.memberPreview && (
                       <span className="block text-red-700 dark:text-red-300">
-                        Likely: {errorRow.memberPreview.name} ({errorRow.memberPreview.phoneMask})
+                        <LocalizedText id="c0a1c1f30adc" leading={""} trailing={" "} />{errorRow.memberPreview.name} ({errorRow.memberPreview.phoneMask})
                       </span>
                     )}
                     {errorRow.duplicate && errorRow.existingPayment && (
                       <div className="flex flex-wrap gap-2 items-center">
                         <span className="text-amber-700 dark:text-amber-400">
-                          {errorRow.existingPayment.memberName ?? "Member"} already has{" "}
-                          {formatCurrency(errorRow.existingPayment.amount)} on{" "}
+                          {errorRow.existingPayment.memberName ?? tStatic("6853c98a6f43")} <LocalizedText id="389f6a8fffa0" leading={""} trailing={""} />{" "}
+                          {formatCurrency(errorRow.existingPayment.amount)} <LocalizedText id="db3d405b1067" leading={""} trailing={""} />{" "}
                           {formatDate(String(errorRow.existingPayment.receivedAt))}.
                         </span>
                         <Button
@@ -316,8 +316,7 @@ export function DashboardQuickEntryPanel({
                           disabled={quickEntryLoading}
                           className="text-xs px-2 py-1 rounded bg-amber-600 text-white hover:bg-amber-700 disabled:opacity-50"
                         >
-                          Add anyway
-                        </Button>
+                          <LocalizedText id="86066fb18750" leading={""} trailing={"\n                        "} /></Button>
                       </div>
                     )}
                     {(errorRow.needsPhoneInLine ||
@@ -329,17 +328,16 @@ export function DashboardQuickEntryPanel({
                         disabled={quickEntryLoading}
                         className="text-xs px-2 py-1 rounded border border-red-400 text-red-900 dark:text-red-100 hover:bg-red-200/40 dark:hover:bg-red-900/40 disabled:opacity-50"
                       >
-                        Open in single-line mode
-                      </Button>
+                        <LocalizedText id="eff678b4dead" leading={""} trailing={"\n                      "} /></Button>
                     )}
                     {errorRow.candidates && errorRow.candidates.length > 0 && (
                       <span className="block text-red-700 dark:text-red-300">
-                        Matches: {errorRow.candidates.map((c) => c.name).join(", ")}
+                        <LocalizedText id="50651c3dc7c2" leading={""} trailing={" "} />{errorRow.candidates.map((c) => c.name).join(", ")}
                       </span>
                     )}
                     {errorRow.similarNames && errorRow.similarNames.length > 0 && (
                       <span className="block text-red-600 dark:text-red-400">
-                        Similar: {errorRow.similarNames.map((s) => s.name).join(", ")}
+                        <LocalizedText id="848eb3449e40" leading={""} trailing={" "} />{errorRow.similarNames.map((s) => s.name).join(", ")}
                       </span>
                     )}
                   </div>
@@ -356,10 +354,10 @@ export function DashboardQuickEntryPanel({
         <div className="flex items-start gap-2">
           <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
           <div className="flex-1">
-            <p className="font-semibold text-amber-900 dark:text-amber-100">Possible duplicate</p>
+            <p className="font-semibold text-amber-900 dark:text-amber-100"><LocalizedText id="e885e63fcf89" leading={""} trailing={""} /></p>
             <p className="text-xs text-amber-800 dark:text-amber-200 mt-0.5">
-              {r.existingPayment?.memberName ?? "Member"} already has{" "}
-              {formatCurrency(r.existingPayment?.amount ?? 0)} on{" "}
+              {r.existingPayment?.memberName ?? tStatic("6853c98a6f43")} <LocalizedText id="389f6a8fffa0" leading={""} trailing={""} />{" "}
+              {formatCurrency(r.existingPayment?.amount ?? 0)} <LocalizedText id="db3d405b1067" leading={""} trailing={""} />{" "}
               {formatDate(r.existingPayment?.receivedAt ?? new Date().toISOString())}.
             </p>
             <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">{r.suggestion}</p>
@@ -370,15 +368,13 @@ export function DashboardQuickEntryPanel({
                 disabled={quickEntryLoading}
                 className="text-xs px-2 py-1 rounded bg-amber-600 text-white hover:bg-amber-700 disabled:opacity-50"
               >
-                Add anyway
-              </Button>
+                <LocalizedText id="86066fb18750" leading={""} trailing={"\n              "} /></Button>
               <Button
                 type="button"
                 onClick={dismissQuickEntryFull}
                 className="text-xs px-2 py-1 rounded border border-amber-300 text-amber-800 dark:text-amber-200 hover:bg-amber-50 dark:hover:bg-amber-950/30"
               >
-                Discard
-              </Button>
+                <LocalizedText id="36fff63ccbcd" leading={""} trailing={"\n              "} /></Button>
             </div>
           </div>
         </div>
@@ -390,28 +386,26 @@ export function DashboardQuickEntryPanel({
         <div className="flex flex-col gap-3">
           {lastBulkResponse?.bulk === true && (lastBulkResponse.failed ?? 0) > 0 && (
             <div className="text-xs rounded-md border border-purple-300/80 dark:border-purple-700 bg-purple-100/50 dark:bg-purple-950/40 px-2 py-1.5 text-purple-900 dark:text-purple-100">
-              After verify, <span className="font-medium">Cancel</span> restores the last bulk summary (
-              {lastBulkResponse.failed} failed line(s)).
-            </div>
+              <LocalizedText id="bbe92aacb813" leading={""} trailing={" "} /><span className="font-medium"><LocalizedText id="77dfd2135f4d" leading={""} trailing={""} /></span> <LocalizedText id="926efab99fa8" leading={""} trailing={"\n              "} />{lastBulkResponse.failed} <LocalizedText id="45777e2f27ca" leading={""} trailing={"\n            "} /></div>
           )}
           <div className="flex items-start gap-2">
             <AlertCircle className="h-4 w-4 text-red-600 mt-0.5 shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-red-900 dark:text-red-100">Verify member</p>
+              <p className="font-semibold text-red-900 dark:text-red-100"><LocalizedText id="5d403c4abfe2" leading={""} trailing={""} /></p>
               <p className="text-xs text-red-800 dark:text-red-200 mt-0.5">{r.error}</p>
               {r.suggestion && (
                 <p className="text-xs text-red-700 dark:text-red-300 mt-1">{r.suggestion}</p>
               )}
               {r.phoneMask && (
                 <p className="text-xs font-mono mt-1 text-red-800 dark:text-red-200">
-                  Registered: {r.phoneMask}
+                  <LocalizedText id="1f065134e49a" leading={""} trailing={" "} />{r.phoneMask}
                 </p>
               )}
             </div>
           </div>
           {r.ambiguousMember && r.candidates && r.candidates.length > 0 && (
             <div className="space-y-2 pl-6">
-              <p className="text-xs font-semibold text-red-800 dark:text-red-200">Pick the correct member:</p>
+              <p className="text-xs font-semibold text-red-800 dark:text-red-200"><LocalizedText id="1dc031e8a2f6" leading={""} trailing={""} /></p>
               {r.candidates.map((c) => (
                 <div key={c.id} className="flex flex-wrap items-center gap-2">
                   <span className="text-xs text-red-800 dark:text-red-200">
@@ -426,8 +420,7 @@ export function DashboardQuickEntryPanel({
                     disabled={quickEntryLoading}
                     className="text-xs px-2 py-0.5 rounded bg-red-700 text-white hover:bg-red-800 disabled:opacity-50"
                   >
-                    This one — then verify phone
-                  </Button>
+                    <LocalizedText id="a56a0a5d4fa1" leading={""} trailing={"\n                  "} /></Button>
                 </div>
               ))}
             </div>
@@ -439,8 +432,7 @@ export function DashboardQuickEntryPanel({
                   htmlFor="quick-entry-phone-verify"
                   className="text-xs font-medium text-red-800 dark:text-red-200 block mb-1"
                 >
-                  Last 4 digits or full phone
-                </label>
+                  <LocalizedText id="4792d80bfbb9" leading={""} trailing={"\n                "} /></label>
                 <Input
                   id="quick-entry-phone-verify"
                   type="text"
@@ -459,8 +451,7 @@ export function DashboardQuickEntryPanel({
                 disabled={quickEntryLoading || !quickEntryVerifyPhone.trim()}
                 className="text-sm px-3 py-2 rounded-lg bg-red-700 text-white hover:bg-red-800 disabled:opacity-50 shrink-0"
               >
-                Verify & add payment
-              </Button>
+                <LocalizedText id="1663f6f7acc5" leading={""} trailing={"\n              "} /></Button>
             </div>
           )}
           <Button
@@ -468,8 +459,7 @@ export function DashboardQuickEntryPanel({
             onClick={handleCancelVerifyOverlay}
             className="text-xs text-red-700 dark:text-red-300 underline self-start pl-6"
           >
-            Cancel
-          </Button>
+            <LocalizedText id="77dfd2135f4d" leading={""} trailing={"\n          "} /></Button>
         </div>
       );
     }
@@ -480,7 +470,7 @@ export function DashboardQuickEntryPanel({
           <>
             <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
             <div className="flex-1">
-              <p className="font-semibold text-green-900 dark:text-green-100">Added successfully</p>
+              <p className="font-semibold text-green-900 dark:text-green-100"><LocalizedText id="612ce710d4f3" leading={""} trailing={""} /></p>
               <p className="text-xs text-green-700 dark:text-green-300 mt-0.5">
                 {r.message ||
                   `${r.payment?.Member?.name} — ${formatCurrency(Number(r.payment?.amount))} via ${r.payment?.method}`}
@@ -491,19 +481,18 @@ export function DashboardQuickEntryPanel({
           <>
             <AlertCircle className="h-4 w-4 text-red-600 mt-0.5" />
             <div className="flex-1">
-              <p className="font-semibold text-red-900 dark:text-red-100">Failed</p>
+              <p className="font-semibold text-red-900 dark:text-red-100"><LocalizedText id="09fef5d8d9a3" leading={""} trailing={""} /></p>
               <p className="text-xs text-red-700 dark:text-red-300 mt-0.5">{r.error}</p>
               {(r.invalidDate || r.invalidName) && (
                 <p className="text-xs text-red-600 dark:text-red-400 mt-1">
-                  Fix the date or name in your text and try again.
-                </p>
+                  <LocalizedText id="231b0658ef8d" leading={""} trailing={"\n                "} /></p>
               )}
               {r.phoneMismatch && quickEntryPendingMemberId && (
                 <div className="mt-2 flex flex-col sm:flex-row gap-2 items-stretch sm:items-end">
                   <Input
                     type="text"
                     inputMode="numeric"
-                    placeholder="Retry last 4 / full phone"
+                    placeholder={tStatic("4eb506d06f6f")}
                     value={quickEntryVerifyPhone}
                     onChange={(e) => setQuickEntryVerifyPhone(e.target.value)}
                     className="h-9 text-sm max-w-xs border-red-300"
@@ -515,16 +504,14 @@ export function DashboardQuickEntryPanel({
                     disabled={quickEntryLoading || !quickEntryVerifyPhone.trim()}
                     className="text-xs px-3 py-2 rounded bg-red-700 text-white hover:bg-red-800 disabled:opacity-50"
                   >
-                    Retry verify
-                  </Button>
+                    <LocalizedText id="4fef99c247bc" leading={""} trailing={"\n                  "} /></Button>
                 </div>
               )}
               {r.similarNames && r.similarNames.length > 0 && (
                 <div className="mt-2 space-y-1">
-                  <p className="text-xs font-semibold text-red-800 dark:text-red-200">Did you mean?</p>
+                  <p className="text-xs font-semibold text-red-800 dark:text-red-200"><LocalizedText id="c6fa85803e92" leading={""} trailing={""} /></p>
                   <p className="text-xs text-red-700 dark:text-red-300 mb-1">
-                    Verify phone before the payment is saved.
-                  </p>
+                    <LocalizedText id="4aa0cba71634" leading={""} trailing={"\n                  "} /></p>
                   {r.similarNames.map((s) => (
                     <div key={s.id} className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs text-red-700 dark:text-red-300">
@@ -538,15 +525,13 @@ export function DashboardQuickEntryPanel({
                         }}
                         className="text-xs px-2 py-0.5 rounded bg-green-600 text-white hover:bg-green-700"
                       >
-                        Use this
-                      </Button>
+                        <LocalizedText id="b80ded59dbc9" leading={""} trailing={"\n                      "} /></Button>
                       <Button
                         type="button"
                         onClick={() => setQuickEntryResult(null)}
                         className="text-xs px-2 py-0.5 rounded border border-red-300 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/30"
                       >
-                        Ignore
-                      </Button>
+                        <LocalizedText id="98f55db57c8e" leading={""} trailing={"\n                      "} /></Button>
                     </div>
                   ))}
                 </div>
@@ -566,7 +551,7 @@ export function DashboardQuickEntryPanel({
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <CardTitle className="text-sm sm:text-base flex items-center gap-2">
             <Zap className="h-4 w-4 text-purple-600 shrink-0" />
-            <span>Quick Entry</span>
+            <span><LocalizedText id="a0d8a9c918c0" leading={""} trailing={""} /></span>
           </CardTitle>
           <div className="flex items-center gap-2">
             <Button
@@ -574,24 +559,19 @@ export function DashboardQuickEntryPanel({
               onClick={() => setIsBulkMode(!isBulkMode)}
               className="text-xs px-2 py-1 rounded border border-purple-300 dark:border-purple-700 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
             >
-              {isBulkMode ? "Single Mode" : "Bulk Mode"}
+              {isBulkMode ? tStatic("952cb2f02081") : tStatic("3ffa323695e4")}
             </Button>
             <Badge variant="outline" className="text-xs">
-              Natural Language
-            </Badge>
+              <LocalizedText id="6a0436ea8683" leading={""} trailing={"\n            "} /></Badge>
           </div>
         </div>
         <CardDescription className="text-xs mt-2">
           {isBulkMode ? (
             <>
-              <span className="font-semibold">Bulk:</span> One payment per line or comma-separated. Optional{" "}
-              <code className="text-[10px] bg-muted px-1 rounded">all dates …</code> for a shared date.
-              <p className="text-xs text-muted-foreground mt-2">
-                If lines fail, edit the textarea and run <span className="font-medium text-foreground">Process bulk</span>{" "}
-                again. Use <span className="font-medium text-foreground">Single Mode</span> for one line (verify phone,
-                duplicates). <span className="font-medium text-foreground">Cancel</span> on verify returns to the last bulk
-                summary when available.
-              </p>
+              <span className="font-semibold"><LocalizedText id="b3603d62f831" leading={""} trailing={""} /></span> <LocalizedText id="09fcf042dbb5" leading={""} trailing={""} />{" "}
+              <code className="text-[10px] bg-muted px-1 rounded"><LocalizedText id="0ec551391d03" leading={""} trailing={""} /></code> <LocalizedText id="6e93ed6ee49c" leading={""} trailing={"\n              "} /><p className="text-xs text-muted-foreground mt-2">
+                <LocalizedText id="8c861f61906a" leading={""} trailing={" "} /><span className="font-medium text-foreground"><LocalizedText id="21a0b484084e" leading={""} trailing={""} /></span>{" "}
+                <LocalizedText id="9262eb9abe57" leading={""} trailing={" "} /><span className="font-medium text-foreground"><LocalizedText id="952cb2f02081" leading={""} trailing={""} /></span> <LocalizedText id="0b7da8240bae" leading={""} trailing={" "} /><span className="font-medium text-foreground"><LocalizedText id="77dfd2135f4d" leading={""} trailing={""} /></span> <LocalizedText id="765a288dd7f8" leading={""} trailing={"\n              "} /></p>
               <pre className="text-xs bg-muted p-2 rounded mt-2 overflow-x-auto">
                 {`Renewal Piyush Singh 700 UPI 14/03/2026,
 Renewal Aman 700 Cash 16/03/2026,
@@ -601,15 +581,13 @@ all dates 16th March`}
             </>
           ) : (
             <>
-              <span className="font-semibold">Format:</span> amount method [amount method] renewal/monthly name
-              <ul className="list-disc list-inside mt-1 space-y-0.5 text-muted-foreground">
-                <li className="truncate">&quot;400 cash 299 online renewal Mukesh Kumar Shaw&quot;</li>
-                <li className="truncate">&quot;799 upi monthly John Doe&quot;</li>
-                <li className="truncate">&quot;1500 cash admission Priya Sharma&quot;</li>
+              <span className="font-semibold"><LocalizedText id="d6400d550e24" leading={""} trailing={""} /></span> <LocalizedText id="1d0b55bc6fae" leading={""} trailing={"\n              "} /><ul className="list-disc list-inside mt-1 space-y-0.5 text-muted-foreground">
+                <li className="truncate"><LocalizedText id="4ec5e9a241a3" leading={""} trailing={""} /></li>
+                <li className="truncate"><LocalizedText id="329bfa23e007" leading={""} trailing={""} /></li>
+                <li className="truncate"><LocalizedText id="ae331144e4d8" leading={""} trailing={""} /></li>
               </ul>
               <p className="text-xs text-muted-foreground mt-2 italic">
-                &quot;online&quot; = UPI · Dates default to today · Names in any script (not numbers-only)
-              </p>
+                <LocalizedText id="193922ccbbef" leading={""} trailing={"\n              "} /></p>
             </>
           )}
         </CardDescription>
@@ -650,12 +628,12 @@ all dates 16th March`}
             {quickEntryLoading ? (
               <>
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                <span>{isBulkMode ? "Processing…" : "Adding…"}</span>
+                <span>{isBulkMode ? tStatic("93d175570231") : tStatic("ffb2e628b0e9")}</span>
               </>
             ) : (
               <>
                 <Zap className="h-3.5 w-3.5" />
-                <span>{isBulkMode ? "Process bulk" : "Add"}</span>
+                <span>{isBulkMode ? tStatic("21a0b484084e") : tStatic("61cc55aa0453")}</span>
               </>
             )}
           </Button>

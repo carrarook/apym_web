@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState } from "react";
 import useSWR from "swr";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +17,7 @@ const fetcher = (url: string) => fetch(url).then((r) => {
 });
 
 export function MemberInsightsPanel({ memberId }: { memberId: string }) {
+  const tStatic = useStaticUiTranslations("static");
   const { data, isLoading, error } = useSWR(
     memberId ? `/api/members/${memberId}/insights` : null,
     fetcher,
@@ -45,18 +48,18 @@ export function MemberInsightsPanel({ memberId }: { memberId: string }) {
   return (
     <Card className="border-primary/20">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Member insights</CardTitle>
+        <CardTitle className="text-base"><LocalizedText id="c7285245d3c2" leading={""} trailing={""} /></CardTitle>
       </CardHeader>
       <CardContent className="space-y-3 text-sm">
         {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-        {error && <p className="text-destructive text-xs">Insights unavailable.</p>}
+        {error && <p className="text-destructive text-xs"><LocalizedText id="d2b2e6449b70" leading={""} trailing={""} /></p>}
         {data && (
           <>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="secondary">{data.attendanceLast30Days} visits / 30d</Badge>
-              {data.trainer && <Badge variant="outline">PT: {data.trainer}</Badge>}
+              <Badge variant="secondary">{data.attendanceLast30Days} <LocalizedText id="aa8dca07a261" leading={""} trailing={""} /></Badge>
+              {data.trainer && <Badge variant="outline"><LocalizedText id="c0579fdd9e9e" leading={""} trailing={" "} />{data.trainer}</Badge>}
               {data.opportunity && (
-                <Badge variant="destructive">{data.opportunity.priority} priority</Badge>
+                <Badge variant="destructive">{data.opportunity.priority} <LocalizedText id="3345867ecfee" leading={""} trailing={""} /></Badge>
               )}
             </div>
             {data.opportunity?.reasons?.[0] && (
@@ -69,12 +72,12 @@ export function MemberInsightsPanel({ memberId }: { memberId: string }) {
             )}
             {data.paymentTiming?.personalizedPaymentOptions && (
               <p className="text-xs">
-                Pay via: {data.paymentTiming.personalizedPaymentOptions.join(", ")}
+                <LocalizedText id="a895d310fe76" leading={""} trailing={" "} />{data.paymentTiming.personalizedPaymentOptions.join(", ")}
               </p>
             )}
             {data.latestMembership && (
               <p>
-                Plan {data.latestMembership.plan} · expires {data.latestMembership.endDate} ·{" "}
+                <LocalizedText id="ae2f98a099fe" leading={""} trailing={" "} />{data.latestMembership.plan} <LocalizedText id="a710a63d51f6" leading={""} trailing={" "} />{data.latestMembership.endDate} ·{" "}
                 {formatCurrency(data.latestMembership.amount)}
               </p>
             )}
@@ -95,8 +98,7 @@ export function MemberInsightsPanel({ memberId }: { memberId: string }) {
                 ) : (
                   <>
                     <MessageSquare className="h-3 w-3 mr-1" />
-                    Draft renewal
-                  </>
+                    <LocalizedText id="084c560713e9" leading={""} trailing={"\n                  "} /></>
                 )}
               </Button>
               {data.trainer && (
@@ -106,8 +108,7 @@ export function MemberInsightsPanel({ memberId }: { memberId: string }) {
                   onClick={() => loadDraft("pt_upsell")}
                   disabled={drafting}
                 >
-                  Draft PT
-                </Button>
+                  <LocalizedText id="9db2cf2b5f1c" leading={""} trailing={"\n                "} /></Button>
               )}
             </div>
             {draft && (
@@ -115,7 +116,7 @@ export function MemberInsightsPanel({ memberId }: { memberId: string }) {
                 readOnly
                 value={draft}
                 className="text-xs min-h-[80px] mt-2"
-                aria-label="Draft WhatsApp message"
+                aria-label={tStatic("4a610e99dd84")}
               />
             )}
           </>

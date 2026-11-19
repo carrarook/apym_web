@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState } from "react";
 import { formatDate, formatCurrency, getDaysUntil } from "@/lib/utils";
 import Link from "next/link";
@@ -62,6 +64,7 @@ interface UnpaidMember {
 }
 
 export default function RemindersPage() {
+  const tStatic = useStaticUiTranslations("static");
   const [daysFilter, setDaysFilter] = useState<"7" | "30" | "all">("7");
   const [statusFilter, setStatusFilter] = useState<"all" | "SENT" | "FAILED">("all");
 
@@ -84,8 +87,8 @@ export default function RemindersPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Reminders"
-        description="Track sent reminders and unpaid members"
+        title={tStatic("ae8c3939382f")}
+        description={tStatic("1d5fe30a746a")}
         actions={
           <Button
             variant="outline"
@@ -94,8 +97,7 @@ export default function RemindersPage() {
             className="gap-2"
           >
             <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
-            Refresh
-          </Button>
+            <LocalizedText id="56e3badc4e6c" leading={""} trailing={"\n          "} /></Button>
         }
       />
 
@@ -104,22 +106,20 @@ export default function RemindersPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
             <AlertCircle className="h-5 w-5 text-orange-600" />
-            Unpaid After Reminders
-          </CardTitle>
+            <LocalizedText id="93237c09595a" leading={""} trailing={"\n          "} /></CardTitle>
           <CardDescription>
-            Members who were reminded but haven&apos;t paid yet (currently overdue)
-          </CardDescription>
+            <LocalizedText id="057da63a6ea1" leading={""} trailing={"\n          "} /></CardDescription>
         </CardHeader>
         <CardContent>
           {unpaidLoading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto"></div>
-              <p className="mt-3 text-sm text-muted-foreground">Loading unpaid members...</p>
+              <p className="mt-3 text-sm text-muted-foreground"><LocalizedText id="de686c7f8306" leading={""} trailing={""} /></p>
             </div>
           ) : !unpaidData?.unpaid || unpaidData.unpaid.length === 0 ? (
             <div className="text-center py-8">
               <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground">All reminded members have paid!</p>
+              <p className="text-sm text-muted-foreground"><LocalizedText id="21bdd0af5c1e" leading={""} trailing={""} /></p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -142,30 +142,29 @@ export default function RemindersPage() {
                       href={`/dashboard/members/${item.member.id}`}
                       className="ml-3 text-xs text-blue-600 hover:text-blue-700 font-semibold whitespace-nowrap"
                     >
-                      View →
-                    </Link>
+                      <LocalizedText id="cf3dbdab782e" leading={""} trailing={"\n                    "} /></Link>
                   </div>
                   <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
                     <div>
-                      <span className="text-muted-foreground">Plan:</span>
+                      <span className="text-muted-foreground"><LocalizedText id="335c04da1652" leading={""} trailing={""} /></span>
                       <span className="ml-1 inline-flex rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-800">
                         {item.plan.name}
                       </span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Amount:</span>
+                      <span className="text-muted-foreground"><LocalizedText id="281473c482d9" leading={""} trailing={""} /></span>
                       <span className="ml-1 font-bold text-green-600">
                         {formatCurrency(item.membership.amount)}
                       </span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Expired:</span>
+                      <span className="text-muted-foreground"><LocalizedText id="0a78bbc30756" leading={""} trailing={""} /></span>
                       <span className="ml-1 text-red-600 font-medium">
                         {formatDate(item.membership.endDate)}
                       </span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Last Reminded:</span>
+                      <span className="text-muted-foreground"><LocalizedText id="527aceb5ef71" leading={""} trailing={""} /></span>
                       <span className="ml-1 text-foreground font-medium">
                         {formatDate(item.lastReminded)}
                       </span>
@@ -185,9 +184,8 @@ export default function RemindersPage() {
             <div>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Clock className="h-5 w-5 text-blue-600" />
-                Reminder History
-              </CardTitle>
-              <CardDescription>All sent reminders with status</CardDescription>
+                <LocalizedText id="bbef2ca39dd7" leading={""} trailing={"\n              "} /></CardTitle>
+              <CardDescription><LocalizedText id="2d2205f921ad" leading={""} trailing={""} /></CardDescription>
             </div>
             <div className="flex items-center gap-2">
               {/* Days Filter */}
@@ -196,9 +194,9 @@ export default function RemindersPage() {
                 onChange={(e) => setDaysFilter(e.target.value as "7" | "30" | "all")}
                 className="text-xs px-2 py-1 border border-input rounded-md bg-background"
               >
-                <option value="7">Last 7 days</option>
-                <option value="30">Last 30 days</option>
-                <option value="all">All time</option>
+                <option value="7"><LocalizedText id="df833fe88d38" leading={""} trailing={""} /></option>
+                <option value="30"><LocalizedText id="6b32985251a1" leading={""} trailing={""} /></option>
+                <option value="all"><LocalizedText id="dbad49d89123" leading={""} trailing={""} /></option>
               </SelectNative>
               {/* Status Filter */}
               <SelectNative
@@ -206,9 +204,9 @@ export default function RemindersPage() {
                 onChange={(e) => setStatusFilter(e.target.value as "all" | "SENT" | "FAILED")}
                 className="text-xs px-2 py-1 border border-input rounded-md bg-background"
               >
-                <option value="all">All statuses</option>
-                <option value="SENT">Sent</option>
-                <option value="FAILED">Failed</option>
+                <option value="all"><LocalizedText id="6405179d241b" leading={""} trailing={""} /></option>
+                <option value="SENT"><LocalizedText id="35f49dcfbfb2" leading={""} trailing={""} /></option>
+                <option value="FAILED"><LocalizedText id="09fef5d8d9a3" leading={""} trailing={""} /></option>
               </SelectNative>
             </div>
           </div>
@@ -217,12 +215,12 @@ export default function RemindersPage() {
           {historyLoading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-3 text-sm text-muted-foreground">Loading history...</p>
+              <p className="mt-3 text-sm text-muted-foreground"><LocalizedText id="59c39817874d" leading={""} trailing={""} /></p>
             </div>
           ) : !historyData?.logs || historyData.logs.length === 0 ? (
             <div className="text-center py-8">
               <Bell className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground">No reminders sent yet</p>
+              <p className="text-sm text-muted-foreground"><LocalizedText id="1067ca021317" leading={""} trailing={""} /></p>
             </div>
           ) : (
             <div className="space-y-2 max-h-[600px] overflow-y-auto">
@@ -253,12 +251,12 @@ export default function RemindersPage() {
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">{log.phoneNumber}</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Sent by {log.SentBy.name} on {formatDate(log.sentAt)}
+                        <LocalizedText id="226c99afed25" leading={""} trailing={" "} />{log.SentBy.name} <LocalizedText id="db3d405b1067" leading={""} trailing={" "} />{formatDate(log.sentAt)}
                       </p>
                       {log.error && (
                         <div className="mt-2 p-2 rounded bg-red-100 dark:bg-red-950/20 border border-red-200">
                           <p className="text-xs text-red-800 dark:text-red-200">
-                            <strong>Error:</strong> {log.error}
+                            <strong><LocalizedText id="787aa1617c37" leading={""} trailing={""} /></strong> {log.error}
                           </p>
                         </div>
                       )}
@@ -267,8 +265,7 @@ export default function RemindersPage() {
                       href={`/dashboard/members/${log.memberId}`}
                       className="ml-3 text-xs text-blue-600 hover:text-blue-700 font-semibold whitespace-nowrap"
                     >
-                      View →
-                    </Link>
+                      <LocalizedText id="cf3dbdab782e" leading={""} trailing={"\n                    "} /></Link>
                   </div>
                 </div>
               ))}

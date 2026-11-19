@@ -1,7 +1,8 @@
+import { LocalizedText } from "@/components/i18n/localized-text";
 import Link from "next/link";
 import { APP_NAME, MARKETING_SITE_URL, MARKETING_SITE_LABEL } from "@/lib/site-config";
 import type { LegalSection } from "@/lib/legal/content";
-import { LEGAL_LAST_UPDATED } from "@/lib/legal/content";
+import { getLocale } from "next-intl/server";
 
 type LegalPageLayoutProps = {
   title: string;
@@ -9,7 +10,11 @@ type LegalPageLayoutProps = {
   sections: LegalSection[];
 };
 
-export function LegalPageLayout({ title, description, sections }: LegalPageLayoutProps) {
+export async function LegalPageLayout({ title, description, sections }: LegalPageLayoutProps) {
+  const locale = await getLocale();
+  const updatedDate = new Date("2026-05-19T12:00:00Z").toLocaleDateString(locale, {
+    day: "numeric", month: "long", year: "numeric",
+  });
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="border-b border-border/50">
@@ -22,11 +27,9 @@ export function LegalPageLayout({ title, description, sections }: LegalPageLayou
           </a>
           <nav className="flex gap-4 text-sm text-muted-foreground">
             <Link href="/privacy" className="hover:text-foreground">
-              Privacy
-            </Link>
+              <LocalizedText id="cf01481f626d" leading={""} trailing={"\n            "} /></Link>
             <Link href="/terms" className="hover:text-foreground">
-              Terms
-            </Link>
+              <LocalizedText id="a55a275aa676" leading={""} trailing={"\n            "} /></Link>
           </nav>
         </div>
       </header>
@@ -34,7 +37,7 @@ export function LegalPageLayout({ title, description, sections }: LegalPageLayou
       <main className="flex-1 mx-auto max-w-3xl w-full px-4 sm:px-6 py-10">
         <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
         <p className="mt-2 text-muted-foreground">{description}</p>
-        <p className="mt-1 text-xs text-muted-foreground">Last updated: {LEGAL_LAST_UPDATED}</p>
+        <p className="mt-1 text-xs text-muted-foreground"><LocalizedText id="f52767eee809" leading={""} trailing={" "} />{updatedDate}</p>
 
         <div className="mt-10 space-y-10">
           {sections.map((section) => (
@@ -59,8 +62,7 @@ export function LegalPageLayout({ title, description, sections }: LegalPageLayou
 
       <footer className="border-t border-border/50">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 py-6 text-xs text-muted-foreground">
-          {APP_NAME} — Gym Management
-        </div>
+          {APP_NAME} <LocalizedText id="37f1f400c3ab" leading={""} trailing={"\n        "} /></div>
       </footer>
     </div>
   );

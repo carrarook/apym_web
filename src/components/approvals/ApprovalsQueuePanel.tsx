@@ -1,5 +1,8 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState } from "react";
 import useSWR from "swr";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +28,7 @@ type ApprovalRow = {
 };
 
 export function ApprovalsQueuePanel() {
+  const tStatic = useStaticUiTranslations("static");
   const { data, isLoading, mutate } = useSWR<{ approvals: ApprovalRow[] }>(
     "/api/approvals",
     fetcher,
@@ -53,20 +57,18 @@ export function ApprovalsQueuePanel() {
       <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
           <ShieldCheck className="h-4 w-4" />
-          Approval queue
-          {pending.length > 0 && (
-            <Badge variant="secondary">{pending.length} pending</Badge>
+          <LocalizedText id="6e958104a838" leading={""} trailing={"\n          "} />{pending.length > 0 && (
+            <Badge variant="secondary">{pending.length} <LocalizedText id="e22586930a5b" leading={""} trailing={""} /></Badge>
           )}
         </CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading && (
           <p className="text-sm text-muted-foreground flex items-center gap-2">
-            <Loader2 className="h-4 w-4 animate-spin" /> Loading…
-          </p>
+            <Loader2 className="h-4 w-4 animate-spin" /> <LocalizedText id="33ce417454bf" leading={""} trailing={"\n          "} /></p>
         )}
         {!isLoading && pending.length === 0 && (
-          <p className="text-xs text-muted-foreground">No pending agent or tool sends.</p>
+          <p className="text-xs text-muted-foreground"><LocalizedText id="e1717d0e37c8" leading={""} trailing={""} /></p>
         )}
         <ul className="space-y-2">
           {pending.map((a) => (
@@ -91,7 +93,7 @@ export function ApprovalsQueuePanel() {
                   {actingId === a.id ? (
                     <Loader2 className="h-3 w-3 animate-spin" />
                   ) : (
-                    "Approve & send"
+                    tStatic("b45e9d2f07cb")
                   )}
                 </Button>
                 <Button
@@ -100,8 +102,7 @@ export function ApprovalsQueuePanel() {
                   onClick={() => decide(a.id, "REJECTED")}
                   disabled={actingId === a.id}
                 >
-                  Reject
-                </Button>
+                  <LocalizedText id="2b03b59293b6" leading={""} trailing={"\n                "} /></Button>
               </div>
             </li>
           ))}

@@ -1,3 +1,5 @@
+import { getTranslations as getStaticUiTranslations } from "next-intl/server";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatDate, getDaysUntil } from "@/lib/utils";
 import { MemberStatus, PaymentStatus, PaymentMethod } from "@prisma/client";
@@ -215,6 +217,7 @@ async function getDashboardStatsUncached(gymId: string) {
 }
 
 export default async function DashboardPage() {
+  const tStatic = await getStaticUiTranslations("static");
   const session = await auth();
   const cookieStore = await cookies();
   const gymId = session
@@ -228,8 +231,7 @@ export default async function DashboardPage() {
     return (
       <div className="rounded-lg border border-border bg-card p-6 text-center">
         <p className="text-sm text-muted-foreground">
-          Select a gym from the header to view dashboard metrics.
-        </p>
+          <LocalizedText id="0268269772f4" leading={""} trailing={"\n        "} /></p>
       </div>
     );
   }
@@ -247,8 +249,8 @@ export default async function DashboardPage() {
       {/* Light: defined “canvas” so metrics don’t float on blank white; dark: flat (tokens handle depth) */}
       <div className="space-y-6 rounded-2xl border border-border bg-card p-4 shadow-md ring-1 ring-border md:p-6 dark:rounded-none dark:border-0 dark:bg-transparent dark:p-0 dark:shadow-none dark:ring-0">
       <DashboardPageHeader
-        title="Dashboard"
-        description="Performance overview"
+        title={tStatic("d87f47b47e4d")}
+        description={tStatic("70ed70744505")}
         actions={<RefreshButton onRefresh={revalidateDashboard} />}
       />
 
@@ -256,38 +258,36 @@ export default async function DashboardPage() {
         <Button asChild className="shadow-sm">
           <Link href="/dashboard/payments">
             <DollarSign className="h-4 w-4" />
-            Add payment
-          </Link>
+            <LocalizedText id="03fefcde8ed7" leading={""} trailing={"\n          "} /></Link>
         </Button>
         <Button variant="outline" asChild className="bg-background shadow-sm">
           <Link href="/dashboard/members/new">
             <Users className="h-4 w-4" />
-            New member
-          </Link>
+            <LocalizedText id="2182c5f2d2c0" leading={""} trailing={"\n          "} /></Link>
         </Button>
       </div>
 
       <div className="grid min-w-0 gap-4 md:grid-cols-2 lg:grid-cols-5">
         <StatCard
-          title="Total Members"
+          title={tStatic("597c15324d4f")}
           value={stats.totalMembers.toString()}
           icon={Users}
           variant="default"
         />
         <StatCard
-          title="Active Members"
+          title={tStatic("3d546563d590")}
           value={stats.activeMembers.toString()}
           icon={Users}
           variant="success"
         />
         <StatCard
-          title="Today's Collection"
+          title={tStatic("a9a9e5ba3e46")}
           value={Number(stats.todayCollection) === 0 ? "None yet today" : formatCurrency(Number(stats.todayCollection))}
           icon={TrendingUp}
           variant={Number(stats.todayCollection) > 0 ? "success" : "default"}
         />
         <StatCard
-          title="Expiring Soon"
+          title={tStatic("50b61e0c8341")}
           value={stats.expiringThisWeek.toString()}
           icon={Calendar}
           variant={stats.expiringThisWeek > 10 ? "warning" : "default"}
@@ -305,13 +305,12 @@ export default async function DashboardPage() {
             <CardContent className="pt-6 pb-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
-                  <p className="text-sm font-medium opacity-90">Total Collection (2023 - Today)</p>
+                  <p className="text-sm font-medium opacity-90"><LocalizedText id="b1c6c05b949d" leading={""} trailing={""} /></p>
                   <p className="text-4xl font-bold tracking-tight">
                     {formatCurrency(Number(stats.paymentStats.totalFrom2023.total))}
                   </p>
                   <p className="text-sm opacity-90">
-                    {stats.paymentStats.totalFrom2023.count.toLocaleString('en-IN')} payments
-                  </p>
+                    {stats.paymentStats.totalFrom2023.count.toLocaleString('en-IN')} <LocalizedText id="40c477020282" leading={""} trailing={"\n                  "} /></p>
                 </div>
                 <div className="h-16 w-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
                   <RefreshableRupee />
@@ -327,7 +326,7 @@ export default async function DashboardPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">Total Collection</p>
+                  <p className="text-sm font-medium text-muted-foreground"><LocalizedText id="cfb0f8978d7c" leading={""} trailing={""} /></p>
                   <p className="text-2xl font-bold">{formatCurrency(Number(stats.paymentStats.total))}</p>
                 </div>
                 <div className="h-12 w-12 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center">
@@ -341,7 +340,7 @@ export default async function DashboardPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">Total Payments</p>
+                  <p className="text-sm font-medium text-muted-foreground"><LocalizedText id="53b493dfe710" leading={""} trailing={""} /></p>
                   <p className="text-2xl font-bold">{stats.paymentStats.count.toLocaleString('en-IN')}</p>
                 </div>
                 <div className="h-12 w-12 rounded-full bg-purple-100 dark:bg-purple-950 flex items-center justify-center">
@@ -355,7 +354,7 @@ export default async function DashboardPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">Average Payment</p>
+                  <p className="text-sm font-medium text-muted-foreground"><LocalizedText id="9d02fb79637a" leading={""} trailing={""} /></p>
                   <p className="text-2xl font-bold">{formatCurrency(Number(stats.paymentStats.average))}</p>
                 </div>
                 <div className="h-12 w-12 rounded-full bg-cyan-100 dark:bg-cyan-950 flex items-center justify-center">
@@ -369,7 +368,7 @@ export default async function DashboardPage() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">Completed</p>
+                  <p className="text-sm font-medium text-muted-foreground"><LocalizedText id="1798b3ba42ee" leading={""} trailing={""} /></p>
                   <p className="text-2xl font-bold">{(stats.paymentStats.statusBreakdown.find((s) => s.status === "COMPLETED")?._count.id || 0).toString()}</p>
                 </div>
                 <div className="h-12 w-12 rounded-full bg-green-100 dark:bg-green-950 flex items-center justify-center">
@@ -384,7 +383,7 @@ export default async function DashboardPage() {
         {stats.paymentStats?.collectionByYear && Object.keys(stats.paymentStats.collectionByYear).length > 0 && (
           <Card className="shadow-sm">
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg font-semibold">Collection by Year</CardTitle>
+              <CardTitle className="text-lg font-semibold"><LocalizedText id="33a10bcadd52" leading={""} trailing={""} /></CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -413,7 +412,7 @@ export default async function DashboardPage() {
         <div className="grid gap-6 lg:grid-cols-2">
           <Card className="shadow-sm">
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg font-semibold">Status Breakdown</CardTitle>
+              <CardTitle className="text-lg font-semibold"><LocalizedText id="4a26dca78564" leading={""} trailing={""} /></CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -434,11 +433,11 @@ export default async function DashboardPage() {
                       </Badge>
                       <div className="flex items-center gap-6">
                         <div className="text-right">
-                          <div className="text-xs text-muted-foreground">Count</div>
+                          <div className="text-xs text-muted-foreground"><LocalizedText id="66e12969c225" leading={""} trailing={""} /></div>
                           <div className="text-sm font-bold">{item._count.id}</div>
                         </div>
                         <div className="text-right min-w-[100px]">
-                          <div className="text-xs text-muted-foreground">Amount</div>
+                          <div className="text-xs text-muted-foreground"><LocalizedText id="43dc8532f7e5" leading={""} trailing={""} /></div>
                           <div className="text-sm font-bold">{formatCurrency(Number(item._sum.amount || 0))}</div>
                         </div>
                       </div>
@@ -450,7 +449,7 @@ export default async function DashboardPage() {
           </Card>
           <Card className="shadow-sm">
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg font-semibold">Method Breakdown</CardTitle>
+              <CardTitle className="text-lg font-semibold"><LocalizedText id="af0f02997a21" leading={""} trailing={""} /></CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -461,11 +460,11 @@ export default async function DashboardPage() {
                     </Badge>
                     <div className="flex items-center gap-6">
                       <div className="text-right">
-                        <div className="text-xs text-muted-foreground">Count</div>
+                        <div className="text-xs text-muted-foreground"><LocalizedText id="66e12969c225" leading={""} trailing={""} /></div>
                         <div className="text-sm font-bold">{item._count.id}</div>
                       </div>
                       <div className="text-right min-w-[100px]">
-                        <div className="text-xs text-muted-foreground">Amount</div>
+                        <div className="text-xs text-muted-foreground"><LocalizedText id="43dc8532f7e5" leading={""} trailing={""} /></div>
                         <div className="text-sm font-bold">{formatCurrency(Number(item._sum.amount || 0))}</div>
                       </div>
                     </div>
@@ -485,7 +484,7 @@ export default async function DashboardPage() {
       <Card className="shadow-sm">
         <CardHeader className="pb-3 border-b">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-semibold">Today&apos;s Renewals</CardTitle>
+            <CardTitle className="text-lg font-semibold"><LocalizedText id="c60c4ee0c83f" leading={""} trailing={""} /></CardTitle>
             <Badge variant="secondary" className="text-sm font-semibold">{stats.todayRenewals.length}</Badge>
           </div>
         </CardHeader>
@@ -496,20 +495,15 @@ export default async function DashboardPage() {
                 <thead className="bg-muted/30">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                      Member
-                    </th>
+                      <LocalizedText id="6853c98a6f43" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider hidden sm:table-cell">
-                      Phone
-                    </th>
+                      <LocalizedText id="77064d526523" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                      Plan
-                    </th>
+                      <LocalizedText id="ae2f98a099fe" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                      Expiry
-                    </th>
+                      <LocalizedText id="ba8f571e0f93" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                      Action
-                    </th>
+                      <LocalizedText id="97c89a4d6630" leading={""} trailing={"\n                    "} /></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border bg-card">
@@ -540,8 +534,7 @@ export default async function DashboardPage() {
                           href={`/dashboard/members/${membership.memberId}`}
                           className="text-primary hover:underline font-semibold"
                         >
-                          View
-                        </Link>
+                          <LocalizedText id="69bd4ef9fbd0" leading={""} trailing={"\n                        "} /></Link>
                       </td>
                     </tr>
                   ))}
@@ -549,8 +542,7 @@ export default async function DashboardPage() {
               </table>
             ) : (
               <div className="px-4 py-8 text-center text-muted-foreground text-sm">
-                No renewals due today
-              </div>
+                <LocalizedText id="2a5730aa9700" leading={""} trailing={"\n              "} /></div>
             )}
           </div>
         </CardContent>
@@ -559,7 +551,7 @@ export default async function DashboardPage() {
       {/* Recent Payments */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Payments</CardTitle>
+          <CardTitle><LocalizedText id="3abf211c938a" leading={""} trailing={""} /></CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -568,20 +560,15 @@ export default async function DashboardPage() {
                 <thead className="bg-muted/50">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                      Member
-                    </th>
+                      <LocalizedText id="6853c98a6f43" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                      Amount
-                    </th>
+                      <LocalizedText id="43dc8532f7e5" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                      Method
-                    </th>
+                      <LocalizedText id="88306943fea7" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                      Date
-                    </th>
+                      <LocalizedText id="eb9a4bc1c0c1" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase hidden md:table-cell">
-                      Received By
-                    </th>
+                      <LocalizedText id="f84f73c618d9" leading={""} trailing={"\n                    "} /></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -614,8 +601,7 @@ export default async function DashboardPage() {
               </table>
             ) : (
               <div className="px-4 py-8 text-center text-muted-foreground text-sm">
-                No payments recorded yet
-              </div>
+                <LocalizedText id="a556690f2b1b" leading={""} trailing={"\n              "} /></div>
             )}
           </div>
         </CardContent>

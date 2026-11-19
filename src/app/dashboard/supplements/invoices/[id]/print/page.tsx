@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { SupplementGstInvoiceTemplate } from "@/components/commerce/SupplementGstInvoiceTemplate";
@@ -82,7 +83,7 @@ export default function PrintSupplementInvoicePage() {
   }
 
   if (!invoice) {
-    return <p className="p-6 text-center">Invoice not found</p>;
+    return <p className="p-6 text-center"><LocalizedText id="df6771e910f0" leading={""} trailing={""} /></p>;
   }
 
   return <SupplementGstInvoiceTemplate invoice={invoice} />;

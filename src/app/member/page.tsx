@@ -31,7 +31,7 @@ export default function MemberHomePage() {
       <div>
         <h1 className="text-2xl font-bold">{translate("member.home.title")}</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Install the Member App from your gym&apos;s marketplace to enable personalized login.
+          {translate("member.home.description")}
         </p>
       </div>
       <div className="grid gap-3">
@@ -42,7 +42,7 @@ export default function MemberHomePage() {
                 <tile.icon className="h-5 w-5 text-primary" />
                 <CardTitle className="text-base">{tile.title}</CardTitle>
               </CardHeader>
-              <CardContent className="pt-0 text-xs text-muted-foreground">Tap to open</CardContent>
+              <CardContent className="pt-0 text-xs text-muted-foreground">{translate("member.home.open")}</CardContent>
             </Card>
           </Link>
         ))}

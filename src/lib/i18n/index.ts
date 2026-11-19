@@ -1,22 +1,16 @@
-import en from "./messages/en.json";
-import hi from "./messages/hi.json";
-import bn from "./messages/bn.json";
+export type Locale = "pt-BR" | "en";
 
-export type Locale = "en" | "hi" | "bn";
-
-const catalogs: Record<Locale, Record<string, string>> = { en, hi, bn };
+export const DEFAULT_LOCALE: Locale = "pt-BR";
+export const LOCALE_COOKIE = "NEXT_LOCALE";
+export const SUPPORTED_LOCALES: { code: Locale; label: string }[] = [
+  { code: "pt-BR", label: "Português (Brasil)" },
+  { code: "en", label: "English" },
+];
 
 export function parseLocale(value: string | null | undefined): Locale {
-  if (value === "hi" || value === "bn") return value;
-  return "en";
+  return value === "en" || value === "pt-BR" ? value : DEFAULT_LOCALE;
 }
 
-export function t(locale: Locale, key: string): string {
-  return catalogs[locale][key] ?? catalogs.en[key] ?? key;
+export function createLocaleCookie(locale: Locale, secure: boolean) {
+  return `${LOCALE_COOKIE}=${locale}; Path=/; Max-Age=31536000; SameSite=Lax${secure ? "; Secure" : ""}`;
 }
-
-export const SUPPORTED_LOCALES: { code: Locale; label: string }[] = [
-  { code: "en", label: "English" },
-  { code: "hi", label: "हिन्दी" },
-  { code: "bn", label: "বাংলা" },
-];

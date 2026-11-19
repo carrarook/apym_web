@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import path from "path";
 import { createRequire } from "module";
 import { fileURLToPath } from "url";
+import createNextIntlPlugin from "next-intl/plugin";
 
 /** App root from package.json (stable when the repo path contains spaces). */
 const require = createRequire(import.meta.url);
@@ -17,6 +18,8 @@ const securityHeaders = [
     value: "camera=(), microphone=(), geolocation=(), payment=()",
   },
 ];
+
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: projectRoot,
@@ -53,4 +56,4 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["playwright-core", "@browserbasehq/sdk"],
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

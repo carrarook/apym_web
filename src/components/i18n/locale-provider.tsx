@@ -1,67 +1,48 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { parseLocale, t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
-
-const STORAGE_KEY = "fitness360-locale";
-
-type LocaleContextValue = {
-  locale: Locale;
-  setLocale: (locale: Locale) => void;
-  translate: (key: string) => string;
-};
-
-const LocaleContext = createContext<LocaleContextValue | null>(null);
+import { useCallback } from "react";
+import { useLocale as useIntlLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { createLocaleCookie, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    if (typeof window === "undefined") return "en";
-    return parseLocale(localStorage.getItem(STORAGE_KEY));
-  });
-
-  const setLocale = useCallback((next: Locale) => {
-    setLocaleState(next);
-    localStorage.setItem(STORAGE_KEY, next);
-  }, []);
-
-  const value = useMemo(
-    () => ({
-      locale,
-      setLocale,
-      translate: (key: string) => t(locale, key),
-    }),
-    [locale, setLocale],
-  );
-
-  return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
+  return children;
 }
 
 export function useLocale() {
-  const ctx = useContext(LocaleContext);
-  if (!ctx) {
-    return {
-      locale: "en" as Locale,
-      setLocale: () => {},
-      translate: (key: string) => t("en", key),
-    };
-  }
-  return ctx;
+  const locale = useIntlLocale() as Locale;
+  const messages = useTranslations();
+  const router = useRouter();
+  const setLocale = useCallback((nextLocale: Locale) => {
+    document.cookie = createLocaleCookie(nextLocale, window.location.protocol === "https:");
+    router.refresh();
+  }, [router]);
+
+  return {
+    locale,
+    setLocale,
+    translate: (key: string) => messages(key),
+  };
 }
 
 export function LanguageSwitcher() {
   const { locale, setLocale } = useLocale();
+  const messages = useTranslations("common");
+
   return (
-    <select
-      className="rounded-md border border-border bg-background px-2 py-1 text-sm"
-      value={locale}
-      onChange={(e) => setLocale(e.target.value as Locale)}
-      aria-label="Language"
-    >
-      {SUPPORTED_LOCALES.map((l) => (
-        <option key={l.code} value={l.code}>
-          {l.label}
-        </option>
-      ))}
-    </select>
+    <div>
+      <label className="sr-only" htmlFor="gymkhana-language">{messages("language")}</label>
+      <select
+        id="gymkhana-language"
+        className="rounded-md border border-border bg-background px-2 py-1 text-sm shadow-sm"
+        value={locale}
+        onChange={(event) => setLocale(event.target.value as Locale)}
+        aria-label={messages("language")}
+      >
+        {SUPPORTED_LOCALES.map(({ code, label }) => (
+          <option key={code} value={code}>{label}</option>
+        ))}
+      </select>
+    </div>
   );
 }

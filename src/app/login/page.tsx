@@ -1,6 +1,8 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { signIn } from "next-auth/react";
+import { useTranslations, useTranslations as useStaticUiTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Suspense, useState } from "react";
@@ -33,6 +35,8 @@ function getSafeCallbackUrl(url: string | null): string {
 }
 
 function LoginForm() {
+  const tStatic = useStaticUiTranslations("static");
+  const t = useTranslations("auth");
   const searchParams = useSearchParams();
   const callbackUrl = getSafeCallbackUrl(searchParams.get("callbackUrl"));
   const [contactNumber, setContactNumber] = useState("");
@@ -56,14 +60,14 @@ function LoginForm() {
       });
 
       if (result?.error) {
-        setError("Invalid contact number or password");
+        setError(t("invalidCredentials"));
       } else if (result?.ok) {
         window.location.href = callbackUrl;
       } else {
-        setError("Login failed. Please try again.");
+        setError(t("loginFailed"));
       }
     } catch {
-      setError("An error occurred. Please try again.");
+      setError(t("genericError"));
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +89,7 @@ function LoginForm() {
             className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50 rounded-md"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span className="text-sm">Back to {MARKETING_SITE_LABEL}</span>
+            <span className="text-sm"><LocalizedText id="bbe6515e3665" leading={""} trailing={" "} />{MARKETING_SITE_LABEL}</span>
           </a>
         </header>
 
@@ -99,20 +103,20 @@ function LoginForm() {
                   <Dumbbell className="h-8 w-8 text-white" />
                 </div>
               </a>
-              <h1 className="text-2xl font-bold tracking-tight mb-2">Welcome back</h1>
-              <p className="text-white/50">Sign in to your {APP_NAME} account</p>
+              <h1 className="text-2xl font-bold tracking-tight mb-2">{t("welcome")}</h1>
+              <p className="text-white/50">{t("signInAccount", { app: APP_NAME })}</p>
             </div>
 
             {/* Login Card */}
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-8">
               <OAuthButtons callbackUrl={callbackUrl} disabled={isLoading} />
-              <AuthDivider label="or sign in with email" />
+              <AuthDivider label={t("orSignInEmail")} />
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Email or phone */}
                 <div className="space-y-2">
                   <Label htmlFor="contactNumber" className="text-sm text-white/70">
-                    Email or phone
+                    {t("emailOrPhone")}
                   </Label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
@@ -127,7 +131,7 @@ function LoginForm() {
                       aria-required
                       aria-invalid={error ? true : undefined}
                       className="h-12 pl-11 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:border-orange-500/50 focus-visible:ring-orange-500/30 rounded-xl"
-                      placeholder="you@example.com or phone number"
+                      placeholder={t("emailOrPhonePlaceholder")}
                       aria-describedby={error ? "login-error" : undefined}
                     />
                   </div>
@@ -137,13 +141,13 @@ function LoginForm() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="password" className="text-sm text-white/70">
-                      Password
+                      {t("password")}
                     </Label>
                     <Link 
                       href="/forgot-password" 
                       className="text-xs text-orange-400 hover:text-orange-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50 rounded"
                     >
-                      Forgot password?
+                      {t("forgotPassword")}
                     </Link>
                   </div>
                   <div className="relative">
@@ -159,14 +163,14 @@ function LoginForm() {
                       aria-required
                       aria-invalid={error ? true : undefined}
                       className="h-12 pl-11 pr-11 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:border-orange-500/50 focus-visible:ring-orange-500/30 rounded-xl"
-                      placeholder="Enter your password"
+                      placeholder={t("passwordPlaceholder")}
                       aria-describedby={error ? "login-error" : undefined}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/50"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                     >
                       {showPassword ? (
                         <EyeOff className="h-4 w-4" />
@@ -188,10 +192,10 @@ function LoginForm() {
                   />
                   <div className="grid gap-0.5 leading-none">
                     <Label htmlFor="remember" className="text-sm text-white/60 cursor-pointer">
-                      Remember me for 30 days
+                      {t("rememberFor30")}
                     </Label>
                     <p id="remember-hint" className="text-xs text-white/35">
-                      When off, your session expires sooner on this device.
+                      {t("sessionHint")}
                     </p>
                   </div>
                 </div>
@@ -216,10 +220,10 @@ function LoginForm() {
                   {isLoading ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Signing in...
+                      {t("signingIn")}
                     </>
                   ) : (
-                    "Sign in"
+                    t("signIn")
                   )}
                 </Button>
               </form>
@@ -227,9 +231,9 @@ function LoginForm() {
 
             {/* Sign Up Link */}
             <p className="text-center mt-8 text-sm text-white/50">
-              Don&apos;t have an account?{" "}
+              {t("noAccount")} {" "}
               <Link href="/signup" className="text-orange-400 hover:text-orange-300 font-medium transition-colors">
-                Sign up free
+                {t("signUpFree")}
               </Link>
             </p>
           </div>
@@ -238,19 +242,18 @@ function LoginForm() {
         {/* Footer */}
         <footer className="relative z-10 p-6 text-center space-y-2">
           <p className="text-xs text-white/40">
-            By signing in, you agree to our{" "}
+            {t("termsIntro")} {" "}
             <Link href="/terms" className="underline hover:text-white/70">
-              Terms
+              {t("terms")}
             </Link>{" "}
-            and{" "}
+            {t("and")} {" "}
             <Link href="/privacy" className="underline hover:text-white/70">
-              Privacy Policy
+              {t("privacy")}
             </Link>
             .
           </p>
           <p className="text-xs text-white/30">
-            © 2026 GymKhana Fitness 360. All rights reserved.
-          </p>
+            <LocalizedText id="c29f3360b2c3" leading={""} trailing={"\n          "} /></p>
         </footer>
       </div>
 
@@ -262,19 +265,17 @@ function LoginForm() {
         <div className="relative z-10 flex flex-col items-center justify-center p-12 text-center">
           <div className="max-w-md">
             <h2 className="text-3xl font-bold text-white mb-4">
-              Manage Your Gym Like a Pro
-            </h2>
+              <LocalizedText id="441bf99eb2b4" leading={""} trailing={"\n            "} /></h2>
             <p className="text-white/80 mb-8">
-              Join 500+ fitness centers across India using Fitness360 to save time, increase revenue, and deliver better member experiences.
-            </p>
+              <LocalizedText id="ea156f71cc97" leading={""} trailing={"\n            "} /></p>
             
             {/* Features List */}
             <div className="space-y-4 text-left">
               {[
-                "Track members & payments effortlessly",
+                tStatic("90d425091931"),
                 WHATSAPP_MARKETING_LINE,
-                "QR-based attendance system",
-                "Multi-gym support for chains",
+                tStatic("f646bc9e4b08"),
+                tStatic("82cc00d8cdc6"),
               ].map((feature, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
@@ -288,15 +289,14 @@ function LoginForm() {
             {/* Testimonial */}
             <div className="mt-12 p-6 rounded-2xl bg-black/20 backdrop-blur-sm border border-white/10 text-left">
               <p className="text-white/90 italic mb-4">
-                &ldquo;{WHATSAPP_TESTIMONIAL_LINE}&rdquo;
-              </p>
+                <LocalizedText id="7458eb22633c" leading={""} trailing={""} />{WHATSAPP_TESTIMONIAL_LINE}<LocalizedText id="55f8f15fa29d" leading={""} trailing={"\n              "} /></p>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold">
                   R
                 </div>
                 <div>
-                  <div className="font-medium text-white">Rajesh Sharma</div>
-                  <div className="text-sm text-white/60">FitZone Gym, Mumbai</div>
+                  <div className="font-medium text-white"><LocalizedText id="62a169f43256" leading={""} trailing={""} /></div>
+                  <div className="text-sm text-white/60"><LocalizedText id="a386e9dcfe07" leading={""} trailing={""} /></div>
                 </div>
               </div>
             </div>
@@ -313,7 +313,7 @@ export default function LoginPage() {
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="flex items-center gap-3">
           <Loader2 className="h-6 w-6 animate-spin text-orange-400" />
-          <span className="text-white/60">Loading...</span>
+          <span className="text-white/60"><LocalizedText id="b04ba49f8486" leading={""} trailing={""} /></span>
         </div>
       </div>
     }>

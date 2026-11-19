@@ -1,5 +1,8 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Card,
@@ -34,6 +37,7 @@ const PLACEHOLDER_HINTS = [
 ];
 
 export function WhatsAppLifecycleTemplatesCard() {
+  const tStatic = useStaticUiTranslations("static");
   const [templates, setTemplates] = useState<TemplateRow[]>([]);
   const [selectedKey, setSelectedKey] = useState<LifecycleTemplateKey>("before_2_days");
   const [draftBody, setDraftBody] = useState("");
@@ -53,15 +57,15 @@ export function WhatsAppLifecycleTemplatesCard() {
     setError(null);
     try {
       const res = await fetch("/api/settings/whatsapp-lifecycle-templates");
-      if (!res.ok) throw new Error("Failed to load templates");
+      if (!res.ok) throw new Error(tStatic("9b1f1478b7e8"));
       const data = await res.json();
       setTemplates(data.templates ?? []);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load templates");
+      setError(e instanceof Error ? e.message : tStatic("9b1f1478b7e8"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [tStatic]);
 
   useEffect(() => {
     load();
@@ -82,11 +86,11 @@ export function WhatsAppLifecycleTemplatesCard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key: selectedKey, body: draftBody }),
       });
-      if (!res.ok) throw new Error("Preview failed");
+      if (!res.ok) throw new Error(tStatic("d7f2768ca570"));
       const data = await res.json();
       setPreview(data.preview ?? "");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Preview failed");
+      setError(e instanceof Error ? e.message : tStatic("d7f2768ca570"));
     } finally {
       setPreviewing(false);
     }
@@ -102,11 +106,11 @@ export function WhatsAppLifecycleTemplatesCard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ key: selectedKey, body: draftBody }),
       });
-      if (!res.ok) throw new Error("Save failed");
+      if (!res.ok) throw new Error(tStatic("0a4444676244"));
       const data = await res.json();
       setTemplates(data.templates ?? []);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Save failed");
+      setError(e instanceof Error ? e.message : tStatic("0a4444676244"));
     } finally {
       setSaving(false);
     }
@@ -121,11 +125,11 @@ export function WhatsAppLifecycleTemplatesCard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(key ? { key } : {}),
       });
-      if (!res.ok) throw new Error("Reset failed");
+      if (!res.ok) throw new Error(tStatic("ca42c6fe10d0"));
       const data = await res.json();
       setTemplates(data.templates ?? []);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Reset failed");
+      setError(e instanceof Error ? e.message : tStatic("ca42c6fe10d0"));
     } finally {
       setSaving(false);
     }
@@ -136,8 +140,7 @@ export function WhatsAppLifecycleTemplatesCard() {
       <Card>
         <CardContent className="flex items-center gap-2 py-8 text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" />
-          Loading WhatsApp lifecycle templates…
-        </CardContent>
+          <LocalizedText id="796fba6bd7a1" leading={""} trailing={"\n        "} /></CardContent>
       </Card>
     );
   }
@@ -147,12 +150,9 @@ export function WhatsAppLifecycleTemplatesCard() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MessageSquare className="h-5 w-5" />
-          WhatsApp lifecycle message templates
-        </CardTitle>
+          <LocalizedText id="da3aa2d78531" leading={""} trailing={"\n        "} /></CardTitle>
         <CardDescription>
-          Edit renewal and win-back message texts used by daily automation and manual reminders.
-          Changes apply to future messages only.
-        </CardDescription>
+          <LocalizedText id="e4c9699849c3" leading={""} trailing={"\n        "} /></CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {error && (
@@ -163,7 +163,7 @@ export function WhatsAppLifecycleTemplatesCard() {
 
         <div className="grid gap-4 lg:grid-cols-[minmax(0,240px)_1fr]">
           <div className="space-y-1">
-            <Label className="text-xs text-muted-foreground">Template</Label>
+            <Label className="text-xs text-muted-foreground"><LocalizedText id="3ec1ae061c27" leading={""} trailing={""} /></Label>
             <div className="max-h-80 space-y-1 overflow-y-auto rounded-lg border border-border p-1">
               {templates.map((t) => (
                 <button
@@ -178,8 +178,8 @@ export function WhatsAppLifecycleTemplatesCard() {
                 >
                   <span className="block">{t.label}</span>
                   <span className="mt-0.5 block text-xs text-muted-foreground">
-                    {t.automated ? "Daily automation" : "Manual / staff send"}
-                    {t.isCustom ? " · Custom" : ""}
+                    {t.automated ? tStatic("76e91329479b") : "Manual / staff send"}
+                    {t.isCustom ? tStatic("8476ae2d0c4d") : ""}
                   </span>
                 </button>
               ))}
@@ -192,7 +192,7 @@ export function WhatsAppLifecycleTemplatesCard() {
             )}
 
             <div>
-              <Label htmlFor="template-body">Message text</Label>
+              <Label htmlFor="template-body"><LocalizedText id="723e79cd24aa" leading={""} trailing={""} /></Label>
               <textarea
                 id="template-body"
                 value={draftBody}
@@ -215,7 +215,7 @@ export function WhatsAppLifecycleTemplatesCard() {
 
             {preview && (
               <div className="rounded-lg border border-border bg-muted/30 p-3">
-                <p className="mb-2 text-xs font-medium text-muted-foreground">Sample preview</p>
+                <p className="mb-2 text-xs font-medium text-muted-foreground"><LocalizedText id="584925c6cb37" leading={""} trailing={""} /></p>
                 <pre className="whitespace-pre-wrap text-sm">{preview}</pre>
               </div>
             )}
@@ -227,16 +227,14 @@ export function WhatsAppLifecycleTemplatesCard() {
                 ) : (
                   <Eye className="mr-2 h-4 w-4" />
                 )}
-                Preview
-              </Button>
+                <LocalizedText id="f1fbb2b43dca" leading={""} trailing={"\n              "} /></Button>
               <Button type="button" onClick={saveTemplate} disabled={saving}>
                 {saving ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
                   <Save className="mr-2 h-4 w-4" />
                 )}
-                Save template
-              </Button>
+                <LocalizedText id="0885fab21873" leading={""} trailing={"\n              "} /></Button>
               <Button
                 type="button"
                 variant="outline"
@@ -244,8 +242,7 @@ export function WhatsAppLifecycleTemplatesCard() {
                 disabled={saving}
               >
                 <RotateCcw className="mr-2 h-4 w-4" />
-                Reset to default
-              </Button>
+                <LocalizedText id="39c90eb758c5" leading={""} trailing={"\n              "} /></Button>
               <Button
                 type="button"
                 variant="ghost"
@@ -253,8 +250,7 @@ export function WhatsAppLifecycleTemplatesCard() {
                 disabled={saving}
                 className="text-muted-foreground"
               >
-                Reset all templates
-              </Button>
+                <LocalizedText id="7ba658532f03" leading={""} trailing={"\n              "} /></Button>
             </div>
           </div>
         </div>

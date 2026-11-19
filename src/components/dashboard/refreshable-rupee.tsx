@@ -1,11 +1,13 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
 import { useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 export function RefreshableRupee() {
+  const tStatic = useStaticUiTranslations("static");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const router = useRouter();
 
@@ -25,7 +27,7 @@ export function RefreshableRupee() {
         onClick={handleRefresh}
         disabled={isRefreshing}
         className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 border border-white/30 flex items-center justify-center hover:bg-white/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
-        title="Refresh dashboard data"
+        title={tStatic("44f56d3af552")}
       >
         <span className="text-4xl font-bold text-white relative z-10">₹</span>
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">

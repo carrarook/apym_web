@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 interface PaginationProps {
@@ -19,6 +21,7 @@ export function Pagination({
   itemsPerPage,
   className = "",
 }: PaginationProps) {
+  const tStatic = useStaticUiTranslations("static");
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
     const showPages = 5; // Show 5 page numbers at most
@@ -76,10 +79,9 @@ export function Pagination({
       {/* Info text */}
       {totalItems && itemsPerPage && (
         <div className="text-xs sm:text-sm text-muted-foreground font-medium">
-          Showing <span className="font-semibold text-foreground">{startItem}</span> to{" "}
-          <span className="font-semibold text-foreground">{endItem}</span> of{" "}
-          <span className="font-semibold text-foreground">{totalItems}</span> results
-        </div>
+          <LocalizedText id="163d8174ff4b" leading={""} trailing={" "} /><span className="font-semibold text-foreground">{startItem}</span> <LocalizedText id="4374aaee247f" leading={""} trailing={""} />{" "}
+          <span className="font-semibold text-foreground">{endItem}</span> <LocalizedText id="de04fa0e29f9" leading={""} trailing={""} />{" "}
+          <span className="font-semibold text-foreground">{totalItems}</span> <LocalizedText id="cdf7e925f574" leading={""} trailing={"\n        "} /></div>
       )}
 
       {/* Pagination controls */}
@@ -89,7 +91,7 @@ export function Pagination({
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
           className="hidden sm:inline-flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-background text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          aria-label="First page"
+          aria-label={tStatic("49d74b49c94a")}
         >
           <ChevronsLeft className="h-4 w-4" />
         </button>
@@ -99,7 +101,7 @@ export function Pagination({
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
           className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-background text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          aria-label="Previous page"
+          aria-label={tStatic("81f547195bef")}
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -144,7 +146,7 @@ export function Pagination({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-background text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          aria-label="Next page"
+          aria-label={tStatic("4bfc194b68a3")}
         >
           <ChevronRight className="h-4 w-4" />
         </button>
@@ -154,7 +156,7 @@ export function Pagination({
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
           className="hidden sm:inline-flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-background text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          aria-label="Last page"
+          aria-label={tStatic("b01f16ae753d")}
         >
           <ChevronsRight className="h-4 w-4" />
         </button>

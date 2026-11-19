@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -74,6 +76,7 @@ export function AssistantChat({
   quickPrompts = DEFAULT_PROMPTS,
   subtitle,
 }: AssistantChatProps) {
+  const tStatic = useStaticUiTranslations("static");
   const [serverConfig, setServerConfig] = useState<AssistantConfig | null>(null);
   const [messages, setMessages] = useState<ChatRow[]>([
     { id: "welcome", role: "assistant", content: welcomeMessage, mode: "system" },
@@ -141,7 +144,7 @@ export function AssistantChat({
       );
 
       if (!data.success) {
-        setError(data.error ?? "Request failed");
+        setError(data.error ?? tStatic("9fcda32cc0cb"));
         return;
       }
 
@@ -158,7 +161,7 @@ export function AssistantChat({
       ]);
       scrollToBottom();
     } catch {
-      setError("Network error — try again.");
+      setError(tStatic("0c7e03133200"));
     } finally {
       setLoading(false);
     }
@@ -170,19 +173,16 @@ export function AssistantChat({
         <div>
           <h2 className="text-lg font-semibold flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-orange-400" />
-            Fitness360 AI
-          </h2>
+            <LocalizedText id="1ff19fb55b8a" leading={""} trailing={"\n          "} /></h2>
           <p className="text-sm text-muted-foreground mt-1">{resolvedSubtitle}</p>
         </div>
         <div className="flex flex-wrap gap-2 justify-end">
           {serverConfig?.serverKeyConfigured && !userKey.trim() && (
             <Badge variant="secondary" className="text-xs">
-              Server key
-            </Badge>
+              <LocalizedText id="8434e02e858f" leading={""} trailing={"\n            "} /></Badge>
           )}
           <Badge variant="outline" className="text-xs">
-            Read-only
-          </Badge>
+            <LocalizedText id="9b19a5a212de" leading={""} trailing={"\n          "} /></Badge>
         </div>
       </div>
 
@@ -207,8 +207,7 @@ export function AssistantChat({
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Bot className="h-4 w-4" />
-              Chat
-            </CardTitle>
+              <LocalizedText id="2ced57f12591" leading={""} trailing={"\n            "} /></CardTitle>
             <Button
               type="button"
               variant="ghost"
@@ -224,10 +223,10 @@ export function AssistantChat({
             >
               <KeyRound className="h-3.5 w-3.5 mr-1" />
               {userKey.trim()
-                ? "Your API key"
+                ? tStatic("8fa4b1112cb6")
                 : serverConfig?.serverKeyConfigured
-                  ? "Personal key (optional)"
-                  : "Add API key"}
+                  ? tStatic("147840d29f39")
+                  : tStatic("725d99889768")}
             </Button>
           </div>
         </CardHeader>
@@ -241,40 +240,35 @@ export function AssistantChat({
               }}
             >
               <Label htmlFor="assistant-groq-key" className="text-xs">
-                Personal Groq key (optional — overrides server key on this device)
-              </Label>
+                <LocalizedText id="93b02f279de1" leading={""} trailing={"\n              "} /></Label>
               <div className="flex gap-2">
                 <Input
                   id="assistant-groq-key"
                   type="password"
                   autoComplete="off"
-                  placeholder="gsk_…"
+                  placeholder={tStatic("a9e2e1f5a773")}
                   value={keyDraft}
                   onChange={(e) => setKeyDraft(e.target.value)}
                   className="font-mono text-sm flex-1"
                 />
                 <Button type="submit" size="sm" className="shrink-0">
-                  Save
-                </Button>
+                  <LocalizedText id="efc007a393f6" leading={""} trailing={"\n                "} /></Button>
               </div>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-xs text-muted-foreground">
-                  Free tier at{" "}
+                  <LocalizedText id="7f524fa6a2e1" leading={""} trailing={""} />{" "}
                   <a
                     href="https://console.groq.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-orange-400 hover:underline"
                   >
-                    console.groq.com
-                  </a>
-                  . Press Enter or Save.
-                </p>
+                    <LocalizedText id="1f6a0a1e873c" leading={""} trailing={"\n                  "} /></a>
+                  <LocalizedText id="15ce110eb808" leading={""} trailing={"\n                "} /></p>
                 {keySaved && (
                   <span className="text-xs text-green-500 flex items-center gap-1">
                     <Check className="h-3 w-3" />
-                    Key saved
-                  </span>
+                    <LocalizedText id="1631340bef8f" leading={""} trailing={"\n                  "} /></span>
                 )}
               </div>
               {userKey && (
@@ -289,8 +283,7 @@ export function AssistantChat({
                     saveBrowserApiKey("");
                   }}
                 >
-                  Remove saved key
-                </Button>
+                  <LocalizedText id="303fdfff08cd" leading={""} trailing={"\n                "} /></Button>
               )}
             </form>
           )}
@@ -328,8 +321,7 @@ export function AssistantChat({
             {loading && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Thinking…
-              </div>
+                <LocalizedText id="a60d9c9c5390" leading={""} trailing={"\n              "} /></div>
             )}
           </div>
 
@@ -349,7 +341,7 @@ export function AssistantChat({
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about renewals, payments, or draft a message…"
+              placeholder={tStatic("492b7d65c891")}
               disabled={loading}
               className="flex-1"
             />

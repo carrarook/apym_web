@@ -1,5 +1,8 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
+import { STATIC_UI_KEYS } from "@/lib/i18n/static-keys";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import useSWR, { mutate as globalMutate } from "swr";
@@ -65,10 +68,10 @@ const DURATION_OPTIONS = [
   { value: "12 Months", label: "12mo" },
 ];
 
-function formatDurationTag(d: string | null): string {
+function formatDurationTag(d: string | null, tStatic: (id: string) => string): string {
   if (!d) return "";
   const opt = DURATION_OPTIONS.find((o) => o.value === d);
-  if (opt) return opt.label;
+  if (opt) return opt.label ? tStatic(STATIC_UI_KEYS[opt.label]) : "";
   const m = d.match(/^(\d+)\s*months?$/i);
   return m ? `${m[1]}mo` : d;
 }
@@ -84,6 +87,7 @@ function PaymentTagsCell({
   paymentDetails: PaymentDetails;
   onUpdate: () => void;
 }) {
+  const tStatic = useStaticUiTranslations("static");
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [duration, setDuration] = useState(payment.packageDuration ?? "");
@@ -115,7 +119,7 @@ function PaymentTagsCell({
         onUpdate();
       } else {
         const err = await res.json().catch(() => ({}));
-        toast.error(err?.error || "Failed to update payment");
+        toast.error(err?.error || tStatic("ed72406cca49"));
       }
     } finally {
       setSaving(false);
@@ -127,20 +131,19 @@ function PaymentTagsCell({
       <div className="flex flex-wrap gap-1">
         {effectiveDuration && (
           <span className="inline-flex rounded-full bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 text-[10px] sm:text-xs font-semibold text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-700">
-            {formatDurationTag(effectiveDuration)}
+            {formatDurationTag(effectiveDuration, tStatic)}
           </span>
         )}
         {effectivePT && (
           <span className="inline-flex rounded-full px-2 py-0.5 text-[10px] sm:text-xs font-semibold border bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-200 dark:border-indigo-700">
-            PT
-          </span>
+            <LocalizedText id="7c4c910b08dc" leading={""} trailing={"\n          "} /></span>
         )}
       </div>
       <Button
         type="button"
         onClick={() => setEditing(!editing)}
         className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
-        aria-label="Edit tags"
+        aria-label={tStatic("d8a5fc17fa59")}
       >
         <Pencil className="h-3 w-3" />
       </Button>
@@ -150,7 +153,7 @@ function PaymentTagsCell({
           <div ref={editRef} onClick={(e) => e.stopPropagation()} className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 p-4 bg-card border border-border rounded-lg shadow-xl min-w-[200px] max-w-[90vw]">
             <div className="space-y-3 text-sm">
               <div>
-                <label className="block font-semibold mb-1">Duration</label>
+                <label className="block font-semibold mb-1"><LocalizedText id="1370004da76f" leading={""} trailing={""} /></label>
                 <SelectNative
                   value={duration}
                   onChange={(e) => setDuration(e.target.value)}
@@ -162,17 +165,17 @@ function PaymentTagsCell({
                 </SelectNative>
               </div>
               <div className="flex items-center gap-2">
-                <label className="font-semibold">PT</label>
+                <label className="font-semibold"><LocalizedText id="7c4c910b08dc" leading={""} trailing={""} /></label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <CheckboxInput checked={pt} onChange={(e) => setPt(e.target.checked)} className="rounded" />
-                  <span>with PT</span>
+                  <span><LocalizedText id="c402e18e1a40" leading={""} trailing={""} /></span>
                 </label>
               </div>
               <div className="flex gap-2 pt-1">
                 <Button type="button" onClick={handleSave} disabled={saving} className="flex-1 px-3 py-2 bg-primary text-primary-foreground rounded text-sm font-medium disabled:opacity-50">
-                  {saving ? "..." : "Save"}
+                  {saving ? "..." : tStatic("efc007a393f6")}
                 </Button>
-                <Button type="button" onClick={() => setEditing(false)} className="px-3 py-2 border rounded text-sm">Cancel</Button>
+                <Button type="button" onClick={() => setEditing(false)} className="px-3 py-2 border rounded text-sm"><LocalizedText id="77dfd2135f4d" leading={""} trailing={""} /></Button>
               </div>
             </div>
           </div>
@@ -183,6 +186,7 @@ function PaymentTagsCell({
 }
 
 export default function PaymentsPage() {
+  const tStatic = useStaticUiTranslations("static");
   const router = useRouter();
   const { data: session } = useSession();
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -254,8 +258,8 @@ export default function PaymentsPage() {
     return (
       <div className="space-y-6">
         <DashboardPageHeader
-          title="Payments"
-          description="Track and manage all payment transactions"
+          title={tStatic("44357ae55a21")}
+          description={tStatic("4eff68b6ceeb")}
         />
         <div className="bg-red-50 border border-red-200 rounded-2xl p-8 text-center">
           <div className="flex justify-center mb-4">
@@ -263,9 +267,9 @@ export default function PaymentsPage() {
               <AlertCircle className="h-8 w-8 text-red-600" />
             </div>
           </div>
-          <h3 className="text-lg font-semibold text-red-900 mb-2">Failed to load payments</h3>
+          <h3 className="text-lg font-semibold text-red-900 mb-2"><LocalizedText id="f52cbfdc8ba1" leading={""} trailing={""} /></h3>
           <p className="text-sm text-red-700 mb-6">
-            {error instanceof Error ? error.message : "An error occurred while fetching payments"}
+            {error instanceof Error ? error.message : tStatic("4af7527b126c")}
           </p>
           <Button
             type="button"
@@ -273,8 +277,7 @@ export default function PaymentsPage() {
             className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-xl hover:bg-red-700 transition-colors font-semibold"
           >
             <RefreshCw className="h-5 w-5" />
-            Retry
-          </Button>
+            <LocalizedText id="9f5cd8a2e880" leading={""} trailing={"\n          "} /></Button>
         </div>
       </div>
     );
@@ -308,7 +311,7 @@ export default function PaymentsPage() {
 
   const handleWhatsAppImport = async () => {
     if (!whatsAppMessages.trim()) {
-      toast.error("Please paste messages from your Admin Gym WhatsApp group");
+      toast.error(tStatic("19cd3e90e735"));
       return;
     }
     setWhatsAppImportLoading(true);
@@ -360,23 +363,23 @@ export default function PaymentsPage() {
         }
 
         if (res.status === 403) {
-          toast.error("Admin access required to delete payments");
+          toast.error(tStatic("c59d8e1b8eb6"));
           return;
         }
 
         const result = await res.json();
 
         if (res.ok) {
-          toast.success("Payment deleted — use Undo in header within 30 min to restore");
+          toast.success(tStatic("4ef45d1cb54e"));
           await fetchPayments();
           globalMutate((key) => typeof key === "string" && key.startsWith("/api/members"));
           window.dispatchEvent(new Event("undo-stack-updated"));
           window.dispatchEvent(new Event("payment-updated"));
         } else {
-          toast.error(result.error || "Failed to delete payment");
+          toast.error(result.error || tStatic("e509d208b16f"));
         }
       } catch (err: unknown) {
-        toast.error("Failed to delete payment");
+        toast.error(tStatic("e509d208b16f"));
         logger.error(
           "Delete payment error",
           err instanceof Error ? err : new Error(String(err))
@@ -390,8 +393,8 @@ export default function PaymentsPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Payments"
-        description="View and manage all payment transactions"
+        title={tStatic("44357ae55a21")}
+        description={tStatic("710d50954055")}
         actions={
         <div className="flex flex-wrap items-center gap-2">
           <label className="flex items-center gap-1.5 text-xs font-medium cursor-pointer">
@@ -400,7 +403,7 @@ export default function PaymentsPage() {
               onChange={(e) => setAutoRefresh(e.target.checked)}
               className="rounded border-input text-blue-600 focus:ring-2 focus:ring-ring cursor-pointer"
             />
-            <span>Auto</span>
+            <span><LocalizedText id="c614ba7c453c" leading={""} trailing={""} /></span>
           </label>
           <DashboardQuickEntryButton open={showQuickEntry} onOpenChange={setShowQuickEntry} />
           {session?.user?.role === "ADMIN" && (
@@ -410,8 +413,7 @@ export default function PaymentsPage() {
               className="inline-flex items-center gap-1.5 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-all text-sm font-medium"
             >
               <MessageCircle className="h-3.5 w-3.5" />
-              WhatsApp
-            </Button>
+              <LocalizedText id="b336fc558722" leading={""} trailing={"\n            "} /></Button>
           )}
           <Button
             type="button"
@@ -420,8 +422,7 @@ export default function PaymentsPage() {
             className="inline-flex items-center gap-1.5 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-all disabled:opacity-50 text-sm font-medium"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? "animate-spin" : ""}`} />
-            Refresh
-          </Button>
+            <LocalizedText id="56e3badc4e6c" leading={""} trailing={"\n          "} /></Button>
         </div>
         }
       />
@@ -444,11 +445,10 @@ export default function PaymentsPage() {
             <div className="bg-primary rounded-lg p-1.5">
               <Filter className="h-4 w-4 text-primary-foreground" />
             </div>
-            <h3 className="text-sm font-bold text-card-foreground">Filters</h3>
+            <h3 className="text-sm font-bold text-card-foreground"><LocalizedText id="96e578211aa2" leading={""} trailing={""} /></h3>
             {hasActiveFilters && (
               <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold">
-                Active
-              </span>
+                <LocalizedText id="a733b809d2f1" leading={""} trailing={"\n              "} /></span>
             )}
           </div>
           {hasActiveFilters && (
@@ -458,8 +458,7 @@ export default function PaymentsPage() {
               className="inline-flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium text-muted-foreground hover:text-card-foreground transition-colors"
             >
               <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              Clear
-            </Button>
+              <LocalizedText id="719ea396ad92" leading={""} trailing={"\n            "} /></Button>
           )}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 min-w-0">
@@ -468,7 +467,7 @@ export default function PaymentsPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search..."
+                placeholder={tStatic("6d7a30a931a3")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
@@ -481,37 +480,35 @@ export default function PaymentsPage() {
             onChange={(e) => setStatusFilter(e.target.value as PaymentStatus | "")}
             className="min-w-0 px-3 py-2 text-sm border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-ring transition-all bg-background text-foreground font-medium cursor-pointer"
           >
-            <option value="">All Status</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="PENDING">Pending</option>
-            <option value="FAILED">Failed</option>
-            <option value="REFUNDED">Refunded</option>
+            <option value=""><LocalizedText id="6b308de777df" leading={""} trailing={""} /></option>
+            <option value="COMPLETED"><LocalizedText id="1798b3ba42ee" leading={""} trailing={""} /></option>
+            <option value="PENDING"><LocalizedText id="96f608c16cef" leading={""} trailing={""} /></option>
+            <option value="FAILED"><LocalizedText id="09fef5d8d9a3" leading={""} trailing={""} /></option>
+            <option value="REFUNDED"><LocalizedText id="d6fbc7a82d1c" leading={""} trailing={""} /></option>
           </SelectNative>
           <SelectNative
             value={methodFilter}
             onChange={(e) => setMethodFilter(e.target.value as PaymentMethod | "")}
             className="min-w-0 px-3 py-2 text-sm border border-input rounded-lg focus:ring-2 focus:ring-ring focus:border-ring transition-all bg-background text-foreground font-medium cursor-pointer"
           >
-            <option value="">All Methods</option>
-            <option value="UPI">UPI</option>
-            <option value="CASH">Cash</option>
-            <option value="CARD">Card</option>
-            <option value="BANK_TRANSFER">Bank Transfer</option>
-            <option value="OTHER">Other</option>
+            <option value=""><LocalizedText id="06a3fcd1cd5d" leading={""} trailing={""} /></option>
+            <option value="UPI"><LocalizedText id="f295b2cdffa2" leading={""} trailing={""} /></option>
+            <option value="CASH"><LocalizedText id="758ec54e430e" leading={""} trailing={""} /></option>
+            <option value="CARD"><LocalizedText id="4d4ce73b1566" leading={""} trailing={""} /></option>
+            <option value="BANK_TRANSFER"><LocalizedText id="17ef50d8f8df" leading={""} trailing={""} /></option>
+            <option value="OTHER"><LocalizedText id="6e6a6f2086bb" leading={""} trailing={""} /></option>
           </SelectNative>
           <Button
             type="button"
             onClick={handleSearch}
             className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 py-2 text-sm rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-semibold"
           >
-            Search
-          </Button>
+            <LocalizedText id="bce06414177f" leading={""} trailing={"\n          "} /></Button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
           <div>
             <label className="block text-xs font-semibold text-foreground mb-1">
-              Start Date
-            </label>
+              <LocalizedText id="9d7ab1a55796" leading={""} trailing={"\n            "} /></label>
             <Input
               type="date"
               value={startDate}
@@ -521,8 +518,7 @@ export default function PaymentsPage() {
           </div>
           <div>
             <label className="block text-xs font-semibold text-foreground mb-1">
-              End Date
-            </label>
+              <LocalizedText id="84b147812589" leading={""} trailing={"\n            "} /></label>
             <Input
               type="date"
               value={endDate}
@@ -538,11 +534,10 @@ export default function PaymentsPage() {
         <div className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 border-b border-border bg-muted/30">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <h3 className="text-sm sm:text-base font-bold text-card-foreground">
-              Payment Transactions
-            </h3>
+              <LocalizedText id="9a850f6f1969" leading={""} trailing={"\n            "} /></h3>
             {!isLoading && Array.isArray(payments) && payments.length > 0 && (
               <span className="text-xs sm:text-sm font-semibold text-card-foreground">
-                {payments.length} {payments.length === 1 ? 'payment' : 'payments'}
+                {payments.length} {payments.length === 1 ? 'payment' : tStatic("40c477020282")}
               </span>
             )}
           </div>
@@ -551,18 +546,18 @@ export default function PaymentsPage() {
         {isLoading ? (
           <div className="p-16 text-center">
             <Loader2 className="h-8 w-8 text-blue-600 animate-spin mx-auto mb-4" />
-            <p className="text-muted-foreground font-medium">Loading payments...</p>
+            <p className="text-muted-foreground font-medium"><LocalizedText id="1ec055045688" leading={""} trailing={""} /></p>
           </div>
         ) : !Array.isArray(payments) || payments.length === 0 ? (
           <div className="p-16 text-center">
             <div className="bg-muted rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
               <Search className="h-8 w-8 text-muted-foreground" />
             </div>
-            <p className="text-foreground font-semibold text-lg mb-2">No payments found</p>
+            <p className="text-foreground font-semibold text-lg mb-2"><LocalizedText id="c1f531f996b6" leading={""} trailing={""} /></p>
             <p className="text-muted-foreground text-sm">
               {hasActiveFilters 
-                ? "Try adjusting your filters to see more results"
-                : "No payment records available"}
+                ? tStatic("d74dd523f51c")
+                : tStatic("d25cd145941b")}
             </p>
             {hasActiveFilters && (
               <Button
@@ -570,8 +565,7 @@ export default function PaymentsPage() {
                 onClick={clearFilters}
                 className="mt-4 text-blue-600 hover:text-blue-700 font-medium text-sm"
               >
-                Clear filters
-              </Button>
+                <LocalizedText id="412226715c56" leading={""} trailing={"\n              "} /></Button>
             )}
           </div>
         ) : (
@@ -612,17 +606,16 @@ export default function PaymentsPage() {
               <thead className="bg-muted">
                 <tr>
                   <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider">
-                    Date & Time
-                  </th>
-                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider">Member</th>
-                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider">Amount</th>
-                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider hidden md:table-cell">Method</th>
-                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider hidden sm:table-cell">Tags</th>
-                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider hidden xl:table-cell">Reference</th>
-                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider hidden xl:table-cell">Received By</th>
-                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider">Status</th>
+                    <LocalizedText id="63ae7cafeda4" leading={""} trailing={"\n                  "} /></th>
+                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider"><LocalizedText id="6853c98a6f43" leading={""} trailing={""} /></th>
+                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider"><LocalizedText id="43dc8532f7e5" leading={""} trailing={""} /></th>
+                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider hidden md:table-cell"><LocalizedText id="88306943fea7" leading={""} trailing={""} /></th>
+                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider hidden sm:table-cell"><LocalizedText id="848eed0fbd54" leading={""} trailing={""} /></th>
+                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider hidden xl:table-cell"><LocalizedText id="db1c784524e1" leading={""} trailing={""} /></th>
+                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider hidden xl:table-cell"><LocalizedText id="f84f73c618d9" leading={""} trailing={""} /></th>
+                  <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider"><LocalizedText id="bae7d5be7082" leading={""} trailing={""} /></th>
                   {session?.user?.role === "ADMIN" && (
-                    <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider">Actions</th>
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-[10px] sm:text-xs font-bold text-foreground uppercase tracking-wider"><LocalizedText id="c3cd636a585b" leading={""} trailing={""} /></th>
                   )}
                 </tr>
               </thead>
@@ -680,7 +673,7 @@ export default function PaymentsPage() {
                             onClick={() => handleDeletePayment(payment.id, payment.Member.name)}
                             disabled={isQueued(`delete-payment:${payment.id}`)}
                             className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            title="Delete payment"
+                            title={tStatic("23f76a18159d")}
                           >
                             {deletingPaymentId === payment.id || isQueued(`delete-payment:${payment.id}`) ? (
                               <Loader2 className="h-4 w-4 animate-spin" />
@@ -707,8 +700,7 @@ export default function PaymentsPage() {
             <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between">
               <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                 <MessageCircle className="h-5 w-5 text-green-600" />
-                Import from WhatsApp Group
-              </h2>
+                <LocalizedText id="3e3dca72e17f" leading={""} trailing={"\n              "} /></h2>
               <Button
                 type="button"
                 onClick={() => {
@@ -723,8 +715,8 @@ export default function PaymentsPage() {
             </div>
             <div className="p-6 space-y-4">
               <p className="text-sm text-muted-foreground">
-                Paste payment messages from your Admin Gym WhatsApp group. Supported format:{" "}
-                <code className="bg-muted px-1 rounded text-xs text-foreground">Member Name 800/- upi renewal</code>
+                <LocalizedText id="8d259d4f30a3" leading={""} trailing={""} />{" "}
+                <code className="bg-muted px-1 rounded text-xs text-foreground"><LocalizedText id="efd57baf8772" leading={""} trailing={""} /></code>
               </p>
               <Textarea
                 value={whatsAppMessages}
@@ -739,12 +731,11 @@ export default function PaymentsPage() {
                     <p>{whatsAppImportResult.error}: {whatsAppImportResult.details}</p>
                   ) : (
                     <p>
-                      Created {whatsAppImportResult.created} payment(s).
-                      {whatsAppImportResult.skipped > 0 && ` Skipped ${whatsAppImportResult.skipped} (check errors).`}
+                      <LocalizedText id="accf40c89baa" leading={""} trailing={" "} />{whatsAppImportResult.created} <LocalizedText id="5b99ec50abe8" leading={""} trailing={"\n                      "} />{whatsAppImportResult.skipped > 0 && ` Skipped ${whatsAppImportResult.skipped} (check errors).`}
                       {whatsAppImportResult.errors?.length > 0 && (
                         <ul className="mt-2 list-disc list-inside">
                           {whatsAppImportResult.errors.map((e: { line: number; error: string }) => (
-                            <li key={e.line}>Line {e.line}: {e.error}</li>
+                            <li key={e.line}><LocalizedText id="ea9676003762" leading={""} trailing={" "} />{e.line}: {e.error}</li>
                           ))}
                         </ul>
                       )}
@@ -762,8 +753,7 @@ export default function PaymentsPage() {
                   }}
                   className="px-4 py-2 border border-border rounded-xl text-foreground hover:bg-muted"
                 >
-                  Cancel
-                </Button>
+                  <LocalizedText id="77dfd2135f4d" leading={""} trailing={"\n                "} /></Button>
                 <Button
                   type="button"
                   onClick={handleWhatsAppImport}
@@ -771,8 +761,7 @@ export default function PaymentsPage() {
                   className="inline-flex items-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-xl hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {whatsAppImportLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-                  Import to Database
-                </Button>
+                  <LocalizedText id="d7aeac64a8d1" leading={""} trailing={"\n                "} /></Button>
               </div>
             </div>
           </div>

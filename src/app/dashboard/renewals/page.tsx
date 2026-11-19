@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatDate, formatCurrency, getDaysUntil } from "@/lib/utils";
@@ -71,6 +73,7 @@ interface RenewalsData {
 }
 
 export default function RenewalsPage() {
+  const tStatic = useStaticUiTranslations("static");
   const router = useRouter();
   const { data: renewals, isLoading, mutate } = useSWR<RenewalsData>("/api/renewals", fetcher);
   const [showQuickEntry, setShowQuickEntry] = useState(false);
@@ -96,15 +99,14 @@ export default function RenewalsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground tracking-tight">Renewals</h1>
+            <h1 className="text-3xl font-bold text-foreground tracking-tight"><LocalizedText id="1c2680586b08" leading={""} trailing={""} /></h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Track upcoming and overdue membership renewals
-            </p>
+              <LocalizedText id="bb88bf2d5970" leading={""} trailing={"\n            "} /></p>
           </div>
         </div>
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading renewals...</p>
+          <p className="mt-4 text-muted-foreground"><LocalizedText id="275c40345191" leading={""} trailing={""} /></p>
         </div>
       </div>
     );
@@ -113,7 +115,7 @@ export default function RenewalsPage() {
   const columns = [
     {
       id: "today",
-      title: "Due Today & Past",
+      title: tStatic("75930378878b"),
       count: renewals.today.length,
       memberships: renewals.today,
       color: "red",
@@ -121,7 +123,7 @@ export default function RenewalsPage() {
     },
     {
       id: "thisWeek",
-      title: "This Week",
+      title: tStatic("4e68dca8ab90"),
       count: renewals.thisWeek.length,
       memberships: renewals.thisWeek,
       color: "yellow",
@@ -129,7 +131,7 @@ export default function RenewalsPage() {
     },
     {
       id: "thisMonth",
-      title: "This Month",
+      title: tStatic("0f6cc3a89ce9"),
       count: renewals.thisMonth.length,
       memberships: renewals.thisMonth,
       color: "blue",
@@ -142,10 +144,9 @@ export default function RenewalsPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">Renewals</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight"><LocalizedText id="1c2680586b08" leading={""} trailing={""} /></h1>
           <p className="text-sm text-muted-foreground mt-2">
-            Track upcoming and overdue membership renewals
-          </p>
+            <LocalizedText id="bb88bf2d5970" leading={""} trailing={"\n          "} /></p>
         </div>
         <div className="flex items-center gap-2">
           <DashboardQuickEntryButton
@@ -160,8 +161,7 @@ export default function RenewalsPage() {
             className="font-semibold shadow-sm"
           >
             <RefreshCw className={`h-5 w-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
+            <LocalizedText id="56e3badc4e6c" leading={""} trailing={"\n          "} /></Button>
         </div>
       </div>
 
@@ -271,7 +271,7 @@ function KanbanColumn({
         {column.count === 0 ? (
           <div className="p-8 text-center">
             <CheckCircle className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground">No renewals</p>
+            <p className="text-sm text-muted-foreground"><LocalizedText id="902a23106f75" leading={""} trailing={""} /></p>
           </div>
         ) : (
           <div className="p-3 space-y-2">
@@ -311,6 +311,7 @@ function CollapsibleKanbanCard({
   onRefresh: () => void;
   isOverdue: boolean;
 }) {
+  const tStatic = useStaticUiTranslations("static");
   const [sendingReminder, setSendingReminder] = useState(false);
   const [loadingDraft, setLoadingDraft] = useState(false);
   const [draftMessage, setDraftMessage] = useState<string | null>(null);
@@ -413,7 +414,7 @@ function CollapsibleKanbanCard({
           <div className="flex-1 min-w-0 text-left">
             <p className="font-bold text-foreground truncate">{membership.Member.name}</p>
             <p className="text-xs text-muted-foreground">
-              {isOverdue ? 'Expired' : 'Expires'}: {formatDate(membership.endDate)}
+              {isOverdue ? tStatic("a689a999a5e6") : tStatic("a99be3da0c9d")}: {formatDate(membership.endDate)}
             </p>
           </div>
           
@@ -434,7 +435,7 @@ function CollapsibleKanbanCard({
         <div className="p-4 space-y-3 border-t bg-muted/20">
           {/* Member ID */}
           <div className="text-xs text-muted-foreground font-mono">
-            ID: {membership.Member.id}
+            <LocalizedText id="d789a1e992ad" leading={""} trailing={" "} />{membership.Member.id}
           </div>
 
           {/* Plan Badge */}
@@ -444,7 +445,7 @@ function CollapsibleKanbanCard({
 
           {/* Amount */}
           <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-background border">
-            <span className="text-xs text-muted-foreground font-medium">Amount</span>
+            <span className="text-xs text-muted-foreground font-medium"><LocalizedText id="43dc8532f7e5" leading={""} trailing={""} /></span>
             <span className="text-lg font-bold text-green-700 dark:text-green-400">
               {formatCurrency(membership.amount)}
             </span>
@@ -468,7 +469,7 @@ function CollapsibleKanbanCard({
                 {loadingDraft ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  "Preview draft"
+                  tStatic("7997b96664e3")
                 )}
               </Button>
               <Button
@@ -481,22 +482,20 @@ function CollapsibleKanbanCard({
                 {sendingReminder || isQueued(`send-renewal-reminder:${membership.id}`) ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Sending...
-                  </>
+                    <LocalizedText id="c338c191ab1e" leading={""} trailing={"\n                  "} /></>
                 ) : (
                   <>
                     <Send className="h-4 w-4 mr-2" />
-                    Send
-                  </>
+                    <LocalizedText id="9bc2575c3930" leading={""} trailing={"\n                  "} /></>
                 )}
               </Button>
             </div>
 
             {/* WhatsApp Actions */}
             <div className="grid grid-cols-3 gap-2">
-              <WhatsAppButton membership={membership} type="bill" label="Bill" />
-              <WhatsAppButton membership={membership} type="admission" label="Admission" />
-              <WhatsAppButton membership={membership} type="plan" label="Plan" />
+              <WhatsAppButton membership={membership} type="bill" label={tStatic("3d7346140016")} />
+              <WhatsAppButton membership={membership} type="admission" label={tStatic("64a37eb1e3fb")} />
+              <WhatsAppButton membership={membership} type="plan" label={tStatic("ae2f98a099fe")} />
             </div>
           </div>
 
@@ -516,8 +515,7 @@ function CollapsibleKanbanCard({
             href={`/dashboard/members/${membership.memberId}`}
             className="block text-center text-sm text-primary hover:underline font-medium py-2"
           >
-            View Member Details →
-          </Link>
+            <LocalizedText id="df42add5ef90" leading={""} trailing={"\n          "} /></Link>
         </div>
       )}
     </div>

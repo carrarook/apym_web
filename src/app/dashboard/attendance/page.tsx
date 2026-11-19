@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useCallback, useEffect, useState } from 'react';
 import { QRAttendance } from '@/components/attendance/qr-attendance';
 import { WalkInVisitsPanel } from '@/components/attendance/walk-in-visits-panel';
@@ -37,6 +39,7 @@ interface Attendance {
 }
 
 export default function AttendancePage() {
+  const tStatic = useStaticUiTranslations("static");
   const [members, setMembers] = useState<Member[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState<string>('');
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
@@ -112,29 +115,29 @@ export default function AttendancePage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Attendance Tracking"
-        description="QR code–based attendance system"
+        title={tStatic("fd333a5c14e7")}
+        description={tStatic("cf6f97d02812")}
       />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          title="Today's Check-ins"
+          title={tStatic("d317c8243961")}
           value={String(todayAttendance.length)}
           icon={LogIn}
         />
         <StatCard
-          title="Currently In"
+          title={tStatic("17a3bf7d11e1")}
           value={String(currentlyIn)}
           icon={UserCheck}
           variant="success"
         />
         <StatCard
-          title="QR Code Scans"
+          title={tStatic("7dfb31fbc733")}
           value={String(qrScans)}
           icon={QrCode}
         />
         <StatCard
-          title="Active Members"
+          title={tStatic("3d546563d590")}
           value={String(members.length)}
           icon={Users}
         />
@@ -152,15 +155,14 @@ export default function AttendancePage() {
           <Card>
             <CardContent className="pt-6">
               <label className="mb-2 block text-sm font-medium text-foreground">
-                Select member for QR code
-              </label>
+                <LocalizedText id="0912ec4720a5" leading={""} trailing={"\n              "} /></label>
               <SelectNative
                 value={selectedMemberId}
                 onChange={(e) => setSelectedMemberId(e.target.value)}
                 disabled={loading}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <option value="">Choose a member…</option>
+                <option value=""><LocalizedText id="0a21e6e9e362" leading={""} trailing={""} /></option>
                 {members.map((member) => (
                   <option key={member.id} value={member.id}>
                     {member.name} — {member.phone}
@@ -180,10 +182,9 @@ export default function AttendancePage() {
           {!selectedMember && (
             <Card>
               <CardContent className="py-12 text-center text-muted-foreground">
-                <p className="text-lg font-semibold text-foreground">Select a member</p>
+                <p className="text-lg font-semibold text-foreground"><LocalizedText id="6d593674c4e2" leading={""} trailing={""} /></p>
                 <p className="mt-1 text-sm">
-                  Choose a member from the dropdown above to generate a QR code.
-                </p>
+                  <LocalizedText id="adc867bfb408" leading={""} trailing={"\n                "} /></p>
               </CardContent>
             </Card>
           )}
@@ -199,19 +200,18 @@ export default function AttendancePage() {
         <div>
           <Card className="lg:sticky lg:top-4">
             <CardHeader>
-              <CardTitle className="text-lg">Today&apos;s attendance</CardTitle>
+              <CardTitle className="text-lg"><LocalizedText id="85f3630d936e" leading={""} trailing={""} /></CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="rounded-lg border border-border bg-muted/40 p-3">
-                <div className="text-xs font-medium text-muted-foreground">Total check-ins</div>
+                <div className="text-xs font-medium text-muted-foreground"><LocalizedText id="3279df4ee707" leading={""} trailing={""} /></div>
                 <div className="text-2xl font-bold text-foreground">{todayAttendance.length}</div>
               </div>
 
               <div className="max-h-[600px] space-y-2 overflow-y-auto">
                 {todayAttendance.length === 0 ? (
                   <p className="py-8 text-center text-sm text-muted-foreground">
-                    No attendance records yet
-                  </p>
+                    <LocalizedText id="9f039e153d10" leading={""} trailing={"\n                  "} /></p>
                 ) : (
                   todayAttendance.map((attendance) => (
                     <div key={attendance.id} className="rounded-lg border border-border bg-card p-3">

@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -36,8 +37,7 @@ export function OAuthButtons({ callbackUrl = "/dashboard", disabled }: OAuthButt
         ) : (
           <GoogleIcon className="h-4 w-4 mr-2" />
         )}
-        Continue with Google
-      </Button>
+        <LocalizedText id="ccc5b0edaae6" leading={""} trailing={"\n      "} /></Button>
       <Button
         type="button"
         variant="outline"
@@ -50,8 +50,7 @@ export function OAuthButtons({ callbackUrl = "/dashboard", disabled }: OAuthButt
         ) : (
           <GitHubIcon className="h-4 w-4 mr-2" />
         )}
-        Continue with GitHub
-      </Button>
+        <LocalizedText id="baf2ca88892c" leading={""} trailing={"\n      "} /></Button>
     </div>
   );
 }

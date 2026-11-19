@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { formatCurrency } from "@/lib/utils";
 
 export type SupplementInvoiceView = {
@@ -46,22 +47,22 @@ export function SupplementGstInvoiceTemplate({
   return (
     <div className="max-w-2xl mx-auto p-6 text-sm text-foreground print:p-4">
       <header className="border-b pb-4 mb-4">
-        <h1 className="text-lg font-bold">Tax Invoice — Supplements</h1>
+        <h1 className="text-lg font-bold"><LocalizedText id="73068d081484" leading={""} trailing={""} /></h1>
         <p className="font-semibold mt-2">{sellerName}</p>
         {invoice.seller.gstin && (
-          <p>GSTIN: {invoice.seller.gstin}</p>
+          <p><LocalizedText id="036816120c85" leading={""} trailing={" "} />{invoice.seller.gstin}</p>
         )}
         {invoice.seller.address && <p>{invoice.seller.address}</p>}
-        {invoice.seller.phone && <p>Phone: {invoice.seller.phone}</p>}
+        {invoice.seller.phone && <p><LocalizedText id="daeea4d0cc37" leading={""} trailing={" "} />{invoice.seller.phone}</p>}
       </header>
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <p className="text-muted-foreground text-xs">Invoice No.</p>
+          <p className="text-muted-foreground text-xs"><LocalizedText id="ff0dda2fcd3d" leading={""} trailing={""} /></p>
           <p className="font-mono font-medium">{invoice.invoiceNumber}</p>
         </div>
         <div>
-          <p className="text-muted-foreground text-xs">Date</p>
+          <p className="text-muted-foreground text-xs"><LocalizedText id="eb9a4bc1c0c1" leading={""} trailing={""} /></p>
           <p>
             {invoice.issuedAt
               ? new Date(invoice.issuedAt).toLocaleDateString("en-IN")
@@ -70,18 +71,18 @@ export function SupplementGstInvoiceTemplate({
         </div>
         {invoice.buyerName && (
           <div className="col-span-2">
-            <p className="text-muted-foreground text-xs">Buyer</p>
+            <p className="text-muted-foreground text-xs"><LocalizedText id="4186c93a90f9" leading={""} trailing={""} /></p>
             <p>
               {invoice.buyerName}
               {invoice.buyerPhone ? ` · ${invoice.buyerPhone}` : ""}
             </p>
-            {invoice.buyerGstin && <p>GSTIN: {invoice.buyerGstin}</p>}
+            {invoice.buyerGstin && <p><LocalizedText id="036816120c85" leading={""} trailing={" "} />{invoice.buyerGstin}</p>}
           </div>
         )}
         {invoice.placeOfSupplyState && (
           <div>
-            <p className="text-muted-foreground text-xs">Place of supply</p>
-            <p>State {invoice.placeOfSupplyState}</p>
+            <p className="text-muted-foreground text-xs"><LocalizedText id="c95282427368" leading={""} trailing={""} /></p>
+            <p><LocalizedText id="a72502067518" leading={""} trailing={" "} />{invoice.placeOfSupplyState}</p>
           </div>
         )}
       </div>
@@ -89,13 +90,13 @@ export function SupplementGstInvoiceTemplate({
       <table className="w-full border text-xs mb-4">
         <thead>
           <tr className="bg-muted/50">
-            <th className="p-2 text-left">Item</th>
-            <th className="p-2">HSN</th>
-            <th className="p-2">Qty</th>
-            <th className="p-2 text-right">Taxable</th>
-            <th className="p-2 text-right">CGST</th>
-            <th className="p-2 text-right">SGST</th>
-            <th className="p-2 text-right">Total</th>
+            <th className="p-2 text-left"><LocalizedText id="ecdda59aea5e" leading={""} trailing={""} /></th>
+            <th className="p-2"><LocalizedText id="8087b8c84744" leading={""} trailing={""} /></th>
+            <th className="p-2"><LocalizedText id="1e5ff9e500c2" leading={""} trailing={""} /></th>
+            <th className="p-2 text-right"><LocalizedText id="addd568c75b2" leading={""} trailing={""} /></th>
+            <th className="p-2 text-right"><LocalizedText id="20b88e574595" leading={""} trailing={""} /></th>
+            <th className="p-2 text-right"><LocalizedText id="6b1e3b6e5586" leading={""} trailing={""} /></th>
+            <th className="p-2 text-right"><LocalizedText id="b25928c69902" leading={""} trailing={""} /></th>
           </tr>
         </thead>
         <tbody>
@@ -104,8 +105,7 @@ export function SupplementGstInvoiceTemplate({
               <td className="p-2">
                 {line.description}
                 <span className="text-muted-foreground block">
-                  @{line.gstRatePercent}% GST
-                </span>
+                  @{line.gstRatePercent}<LocalizedText id="63a28c0c81b9" leading={""} trailing={"\n                "} /></span>
               </td>
               <td className="p-2 text-center">{line.hsnCode}</td>
               <td className="p-2 text-center">{line.quantity}</td>
@@ -123,14 +123,14 @@ export function SupplementGstInvoiceTemplate({
       </table>
 
       <div className="border-t pt-3 space-y-1 text-right">
-        <p>Taxable: {formatCurrency(invoice.taxableTotalInr)}</p>
-        <p>CGST: {formatCurrency(invoice.cgstTotalInr)}</p>
-        <p>SGST: {formatCurrency(invoice.sgstTotalInr)}</p>
+        <p><LocalizedText id="3a690b393fee" leading={""} trailing={" "} />{formatCurrency(invoice.taxableTotalInr)}</p>
+        <p><LocalizedText id="76cbf5f808e3" leading={""} trailing={" "} />{formatCurrency(invoice.cgstTotalInr)}</p>
+        <p><LocalizedText id="0a308e74bd7f" leading={""} trailing={" "} />{formatCurrency(invoice.sgstTotalInr)}</p>
         {invoice.igstTotalInr > 0 && (
-          <p>IGST: {formatCurrency(invoice.igstTotalInr)}</p>
+          <p><LocalizedText id="29b1f88c43b8" leading={""} trailing={" "} />{formatCurrency(invoice.igstTotalInr)}</p>
         )}
         <p className="text-base font-bold">
-          Grand total: {formatCurrency(invoice.grandTotalInr)}
+          <LocalizedText id="e4c899f79c37" leading={""} trailing={" "} />{formatCurrency(invoice.grandTotalInr)}
         </p>
       </div>
 
@@ -139,8 +139,7 @@ export function SupplementGstInvoiceTemplate({
       )}
 
       <p className="mt-6 text-[10px] text-muted-foreground">
-        Computer-generated GST invoice. For inter-state supplies, configure IGST in a future release.
-      </p>
+        <LocalizedText id="44783e81704d" leading={""} trailing={"\n      "} /></p>
     </div>
   );
 }

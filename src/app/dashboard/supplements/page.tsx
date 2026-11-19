@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
@@ -42,6 +44,7 @@ type OrderLine = {
 };
 
 export default function SupplementsPage() {
+  const tStatic = useStaticUiTranslations("static");
   const { data: productsData, mutate: mutateProducts } = useSWR<{ products: Product[] }>(
     "/api/commerce/products",
     fetcher,
@@ -167,39 +170,34 @@ export default function SupplementsPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Supplements"
-        description="GST tax invoices (HSN), pending orders, and staff-entered product reference links."
+        title={tStatic("7c63edf9a185")}
+        description={tStatic("ad7edc5c7303")}
       />
 
       <Card className="border-amber-500/30 bg-amber-500/5">
         <CardContent className="pt-4 text-sm text-muted-foreground">
-          <strong className="text-foreground">Compliance:</strong> Fitness360 does not
-          scrape Amazon or display price comparisons. Paste an Amazon.in URL only
-          after your staff verify the listing. Members see the same link in the
-          member app when they open a product — not automatic price checks.
-        </CardContent>
+          <strong className="text-foreground"><LocalizedText id="b54a4e377913" leading={""} trailing={""} /></strong> <LocalizedText id="0b17495f4563" leading={""} trailing={"\n        "} /></CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Seller GST (required for invoices)</CardTitle>
+          <CardTitle className="text-base"><LocalizedText id="f957146c3532" leading={""} trailing={""} /></CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col sm:flex-row gap-2">
           <Input
-            placeholder="GSTIN (15 chars)"
+            placeholder={tStatic("74d13f6513e8")}
             value={gstin || gymGst?.gstin || ""}
             onChange={(e) => setGstin(e.target.value)}
             className="font-mono"
           />
           <Input
-            placeholder="Legal name on invoice"
+            placeholder={tStatic("bc46f637e2a7")}
             value={legalName || gymGst?.invoiceLegalName || ""}
             onChange={(e) => setLegalName(e.target.value)}
             className="flex-1"
           />
           <Button onClick={saveGst} disabled={busy}>
-            Save
-          </Button>
+            <LocalizedText id="efc007a393f6" leading={""} trailing={"\n          "} /></Button>
         </CardContent>
       </Card>
 
@@ -208,24 +206,23 @@ export default function SupplementsPage() {
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               <Package className="h-4 w-4" />
-              Catalog (HSN + GST %)
-            </CardTitle>
+              <LocalizedText id="14b7fd642613" leading={""} trailing={"\n            "} /></CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex flex-wrap gap-2">
               <Input
-                placeholder="Product name"
+                placeholder={tStatic("63c0fe8e4bb2")}
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
               />
               <Input
-                placeholder="Price ₹ (incl. GST)"
+                placeholder={tStatic("1c30efad5112")}
                 value={newPrice}
                 onChange={(e) => setNewPrice(e.target.value)}
                 className="w-28"
               />
               <Input
-                placeholder="HSN"
+                placeholder={tStatic("8087b8c84744")}
                 value={newHsn}
                 onChange={(e) => setNewHsn(e.target.value)}
                 className="w-28 font-mono"
@@ -242,15 +239,14 @@ export default function SupplementsPage() {
                     <span>{formatCurrency(Number(p.priceInr))}</span>
                   </div>
                   <div className="flex gap-2 flex-wrap text-xs">
-                    <Badge variant="outline">HSN {p.hsnCode ?? "—"}</Badge>
+                    <Badge variant="outline"><LocalizedText id="8087b8c84744" leading={""} trailing={" "} />{p.hsnCode ?? "—"}</Badge>
                     <Badge variant="secondary">
-                      GST {Number(p.gstRatePercent)}%
+                      <LocalizedText id="d6d11f54ee48" leading={""} trailing={" "} />{Number(p.gstRatePercent)}%
                     </Badge>
                   </div>
                   <div className="space-y-1">
                     <p className="text-xs text-muted-foreground">
-                      Amazon reference (admin paste, optional)
-                    </p>
+                      <LocalizedText id="aefe2bd99007" leading={""} trailing={"\n                    "} /></p>
                     <div className="flex gap-2">
                       <Input
                         placeholder="https://www.amazon.in/dp/..."
@@ -266,8 +262,7 @@ export default function SupplementsPage() {
                         onClick={() => saveReference(p.id)}
                         disabled={busy}
                       >
-                        Save
-                      </Button>
+                        <LocalizedText id="efc007a393f6" leading={""} trailing={"\n                      "} /></Button>
                       {(refUrl[p.id] || p.amazonReferenceUrl) && (
                         <Button size="sm" variant="ghost" asChild>
                           <a
@@ -289,7 +284,7 @@ export default function SupplementsPage() {
 
         <Card>
           <CardHeader className="flex flex-row justify-between items-center">
-            <CardTitle className="text-base">Pending orders → GST invoice</CardTitle>
+            <CardTitle className="text-base"><LocalizedText id="28a83a009a6b" leading={""} trailing={""} /></CardTitle>
             <Button
               size="sm"
               disabled={busy || selectedLines.size === 0}
@@ -300,7 +295,7 @@ export default function SupplementsPage() {
               ) : (
                 <>
                   <FileText className="h-4 w-4 mr-1" />
-                  Issue ({selectedLines.size})
+                  <LocalizedText id="d0d01c8f7b3e" leading={""} trailing={""} />{selectedLines.size})
                 </>
               )}
             </Button>
@@ -308,8 +303,8 @@ export default function SupplementsPage() {
           <CardContent>
             {lines.length === 0 ? (
               <p className="text-sm text-muted-foreground">
-                No pending lines. Record an order via API or agent tool{" "}
-                <code className="text-xs">createOrderLine</code>.
+                <LocalizedText id="184619fd8f68" leading={""} trailing={""} />{" "}
+                <code className="text-xs"><LocalizedText id="373f11f5ee66" leading={""} trailing={""} /></code>.
               </p>
             ) : (
               <ul className="space-y-2">
@@ -335,7 +330,7 @@ export default function SupplementsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Recent tax invoices</CardTitle>
+          <CardTitle className="text-base"><LocalizedText id="f5fa5f1861ad" leading={""} trailing={""} /></CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="text-sm space-y-1">

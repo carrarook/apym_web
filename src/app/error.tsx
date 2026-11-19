@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useEffect } from "react";
 import { AlertCircle, RefreshCw, Home } from "lucide-react";
 import Link from "next/link";
@@ -30,17 +31,15 @@ export default function Error({
             </div>
           </div>
           <CardTitle className="text-2xl font-semibold">
-            Oops! Something went wrong
-          </CardTitle>
+            <LocalizedText id="459812b45300" leading={""} trailing={"\n          "} /></CardTitle>
           <CardDescription>
-            We encountered an unexpected error. Don&apos;t worry, your data is safe.
-          </CardDescription>
+            <LocalizedText id="275f3048929a" leading={""} trailing={"\n          "} /></CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {(error instanceof Error ? error.message : String(error)) && (
+          {error && (
             <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
               <p className="text-sm text-destructive font-mono break-words">
-                {error instanceof Error ? error.message : String(error)}
+                <LocalizedText id="0e7155936917" />
               </p>
             </div>
           )}
@@ -52,8 +51,7 @@ export default function Error({
               className="gap-2"
             >
               <RefreshCw className="h-4 w-4" />
-              Try Again
-            </Button>
+              <LocalizedText id="cef2fe093b68" leading={""} trailing={"\n            "} /></Button>
             
             <Button
               variant="outline"
@@ -61,14 +59,13 @@ export default function Error({
             >
               <Link href="/dashboard" className="gap-2">
                 <Home className="h-4 w-4" />
-                Go to Dashboard
-              </Link>
+                <LocalizedText id="f7b5bf8cef8e" leading={""} trailing={"\n              "} /></Link>
             </Button>
           </div>
           
           {error.digest && (
             <p className="text-xs text-muted-foreground text-center">
-              Error ID: {error.digest}
+              <LocalizedText id="013173f56453" leading={""} trailing={" "} />{error.digest}
             </p>
           )}
         </CardContent>

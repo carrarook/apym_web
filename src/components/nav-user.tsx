@@ -1,5 +1,6 @@
 "use client"
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import {
   CreditCard,
   EllipsisVertical,
@@ -87,27 +88,23 @@ export function NavUser({
                 <DropdownMenuItem asChild className="cursor-pointer">
                   <Link href="/dashboard/settings">
                     <Settings />
-                    Settings
-                  </Link>
+                    <LocalizedText id="c7f73bb54d92" leading={""} trailing={"\n                  "} /></Link>
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem asChild className="cursor-pointer">
                 <Link href="/dashboard/settings?tab=users">
                   <CircleUser />
-                  Account
-                </Link>
+                  <LocalizedText id="85dfa32c97d8" leading={""} trailing={"\n                "} /></Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild className="cursor-pointer">
                 <Link href="/dashboard/marketplace">
                   <CreditCard />
-                  Billing & apps
-                </Link>
+                  <LocalizedText id="0d4e7c499685" leading={""} trailing={"\n                "} /></Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild className="cursor-pointer">
                 <Link href="/dashboard/settings?tab=notifications">
                   <BellDot />
-                  Notifications
-                </Link>
+                  <LocalizedText id="753a22b2eb61" leading={""} trailing={"\n                "} /></Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -116,8 +113,7 @@ export function NavUser({
               onClick={() => signOut({ callbackUrl: "/login" })}
             >
               <LogOut />
-              Log out
-            </DropdownMenuItem>
+              <LocalizedText id="6e78c91f5a05" leading={""} trailing={"\n            "} /></DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

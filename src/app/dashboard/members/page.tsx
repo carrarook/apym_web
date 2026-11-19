@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import Link from "next/link";
@@ -48,6 +50,7 @@ interface Member {
 }
 
 export default function MembersPage() {
+  const tStatic = useStaticUiTranslations("static");
   const [members, setMembers] = useState<Member[]>([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ACTIVE");
@@ -134,8 +137,8 @@ export default function MembersPage() {
     return (
       <div className="space-y-4 sm:space-y-6">
         <DashboardPageHeader
-          title="Members"
-          description="Manage your gym members and their memberships"
+          title={tStatic("1cb449c11266")}
+          description={tStatic("e968dd3246b1")}
         />
         <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-2xl p-8 text-center">
           <div className="flex justify-center mb-4">
@@ -143,17 +146,16 @@ export default function MembersPage() {
               <AlertCircle className="h-8 w-8 text-red-600" />
             </div>
           </div>
-          <h3 className="text-lg font-semibold text-red-900 dark:text-red-100 mb-2">Failed to load members</h3>
+          <h3 className="text-lg font-semibold text-red-900 dark:text-red-100 mb-2"><LocalizedText id="210fd91922fd" leading={""} trailing={""} /></h3>
           <p className="text-sm text-red-700 dark:text-red-300 mb-6">
-            {error?.message || "An error occurred while fetching members"}
+            {error?.message || tStatic("4a11713ad2f0")}
           </p>
           <Button
             onClick={() => fetchMembers()}
             className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-xl hover:bg-red-700 transition-colors font-semibold"
           >
             <RefreshCw className="h-5 w-5" />
-            Retry
-          </Button>
+            <LocalizedText id="9f5cd8a2e880" leading={""} trailing={"\n          "} /></Button>
         </div>
       </div>
     );
@@ -162,8 +164,8 @@ export default function MembersPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Members"
-        description="Manage gym members"
+        title={tStatic("1cb449c11266")}
+        description={tStatic("a5089838d064")}
         actions={
           <>
             <Button
@@ -172,13 +174,12 @@ export default function MembersPage() {
               disabled={isLoading}
             >
               <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
-              <span className="hidden sm:inline">Refresh</span>
+              <span className="hidden sm:inline"><LocalizedText id="56e3badc4e6c" leading={""} trailing={""} /></span>
             </Button>
             <Button asChild>
               <Link href="/dashboard/members/new">
                 <Plus className="h-4 w-4" />
-                Add Member
-              </Link>
+                <LocalizedText id="fbe4f901cb1d" leading={""} trailing={"\n              "} /></Link>
             </Button>
           </>
         }
@@ -191,10 +192,7 @@ export default function MembersPage() {
               <TrendingDown className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium">
-                  {readinessData.highChurn.length} member
-                  {readinessData.highChurn.length === 1 ? "" : "s"} at elevated lapse risk
-                  (precomputed)
-                </p>
+                  {readinessData.highChurn.length} <LocalizedText id="6467baa3b187" leading={""} trailing={"\n                  "} />{readinessData.highChurn.length === 1 ? "" : "s"} <LocalizedText id="d6af9e1ecb88" leading={""} trailing={"\n                "} /></p>
                 <ul className="mt-2 text-xs text-muted-foreground space-y-1">
                   {readinessData.highChurn.slice(0, 5).map((m) => (
                     <li key={m.memberId}>
@@ -205,12 +203,12 @@ export default function MembersPage() {
                         {m.memberName}
                       </Link>
                       {" — "}
-                      lapse risk {m.churnRisk}/100 ({m.riskLevel.replace("_", " ")})
+                      <LocalizedText id="1aa51c759bdf" leading={""} trailing={" "} />{m.churnRisk}/100 ({m.riskLevel.replace("_", " ")})
                     </li>
                   ))}
                 </ul>
                 <Button variant="link" className="h-auto p-0 mt-2 text-xs" asChild>
-                  <Link href="/dashboard/renewals">Open recovery queue →</Link>
+                  <Link href="/dashboard/renewals"><LocalizedText id="4d6f640c1a74" leading={""} trailing={""} /></Link>
                 </Button>
               </div>
             </div>
@@ -227,7 +225,7 @@ export default function MembersPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               <Input
                 type="text"
-                placeholder="Search by name, phone, or Member ID..."
+                placeholder={tStatic("b45c697c3429")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-10 h-10 w-full"
@@ -241,25 +239,25 @@ export default function MembersPage() {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="h-10 px-3 text-sm border border-input rounded-md focus:ring-2 focus:ring-ring focus:border-ring transition-all bg-background flex-1 min-w-[120px]"
               >
-                <option value="">All Status</option>
-                <option value="ACTIVE">Active</option>
-                <option value="EXPIRED">Expired</option>
+                <option value=""><LocalizedText id="6b308de777df" leading={""} trailing={""} /></option>
+                <option value="ACTIVE"><LocalizedText id="a733b809d2f1" leading={""} trailing={""} /></option>
+                <option value="EXPIRED"><LocalizedText id="a689a999a5e6" leading={""} trailing={""} /></option>
               </SelectNative>
               
               <SelectNative
                 value={expiryFilter}
                 onChange={(e) => setExpiryFilter(e.target.value)}
                 className="h-10 px-3 text-sm border border-input rounded-md focus:ring-2 focus:ring-ring focus:border-ring transition-all bg-background flex-1 min-w-[140px]"
-                title="Filter by membership expiry"
+                title={tStatic("0258d50ca635")}
               >
-                <option value="">All Expiry</option>
-                <optgroup label="Expired (past)">
-                  <option value="expired_7">Expired in last 7 days</option>
-                  <option value="expired_30">Expired in last 30 days</option>
+                <option value=""><LocalizedText id="129ec496da1d" leading={""} trailing={""} /></option>
+                <optgroup label={tStatic("379c52e0c9d3")}>
+                  <option value="expired_7"><LocalizedText id="a7b88923c8e2" leading={""} trailing={""} /></option>
+                  <option value="expired_30"><LocalizedText id="7f26133bbc64" leading={""} trailing={""} /></option>
                 </optgroup>
-                <optgroup label="About to expire (future)">
-                  <option value="expires_7">Expires in next 7 days</option>
-                  <option value="expires_30">Expires in next 30 days</option>
+                <optgroup label={tStatic("fbae5e82b2f0")}>
+                  <option value="expires_7"><LocalizedText id="010b84f24c86" leading={""} trailing={""} /></option>
+                  <option value="expires_30"><LocalizedText id="41f81071d9c2" leading={""} trailing={""} /></option>
                 </optgroup>
               </SelectNative>
               
@@ -269,10 +267,10 @@ export default function MembersPage() {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="h-10 px-3 text-sm border border-input rounded-md focus:ring-2 focus:ring-ring focus:border-ring transition-all bg-background flex-1 min-w-[130px]"
               >
-                <option value="joinDate_desc">Newest first</option>
-                <option value="joinDate_asc">Oldest first</option>
-                <option value="name_asc">Name A–Z</option>
-                <option value="name_desc">Name Z–A</option>
+                <option value="joinDate_desc"><LocalizedText id="f5ec7772ca9b" leading={""} trailing={""} /></option>
+                <option value="joinDate_asc"><LocalizedText id="6a99c65c33fe" leading={""} trailing={""} /></option>
+                <option value="name_asc"><LocalizedText id="5d3eb2787034" leading={""} trailing={""} /></option>
+                <option value="name_desc"><LocalizedText id="080ec6fcc0b2" leading={""} trailing={""} /></option>
               </SelectNative>
             </div>
           </div>
@@ -296,8 +294,7 @@ export default function MembersPage() {
           </>
         ) : members.length === 0 ? (
           <div className="p-12 text-center text-muted-foreground font-medium">
-            No members found. Add your first member to get started!
-          </div>
+            <LocalizedText id="c1a6a43662df" leading={""} trailing={"\n          "} /></div>
         ) : (
           <>
             {/* Mobile: Card layout */}
@@ -335,7 +332,7 @@ export default function MembersPage() {
                           )}
                         </div>
                       </div>
-                      <span className="text-primary font-semibold text-sm shrink-0">View →</span>
+                      <span className="text-primary font-semibold text-sm shrink-0"><LocalizedText id="cf3dbdab782e" leading={""} trailing={""} /></span>
                     </div>
                   </Link>
                 );
@@ -347,26 +344,19 @@ export default function MembersPage() {
                 <thead className="bg-muted/50">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                      Member
-                    </th>
+                      <LocalizedText id="6853c98a6f43" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                      Member ID
-                    </th>
+                      <LocalizedText id="7a88b2371d9a" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                      Contact
-                    </th>
+                      <LocalizedText id="b37456c4530b" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                      Current Plan
-                    </th>
+                      <LocalizedText id="440a9f2ca18e" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                      Expiry
-                    </th>
+                      <LocalizedText id="ba8f571e0f93" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                      Status
-                    </th>
+                      <LocalizedText id="bae7d5be7082" leading={""} trailing={"\n                    "} /></th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                      Actions
-                    </th>
+                      <LocalizedText id="c3cd636a585b" leading={""} trailing={"\n                    "} /></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -384,7 +374,7 @@ export default function MembersPage() {
                               {member.name}
                             </div>
                             <div className="text-xs text-muted-foreground">
-                              Joined {formatDate(member.joinDate)}
+                              <LocalizedText id="43a1c6266f88" leading={""} trailing={" "} />{formatDate(member.joinDate)}
                             </div>
                           </div>
                         </td>
@@ -410,8 +400,7 @@ export default function MembersPage() {
                             </div>
                           ) : (
                             <span className="text-sm text-muted-foreground">
-                              No active plan
-                            </span>
+                              <LocalizedText id="42a74cf4d58b" leading={""} trailing={"\n                            "} /></span>
                           )}
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap">
@@ -431,8 +420,7 @@ export default function MembersPage() {
                             href={`/dashboard/members/${member.id}`}
                             className="text-primary hover:underline font-semibold"
                           >
-                            View
-                          </Link>
+                            <LocalizedText id="69bd4ef9fbd0" leading={""} trailing={"\n                          "} /></Link>
                         </td>
                       </tr>
                     );

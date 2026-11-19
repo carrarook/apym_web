@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useCallback, useEffect, useState } from "react";
 import {
   Bot,
@@ -77,6 +79,7 @@ function formatExpiry(iso: string) {
 }
 
 export function AgentMcpIntegrations() {
+  const tStatic = useStaticUiTranslations("static");
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState<AgentClientRow[]>([]);
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
@@ -98,7 +101,7 @@ export function AgentMcpIntegrations() {
     const res = await fetch("/api/settings/agent-clients");
     const data = await res.json();
     if (!res.ok) {
-      setError(data.error ?? "Failed to load");
+      setError(data.error ?? tStatic("af14db26285b"));
       setLoading(false);
       return;
     }
@@ -113,7 +116,7 @@ export function AgentMcpIntegrations() {
       active[0]?.clientId ??
       null;
     setSelectedClientId(pick);
-  }, []);
+  }, [tStatic]);
 
   const refreshConnect = useCallback(async (clientId: string) => {
     setConnectLoading(true);
@@ -126,7 +129,7 @@ export function AgentMcpIntegrations() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Could not refresh connection");
+        setError(data.error ?? tStatic("e46b634781d5"));
         setConnect(null);
         return;
       }
@@ -135,7 +138,7 @@ export function AgentMcpIntegrations() {
     } finally {
       setConnectLoading(false);
     }
-  }, []);
+  }, [tStatic]);
 
   useEffect(() => {
     load();
@@ -165,7 +168,7 @@ export function AgentMcpIntegrations() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Failed to create");
+        setError(data.error ?? tStatic("fcecc25c4582"));
         return;
       }
       setClientSecretOnce(data.clientSecret);
@@ -219,7 +222,7 @@ export function AgentMcpIntegrations() {
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error ?? "Failed to revoke");
+        setError(data.error ?? tStatic("fc130dcc651c"));
         return;
       }
       if (selectedClientId === clientId) {
@@ -255,18 +258,16 @@ export function AgentMcpIntegrations() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Bot className="h-5 w-5" />
-            Step 1 — Enable AI assistant
-          </CardTitle>
+            <LocalizedText id="4d7921897a16" leading={""} trailing={"\n          "} /></CardTitle>
           <CardDescription>
-            One setup per gym. We handle tokens — you do not paste secrets into Cursor by hand.
-          </CardDescription>
+            <LocalizedText id="ac09335d8c86" leading={""} trailing={"\n          "} /></CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {clients.length === 0 ? (
             <>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
                 <div className="flex-1">
-                  <Label htmlFor="agent-name">Name</Label>
+                  <Label htmlFor="agent-name"><LocalizedText id="709a23220f2c" leading={""} trailing={""} /></Label>
                   <Input
                     id="agent-name"
                     value={newName}
@@ -280,32 +281,28 @@ export function AgentMcpIntegrations() {
                   ) : (
                     <Plus className="mr-2 h-4 w-4" />
                   )}
-                  Enable assistant
-                </Button>
+                  <LocalizedText id="136b4e91e9e1" leading={""} trailing={"\n                "} /></Button>
               </div>
               <label className="flex cursor-pointer items-center gap-2 text-sm">
                 <CheckboxInput
                   checked={readOnly}
                   onChange={(e) => setReadOnly(e.target.checked)}
                 />
-                Read-only (recommended) — view members & renewals, no WhatsApp sends
-              </label>
+                <LocalizedText id="b1b634831b9d" leading={""} trailing={"\n              "} /></label>
             </>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Assistant enabled. Select an integration below or create another from the list.
-            </p>
+              <LocalizedText id="e7cc3389d506" leading={""} trailing={"\n            "} /></p>
           )}
 
           {clientSecretOnce ? (
             <div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm">
-              <p className="font-medium">Optional — for Zapier / scripts only</p>
+              <p className="font-medium"><LocalizedText id="d156eab508ae" leading={""} trailing={""} /></p>
               <p className="mt-1 font-mono text-xs break-all">
-                client_secret: {clientSecretOnce}
+                <LocalizedText id="84ce6dca8e01" leading={""} trailing={" "} />{clientSecretOnce}
               </p>
               <p className="mt-2 text-muted-foreground">
-                Cursor and Claude users can skip this — use Download config in Step 2.
-              </p>
+                <LocalizedText id="9a8987b487ce" leading={""} trailing={"\n              "} /></p>
             </div>
           ) : null}
         </CardContent>
@@ -314,10 +311,9 @@ export function AgentMcpIntegrations() {
       {clients.length > 0 ? (
         <Card>
           <CardHeader>
-            <CardTitle>Step 2 — Connect Cursor or Claude</CardTitle>
+            <CardTitle><LocalizedText id="777c1900b2e9" leading={""} trailing={""} /></CardTitle>
             <CardDescription>
-              Download one file, restart your assistant, then press Test connection.
-            </CardDescription>
+              <LocalizedText id="8c8ecd1ce152" leading={""} trailing={"\n            "} /></CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <ul className="divide-y rounded-lg border">
@@ -336,11 +332,11 @@ export function AgentMcpIntegrations() {
                     <div>
                       <p className="font-medium">{c.name}</p>
                       <p className="text-xs text-muted-foreground">
-                        {c.scopes.includes("write:reminders") ? "Read + write" : "Read-only"}
+                        {c.scopes.includes("write:reminders") ? tStatic("f0ac1d997f9f") : tStatic("9b19a5a212de")}
                       </p>
                     </div>
                     {selectedClientId === c.clientId ? (
-                      <span className="text-xs font-medium text-primary">Selected</span>
+                      <span className="text-xs font-medium text-primary"><LocalizedText id="9a976fc228b6" leading={""} trailing={""} /></span>
                     ) : null}
                   </button>
                 </li>
@@ -356,9 +352,7 @@ export function AgentMcpIntegrations() {
                     <RefreshCw className="h-4 w-4" />
                   )}
                   <span>
-                    Config auto-updates until {formatExpiry(connect.expiresAt)} — press
-                    &quot;Update assistant config&quot; to download a fresh file (no manual token edit).
-                  </span>
+                    <LocalizedText id="36322aaeb956" leading={""} trailing={" "} />{formatExpiry(connect.expiresAt)} <LocalizedText id="8df59ec9752f" leading={""} trailing={"\n                  "} /></span>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
@@ -370,8 +364,7 @@ export function AgentMcpIntegrations() {
                     {busyClientId === selectedClientId ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : null}
-                    Test connection
-                  </Button>
+                    <LocalizedText id="ccf66f074649" leading={""} trailing={"\n                  "} /></Button>
                   <Button
                     size="lg"
                     variant="default"
@@ -379,13 +372,11 @@ export function AgentMcpIntegrations() {
                     disabled={connectLoading}
                   >
                     <Download className="mr-2 h-4 w-4" />
-                    Update assistant config
-                  </Button>
+                    <LocalizedText id="6d030d052288" leading={""} trailing={"\n                  "} /></Button>
                   <Button variant="outline" asChild>
                     <a href={connect.mailtoShare}>
                       <Mail className="mr-2 h-4 w-4" />
-                      Email staff link
-                    </a>
+                      <LocalizedText id="7f682ca8ef72" leading={""} trailing={"\n                    "} /></a>
                   </Button>
                 </div>
 
@@ -407,8 +398,8 @@ export function AgentMcpIntegrations() {
                   onValueChange={(v) => setAssistantTab(v as "cursor" | "claude")}
                 >
                   <TabsList>
-                    <TabsTrigger value="cursor">Cursor</TabsTrigger>
-                    <TabsTrigger value="claude">Claude Desktop</TabsTrigger>
+                    <TabsTrigger value="cursor"><LocalizedText id="2239943c8d0a" leading={""} trailing={""} /></TabsTrigger>
+                    <TabsTrigger value="claude"><LocalizedText id="c0f8a6bc2e30" leading={""} trailing={""} /></TabsTrigger>
                   </TabsList>
                   <TabsContent value="cursor" className="space-y-3 pt-3">
                     <ol className="list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
@@ -426,8 +417,7 @@ export function AgentMcpIntegrations() {
                       }
                     >
                       <Download className="mr-2 h-4 w-4" />
-                      Download Cursor config
-                    </Button>
+                      <LocalizedText id="502f31e7039c" leading={""} trailing={"\n                    "} /></Button>
                   </TabsContent>
                   <TabsContent value="claude" className="space-y-3 pt-3">
                     <ol className="list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
@@ -436,9 +426,9 @@ export function AgentMcpIntegrations() {
                       ))}
                     </ol>
                     <p className="text-xs text-muted-foreground font-mono">
-                      Mac: {connect.claude.configPathMac}
+                      <LocalizedText id="c90ef87fb1b8" leading={""} trailing={" "} />{connect.claude.configPathMac}
                       <br />
-                      Win: {connect.claude.configPathWin}
+                      <LocalizedText id="4a3a00fed3d5" leading={""} trailing={" "} />{connect.claude.configPathWin}
                     </p>
                     <Button
                       variant="outline"
@@ -450,28 +440,26 @@ export function AgentMcpIntegrations() {
                       }
                     >
                       <Download className="mr-2 h-4 w-4" />
-                      Download Claude config
-                    </Button>
+                      <LocalizedText id="d46137299ae4" leading={""} trailing={"\n                    "} /></Button>
                   </TabsContent>
                 </Tabs>
 
                 <div className="flex flex-col gap-4 rounded-lg border bg-muted/20 p-4 sm:flex-row sm:items-start">
                   <div>
-                    <p className="text-sm font-medium">Staff QR — open this page on phone</p>
+                    <p className="text-sm font-medium"><LocalizedText id="bfec08fdd90d" leading={""} trailing={""} /></p>
                     <p className="mt-1 text-xs text-muted-foreground break-all">
                       {connect.settingsUrl}
                     </p>
                     <Button variant="link" className="h-auto px-0 text-xs" asChild>
                       <a href={connect.settingsUrl} target="_blank" rel="noreferrer">
                         <ExternalLink className="mr-1 h-3 w-3" />
-                        Open setup page
-                      </a>
+                        <LocalizedText id="1ae0ab8c8898" leading={""} trailing={"\n                      "} /></a>
                     </Button>
                   </div>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={connect.qrImageUrl}
-                    alt="QR code to Fitness360 AI setup"
+                    alt={tStatic("8b3ff22c133b")}
                     width={220}
                     height={220}
                     className="rounded-md border bg-white"
@@ -488,8 +476,7 @@ export function AgentMcpIntegrations() {
                   ) : (
                     <ChevronDown className="h-3 w-3" />
                   )}
-                  Advanced (developers)
-                </button>
+                  <LocalizedText id="04323da00c4d" leading={""} trailing={"\n                "} /></button>
                 {showAdvanced ? (
                   <pre className="max-h-40 overflow-auto rounded bg-background p-3 text-xs">
                     {JSON.stringify(
@@ -522,7 +509,7 @@ export function AgentMcpIntegrations() {
                     onClick={() => handleRevoke(c.clientId)}
                   >
                     <Trash2 className="mr-1 h-3 w-3" />
-                    Revoke {c.name}
+                    <LocalizedText id="0be720759ff0" leading={""} trailing={" "} />{c.name}
                   </Button>
                 ))}
             </div>

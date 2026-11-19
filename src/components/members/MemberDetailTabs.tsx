@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
 
 type Tab = "overview" | "payments" | "memberships" | "insights" | "comms";
@@ -17,14 +19,15 @@ export function MemberDetailTabs({
   insights: ReactNode;
   comms: ReactNode;
 }) {
+  const tStatic = useStaticUiTranslations("static");
   const [tab, setTab] = useState<Tab>("overview");
 
   const tabs: { id: Tab; label: string }[] = [
-    { id: "overview", label: "Overview" },
-    { id: "payments", label: "Payments" },
-    { id: "memberships", label: "Memberships" },
-    { id: "insights", label: "Insights" },
-    { id: "comms", label: "Comms" },
+    { id: "overview", label: tStatic("0efc2e6be4c2") },
+    { id: "payments", label: tStatic("44357ae55a21") },
+    { id: "memberships", label: tStatic("e351fc50739c") },
+    { id: "insights", label: tStatic("b4510362a5c5") },
+    { id: "comms", label: tStatic("9eadde168192") },
   ];
 
   const content =

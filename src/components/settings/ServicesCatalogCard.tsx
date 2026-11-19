@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +18,7 @@ interface ServiceRow {
 }
 
 export function ServicesCatalogCard() {
+  const tStatic = useStaticUiTranslations("static");
   const [services, setServices] = useState<ServiceRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
@@ -56,18 +59,18 @@ export function ServicesCatalogCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Services catalog</CardTitle>
-        <CardDescription>Group plans under services for clearer plan organization</CardDescription>
+        <CardTitle><LocalizedText id="cfc1a0f1f657" leading={""} trailing={""} /></CardTitle>
+        <CardDescription><LocalizedText id="c10ec59bffee" leading={""} trailing={""} /></CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex gap-2">
           <div className="flex-1">
-            <Label htmlFor="serviceName">New service</Label>
+            <Label htmlFor="serviceName"><LocalizedText id="a444057435c0" leading={""} trailing={""} /></Label>
             <Input
               id="serviceName"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Gym membership"
+              placeholder={tStatic("b25aeba8fcf5")}
               className="mt-1"
             />
           </div>
@@ -76,9 +79,9 @@ export function ServicesCatalogCard() {
           </Button>
         </div>
         {loading ? (
-          <p className="text-sm text-muted-foreground">Loading services…</p>
+          <p className="text-sm text-muted-foreground"><LocalizedText id="dbf5bbf72a48" leading={""} trailing={""} /></p>
         ) : services.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No services yet.</p>
+          <p className="text-sm text-muted-foreground"><LocalizedText id="21804054b087" leading={""} trailing={""} /></p>
         ) : (
           <ul className="divide-y divide-border rounded-lg border border-border">
             {services.map((s) => (
@@ -86,7 +89,7 @@ export function ServicesCatalogCard() {
                 <div>
                   <p className="font-medium">{s.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {s.Plan.length} plan{s.Plan.length === 1 ? "" : "s"}
+                    {s.Plan.length} <LocalizedText id="bed97175b06e" leading={""} trailing={""} />{s.Plan.length === 1 ? "" : "s"}
                   </p>
                 </div>
               </li>

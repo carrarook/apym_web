@@ -1,3 +1,5 @@
+import { LocalizedText } from "@/components/i18n/localized-text";
+import { getTranslations as getStaticUiTranslations } from "next-intl/server";
 import { formatCurrency } from "@/lib/utils";
 import { DollarSign, TrendingDown } from "lucide-react";
 import type { FinancesExpense, FinancesSalary } from "./finances-types";
@@ -7,7 +9,8 @@ interface FinancesSummaryCardsProps {
   expenses: FinancesExpense[];
 }
 
-export function FinancesSummaryCards({ salaries, expenses }: FinancesSummaryCardsProps) {
+export async function FinancesSummaryCards({ salaries, expenses }: FinancesSummaryCardsProps) {
+  const tStatic = await getStaticUiTranslations("static");
   const totalSalaries = Array.isArray(salaries)
     ? salaries.reduce((sum, s) => sum + parseFloat(String(s.amount || 0)), 0)
     : 0;
@@ -22,11 +25,11 @@ export function FinancesSummaryCards({ salaries, expenses }: FinancesSummaryCard
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12 blur-xl"></div>
         <div className="relative flex items-center justify-between">
           <div className="space-y-2">
-            <p className="text-sm text-green-50 font-medium opacity-90">Total Salaries</p>
+            <p className="text-sm text-green-50 font-medium opacity-90"><LocalizedText id="c1e42523e40f" leading={""} trailing={""} /></p>
             <p className="text-4xl font-bold tracking-tight">{formatCurrency(totalSalaries)}</p>
             <p className="text-xs text-green-50/80 font-medium">
               {Array.isArray(salaries) ? salaries.length : 0}{" "}
-              {salaries.length === 1 ? "payment" : "payments"}
+              {salaries.length === 1 ? "payment" : tStatic("40c477020282")}
             </p>
           </div>
           <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 border border-white/30">
@@ -39,7 +42,7 @@ export function FinancesSummaryCards({ salaries, expenses }: FinancesSummaryCard
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12 blur-xl"></div>
         <div className="relative flex items-center justify-between">
           <div className="space-y-2">
-            <p className="text-sm text-red-50 font-medium opacity-90">Total Expenses</p>
+            <p className="text-sm text-red-50 font-medium opacity-90"><LocalizedText id="750134b65d1b" leading={""} trailing={""} /></p>
             <p className="text-4xl font-bold tracking-tight">{formatCurrency(totalExpenses)}</p>
             <p className="text-xs text-red-50/80 font-medium">
               {Array.isArray(expenses) ? expenses.length : 0}{" "}

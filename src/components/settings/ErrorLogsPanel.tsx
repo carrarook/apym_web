@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -40,8 +41,8 @@ export function ErrorLogsPanel() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle>Error logs</CardTitle>
-          <CardDescription>Recent API, cron, and client errors for this gym.</CardDescription>
+          <CardTitle><LocalizedText id="1a1d9477fdb9" leading={""} trailing={""} /></CardTitle>
+          <CardDescription><LocalizedText id="026b235536d7" leading={""} trailing={""} /></CardDescription>
         </div>
         <Button variant="outline" size="sm" onClick={() => void load()} disabled={loading}>
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
@@ -49,9 +50,9 @@ export function ErrorLogsPanel() {
       </CardHeader>
       <CardContent>
         {loading && rows.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Loading…</p>
+          <p className="text-sm text-muted-foreground"><LocalizedText id="33ce417454bf" leading={""} trailing={""} /></p>
         ) : rows.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No errors recorded.</p>
+          <p className="text-sm text-muted-foreground"><LocalizedText id="26ac3771f4ea" leading={""} trailing={""} /></p>
         ) : (
           <div className="space-y-3 max-h-[480px] overflow-y-auto">
             {rows.map((row) => (

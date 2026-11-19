@@ -29,6 +29,7 @@ import {
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { usePathname } from "next/navigation"
+import { useTranslations, useTranslations as useStaticUiTranslations } from "next-intl"
 
 import { APP_NAME, APP_TAGLINE } from "@/lib/site-config"
 import { NavMain } from "@/components/nav-main"
@@ -48,6 +49,8 @@ import {
 } from "@/components/ui/sidebar"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const tStatic = useStaticUiTranslations("static");
+  const t = useTranslations("sidebar")
   const { data: session } = useSession()
   const isAdmin = session?.user?.role === "ADMIN"
   const assumeEmployee = useAssumeEmployeeView()
@@ -58,40 +61,40 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ...(staffView
       ? [
           {
-            label: "Staff",
+            label: tStatic("a4730a22cf49"),
             items: [
-              { title: "Members", url: "/dashboard/members", icon: Users },
-              { title: "Payments", url: "/dashboard/payments", icon: CreditCard },
-              { title: "Attendance", url: "/dashboard/attendance", icon: ClipboardCheck },
+              { title: tStatic("1cb449c11266"), url: "/dashboard/members", icon: Users },
+              { title: tStatic("44357ae55a21"), url: "/dashboard/payments", icon: CreditCard },
+              { title: tStatic("b689313fc18c"), url: "/dashboard/attendance", icon: ClipboardCheck },
             ],
           },
         ]
       : [
     {
-      label: "Overview",
+      label: tStatic("0efc2e6be4c2"),
       items: [
         {
-          title: "Dashboard",
+          title: tStatic("d87f47b47e4d"),
           url: "/dashboard",
           icon: LayoutDashboard,
         },
         {
-          title: "Agent workspace",
+          title: tStatic("5a67d8ce27b2"),
           url: "/dashboard/workspace",
           icon: Bot,
         },
         {
-          title: "Analytics",
+          title: tStatic("25bc96295797"),
           url: "/dashboard/analytics",
           icon: BarChart3,
         },
       ],
     },
     {
-      label: "Management",
+      label: tStatic("63cecca67b70"),
       items: [
         {
-          title: "Members",
+          title: tStatic("1cb449c11266"),
           url: "/dashboard/members",
           icon: Users,
           badge: counts.members.count,
@@ -99,12 +102,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           badgeColor: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
         },
         {
-          title: "Leads",
+          title: tStatic("f12ee6d3aaf3"),
           url: "/dashboard/leads",
           icon: Target,
         },
         {
-          title: "Payments",
+          title: tStatic("44357ae55a21"),
           url: "/dashboard/payments",
           icon: CreditCard,
           badge: counts.payments.count,
@@ -112,103 +115,103 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           badgeColor: "bg-green-500/10 text-green-700 dark:text-green-400",
         },
         {
-          title: "Bills & Receipts",
+          title: tStatic("2ea2406a47b0"),
           url: "/dashboard/bills",
           icon: FileText,
         },
         {
-          title: "Supplements (GST)",
+          title: tStatic("33057b9a5153"),
           url: "/dashboard/supplements",
           icon: Pill,
         },
         {
-          title: "Salaries & Expenses",
+          title: tStatic("3b73b33572da"),
           url: "/dashboard/finances",
           icon: DollarSign,
         },
         {
-          title: "Renewals",
+          title: tStatic("1c2680586b08"),
           url: "/dashboard/renewals",
           icon: Calendar,
           badge: counts.renewals,
           badgeColor: "bg-orange-500/10 text-orange-700 dark:text-orange-400",
         },
         {
-          title: "Overdue Tracking",
+          title: tStatic("25db080f9bfd"),
           url: "/dashboard/overdue",
           icon: AlertCircle,
           badge: counts.overdue,
           badgeColor: "bg-red-500/10 text-red-700 dark:text-red-400",
         },
         {
-          title: "Reminders",
+          title: tStatic("ae8c3939382f"),
           url: "/dashboard/reminders",
           icon: Bell,
         },
         {
-          title: "Campaigns",
+          title: tStatic("01a23a288f60"),
           url: "/dashboard/campaigns",
           icon: Megaphone,
         },
         {
-          title: "WA History",
+          title: tStatic("3691d1ee0676"),
           url: "/dashboard/wa-history",
           icon: History,
         },
         {
-          title: "WhatsApp",
+          title: tStatic("b336fc558722"),
           url: "/dashboard/bills/whatsapp",
           icon: MessageSquare,
         },
         {
-          title: "Classes",
+          title: tStatic("ed1846afee3b"),
           url: "/dashboard/classes",
           icon: CalendarDays,
         },
         {
-          title: "Marketplace",
+          title: tStatic("983095c0ea49"),
           url: "/dashboard/marketplace",
           icon: Store,
         },
         {
-          title: "Employees",
+          title: tStatic("8c5b6be28fbd"),
           url: "/dashboard/employees",
           icon: UserPlus,
         },
       ],
     },
     {
-      label: "Fitness",
+      label: tStatic("aae59f9dbbc0"),
       items: [
         {
-          title: "Attendance",
+          title: tStatic("b689313fc18c"),
           url: "/dashboard/attendance",
           icon: ClipboardCheck,
         },
         {
-          title: "Workouts",
+          title: tStatic("ccb58b229959"),
           url: "/dashboard/workouts",
           icon: Dumbbell,
         },
         {
-          title: "Challenges",
+          title: tStatic("ff38765fb13e"),
           url: "/dashboard/challenges",
           icon: Trophy,
         },
       ],
     },
     ...(isAdmin && !staffView ? [{
-      label: "Admin",
+      label: tStatic("4e7afebcfbae"),
       items: [
         {
-          title: "Tasks",
+          title: tStatic("090ec5f560fc"),
           url: "/dashboard/tasks",
           icon: ListTodo,
           badge: counts.adminTasks,
           badgeColor: "bg-violet-500/10 text-violet-700 dark:text-violet-400",
         },
         {
-          title: "Trainers",
+          title: tStatic("8fb5a5fe41f6"),
           url: "/dashboard/trainers",
           icon: Dumbbell,
         },
@@ -217,18 +220,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ...(isAdmin && !staffView
       ? [
           {
-            label: "Settings",
+            label: tStatic("c7f73bb54d92"),
             items: [
               {
-                title: "Settings",
+                title: tStatic("c7f73bb54d92"),
                 url: "/dashboard/settings",
                 icon: Settings,
                 items: [
-                  { title: "Team & access", url: "/dashboard/settings?tab=users" },
-                  { title: "Notifications", url: "/dashboard/settings?tab=notifications" },
-                  { title: "Session", url: "/dashboard/settings?tab=session" },
-                  { title: "Plans & pricing", url: "/dashboard/settings?tab=plans" },
-                  { title: "Action logs", url: "/dashboard/settings?tab=logs" },
+                  { title: tStatic("780ef0e55f01"), url: "/dashboard/settings?tab=users" },
+                  { title: tStatic("753a22b2eb61"), url: "/dashboard/settings?tab=notifications" },
+                  { title: tStatic("f7f1997c6cd1"), url: "/dashboard/settings?tab=session" },
+                  { title: tStatic("81e912e0641a"), url: "/dashboard/settings?tab=plans" },
+                  { title: tStatic("fdd273e5d3a9"), url: "/dashboard/settings?tab=logs" },
                 ],
               },
             ],
@@ -238,8 +241,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ]),
   ]
 
+  const groupKeys: Record<string, string> = {
+    Staff: "staff", Overview: "overview", Management: "management", Fitness: "fitness", Admin: "admin", Settings: "settings",
+  }
+  const itemKeys: Record<string, string> = {
+    Members: "members", Payments: "payments", Attendance: "attendance", Dashboard: "dashboard", "Agent workspace": "workspace", Analytics: "analytics", Leads: "leads", "Bills & Receipts": "bills", "Supplements (GST)": "supplements", "Salaries & Expenses": "finances", Renewals: "renewals", "Overdue Tracking": "overdue", Reminders: "reminders", Campaigns: "campaigns", "WA History": "waHistory", WhatsApp: "whatsapp", Classes: "classes", Marketplace: "marketplace", Employees: "employees", Workouts: "workouts", Challenges: "challenges", Tasks: "tasks", Trainers: "trainers", Settings: "settings", "Team & access": "teamAccess", Notifications: "notifications", Session: "session", "Plans & pricing": "plans", "Action logs": "actionLogs",
+  }
+  const translatedGroups = navGroups.map((group) => ({
+    ...group,
+    label: t(`groups.${groupKeys[group.label] ?? group.label}`),
+    items: group.items.map((item) => ({
+      ...item,
+      title: t(`items.${itemKeys[item.title] ?? item.title}`),
+      items: "items" in item ? item.items?.map((subItem) => ({
+        ...subItem,
+        title: t(`items.${itemKeys[subItem.title] ?? subItem.title}`),
+      })) : undefined,
+    })),
+  }))
+
   const user = {
-    name: session?.user?.name || "User",
+    name: session?.user?.name || t("items.user"),
     email: (session?.user as any)?.contactNumber || "",
     avatar: "",
   }
@@ -264,7 +286,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {navGroups.map((group, idx) => (
+        {translatedGroups.map((group, idx) => (
           <React.Fragment key={group.label}>
             {idx > 0 && <SidebarSeparator className="my-2" />}
             <NavMain label={group.label} items={group.items} />

@@ -1,5 +1,8 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { formatDate, formatCurrency } from "@/lib/utils";
 import { APP_NAME } from "@/lib/site-config";
 import Image from "next/image";
@@ -28,6 +31,7 @@ interface BillTemplateProps {
 }
 
 export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
+  const tStatic = useStaticUiTranslations("static");
   const billRef = useRef<HTMLDivElement>(null);
   const workoutPlan = JSON.parse(bill.workoutPlan);
   
@@ -82,8 +86,7 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            Download PDF
-          </Button>
+            <LocalizedText id="98e5ef062b2a" leading={""} trailing={"\n          "} /></Button>
         </div>
       )}
       <div ref={billRef} style={{
@@ -124,8 +127,7 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
           textTransform: 'uppercase',
           letterSpacing: '0.3px',
         }}>
-          Official Receipt
-        </div>
+          <LocalizedText id="0d481b97ade1" leading={""} trailing={"\n        "} /></div>
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <h1 style={{
@@ -135,8 +137,7 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
               letterSpacing: '1.5px',
               marginBottom: '1px',
             }}>
-              GYMKHANA
-            </h1>
+              <LocalizedText id="85699b1eb5de" leading={""} trailing={"\n            "} /></h1>
             <div style={{
               fontSize: '8px',
               color: '#ffd700',
@@ -144,8 +145,7 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
               letterSpacing: '1px',
               textTransform: 'uppercase',
             }}>
-              Fitness & Wellness Zone
-            </div>
+              <LocalizedText id="3df51fbc3692" leading={""} trailing={"\n            "} /></div>
           </div>
           <div style={{
             width: '50px',
@@ -161,8 +161,7 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
           }}>
             <div style={{ fontSize: '20px' }}>💪</div>
             <div style={{ fontSize: '6px', color: '#1a1a1a', fontWeight: '900', letterSpacing: '0.3px' }}>
-              GYM KHANA
-            </div>
+              <LocalizedText id="cfba71405018" leading={""} trailing={"\n            "} /></div>
           </div>
         </div>
       </div>
@@ -181,8 +180,7 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
           letterSpacing: '1px',
           fontWeight: '900',
         }}>
-          Payment Receipt
-        </h2>
+          <LocalizedText id="abeb726bce8b" leading={""} trailing={"\n        "} /></h2>
         
         <div style={{
           background: 'white',
@@ -209,50 +207,44 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
           }}>
             <div>
               <div style={{ fontSize: '7px', color: '#666', textTransform: 'uppercase', marginBottom: '1px', fontWeight: '600' }}>
-                ID
-              </div>
+                <LocalizedText id="89f89c02cf47" leading={""} trailing={"\n              "} /></div>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#1a1a1a' }}>
                 {bill.member.externalId || 'N/A'}
               </div>
             </div>
             <div>
               <div style={{ fontSize: '7px', color: '#666', textTransform: 'uppercase', marginBottom: '1px', fontWeight: '600' }}>
-                Contact
-              </div>
+                <LocalizedText id="b37456c4530b" leading={""} trailing={"\n              "} /></div>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#1a1a1a' }}>
                 {bill.member.phone}
               </div>
             </div>
             <div>
               <div style={{ fontSize: '7px', color: '#666', textTransform: 'uppercase', marginBottom: '1px', fontWeight: '600' }}>
-                Program
-              </div>
+                <LocalizedText id="9d68007b0763" leading={""} trailing={"\n              "} /></div>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#1a1a1a' }}>
                 {bill.programType.replace('_', ' ')}
               </div>
             </div>
             <div>
               <div style={{ fontSize: '7px', color: '#666', textTransform: 'uppercase', marginBottom: '1px', fontWeight: '600' }}>
-                Method
-              </div>
+                <LocalizedText id="88306943fea7" leading={""} trailing={"\n              "} /></div>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#1a1a1a' }}>
                 {bill.paymentMethod}
               </div>
             </div>
             <div>
               <div style={{ fontSize: '7px', color: '#666', textTransform: 'uppercase', marginBottom: '1px', fontWeight: '600' }}>
-                Month
-              </div>
+                <LocalizedText id="082bc378cd60" leading={""} trailing={"\n              "} /></div>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#1a1a1a' }}>
                 {bill.month}
               </div>
             </div>
             <div>
               <div style={{ fontSize: '7px', color: '#666', textTransform: 'uppercase', marginBottom: '1px', fontWeight: '600' }}>
-                Amount
-              </div>
+                <LocalizedText id="43dc8532f7e5" leading={""} trailing={"\n              "} /></div>
               {bill.hideAmount ? (
-                <div style={{ fontSize: '9px', color: '#999', fontStyle: 'italic' }}>Hidden</div>
+                <div style={{ fontSize: '9px', color: '#999', fontStyle: 'italic' }}><LocalizedText id="d4c2792a7245" leading={""} trailing={""} /></div>
               ) : (
                 <div style={{ fontSize: '14px', color: '#10b981', fontWeight: '900' }}>
                   ₹{bill.amount}
@@ -270,11 +262,11 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
             textAlign: 'center',
           }}>
             <div style={{ fontSize: '10px', fontWeight: '700', marginBottom: '2px' }}>
-              Valid: {formatDateForBill(bill.validFrom)} → {formatDateForBill(bill.validTo)}
+              <LocalizedText id="b374b8f976c9" leading={""} trailing={" "} />{formatDateForBill(bill.validFrom)} → {formatDateForBill(bill.validTo)}
             </div>
             {bill.nextPaymentDate && (
               <div style={{ fontSize: '8px', opacity: 0.9 }}>
-                Next: {formatDateForBill(bill.nextPaymentDate)}
+                <LocalizedText id="69a52c6de668" leading={""} trailing={" "} />{formatDateForBill(bill.nextPaymentDate)}
               </div>
             )}
           </div>
@@ -297,8 +289,7 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
           marginBottom: '6px',
           letterSpacing: '1.5px',
         }}>
-          Your Workout Plan
-        </h2>
+          <LocalizedText id="750aed2f5b05" leading={""} trailing={"\n        "} /></h2>
         
         <div style={{
           background: 'rgba(255, 255, 255, 0.05)',
@@ -318,7 +309,7 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px',
               }}>
-                {workoutPlan.MOBILITY ? '🏃 CARDIO' : '🔥 CARDIO'}
+                {workoutPlan.MOBILITY ? tStatic("07df475886a1") : tStatic("d737e5fad368")}
               </h3>
               <div style={{
                 display: 'grid',
@@ -358,8 +349,7 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px',
               }}>
-                💪 STRENGTH
-              </h3>
+                <LocalizedText id="c276a4baef1c" leading={""} trailing={"\n              "} /></h3>
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(2, 1fr)',
@@ -401,16 +391,14 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
       }}>
         <div>
           <div style={{ fontSize: '6px', color: '#666', textTransform: 'uppercase', marginBottom: '1px' }}>
-            Receipt Number
-          </div>
+            <LocalizedText id="37553f8e2e5c" leading={""} trailing={"\n          "} /></div>
           <div style={{ fontSize: '8px', fontWeight: '700', color: '#1a1a1a', fontFamily: 'monospace' }}>
             {bill.billNumber}
           </div>
         </div>
         <div>
           <div style={{ fontSize: '6px', color: '#666', textTransform: 'uppercase', marginBottom: '1px' }}>
-            Issue Date
-          </div>
+            <LocalizedText id="72072fe97bbd" leading={""} trailing={"\n          "} /></div>
           <div style={{ fontSize: '8px', fontWeight: '700', color: '#1a1a1a', fontFamily: 'monospace' }}>
             {new Date().toLocaleDateString('en-GB')}
           </div>
@@ -428,8 +416,7 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
           textAlign: 'center',
           fontWeight: '600',
         }}>
-          SCAN
-        </div>
+          <LocalizedText id="c5a19955ea5d" leading={""} trailing={"\n        "} /></div>
       </div>
       
       <div style={{
@@ -440,7 +427,7 @@ export function BillTemplate({ bill, printMode = false }: BillTemplateProps) {
         background: 'white',
         flex: '0 0 auto',
       }}>
-        Generated by {APP_NAME}
+        <LocalizedText id="0817edfe10c4" leading={""} trailing={" "} />{APP_NAME}
       </div>
       </div>
     </div>

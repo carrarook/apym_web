@@ -1,5 +1,8 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -40,6 +43,7 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
     { salaries, employees, loading, filters, onFiltersChange, fetchSalaries },
     ref,
   ) {
+  const tStatic = useStaticUiTranslations("static");
     const router = useRouter();
     const { data: session } = useSession();
     const [showForm, setShowForm] = useState(false);
@@ -139,20 +143,20 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
           }
 
           if (response.status === 403) {
-            toast.error("Admin access required to delete records");
+            toast.error(tStatic("99b8d3b5479e"));
             return;
           }
 
           if (response.ok) {
-            toast.success("Salary deleted successfully");
+            toast.success(tStatic("85797edd510f"));
             await fetchSalaries();
           } else {
             const error = await response.json();
-            toast.error(error.error || "Failed to delete salary");
+            toast.error(error.error || tStatic("d2f6646b6286"));
           }
         } catch (error) {
           logger.error("Error deleting salary:", error as Error);
-          toast.error("Failed to delete salary");
+          toast.error(tStatic("d2f6646b6286"));
         } finally {
           setDeletingKey((current) => (current === actionKey ? null : current));
         }
@@ -174,17 +178,17 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
         <div className="bg-muted bg-card/80 backdrop-blur-xl rounded-2xl shadow-lg shadow-gray-900/5 shadow-md p-6 border border-border/50 border-border/50">
           <div className="flex items-center gap-3 mb-6">
             <Filter className="h-5 w-5 text-muted-foreground" />
-            <h3 className="text-lg font-bold text-foreground">Filters</h3>
+            <h3 className="text-lg font-bold text-foreground"><LocalizedText id="96e578211aa2" leading={""} trailing={""} /></h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
             <div>
-              <label className="block text-sm font-semibold text-foreground mb-2">Employee</label>
+              <label className="block text-sm font-semibold text-foreground mb-2"><LocalizedText id="079711ea16f3" leading={""} trailing={""} /></label>
               <SelectNative
                 value={filters.employeeId}
                 onChange={(e) => onFiltersChange({ ...filters, employeeId: e.target.value })}
                 className="w-full px-4 py-2.5 border border-input rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white bg-background text-foreground font-medium"
               >
-                <option value="">All Employees</option>
+                <option value=""><LocalizedText id="127ec08a028d" leading={""} trailing={""} /></option>
                 {employees.map((emp) => (
                   <option key={emp.id} value={emp.id}>
                     {emp.name}
@@ -193,7 +197,7 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
               </SelectNative>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-foreground mb-2">Year</label>
+              <label className="block text-sm font-semibold text-foreground mb-2"><LocalizedText id="879e32326c52" leading={""} trailing={""} /></label>
               <Input
                 type="number"
                 placeholder="e.g., 2025"
@@ -203,7 +207,7 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-foreground mb-2">Month</label>
+              <label className="block text-sm font-semibold text-foreground mb-2"><LocalizedText id="082bc378cd60" leading={""} trailing={""} /></label>
               <Input
                 type="number"
                 placeholder="1-12"
@@ -215,7 +219,7 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-foreground mb-2">Start Date</label>
+              <label className="block text-sm font-semibold text-foreground mb-2"><LocalizedText id="9d7ab1a55796" leading={""} trailing={""} /></label>
               <Input
                 type="date"
                 value={filters.startDate}
@@ -224,7 +228,7 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-foreground mb-2">End Date</label>
+              <label className="block text-sm font-semibold text-foreground mb-2"><LocalizedText id="84b147812589" leading={""} trailing={""} /></label>
               <Input
                 type="date"
                 value={filters.endDate}
@@ -239,18 +243,18 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
           {loading ? (
             <div className="p-16 text-center">
               <Loader2 className="h-8 w-8 text-blue-600 animate-spin mx-auto mb-4" />
-              <p className="text-muted-foreground font-medium">Loading...</p>
+              <p className="text-muted-foreground font-medium"><LocalizedText id="b04ba49f8486" leading={""} trailing={""} /></p>
             </div>
           ) : salaries.length === 0 ? (
             <div className="p-20 text-center">
               <div className="bg-gradient-to-br from-muted to-muted/80 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
                 <User className="h-10 w-10 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-2">No salaries found</h3>
+              <h3 className="text-xl font-bold text-foreground mb-2"><LocalizedText id="39a84e3d606c" leading={""} trailing={""} /></h3>
               <p className="text-muted-foreground text-muted-foreground text-sm mb-6 max-w-md mx-auto">
                 {Object.values(filters).some((v) => v)
                   ? "No salary records match your current filters. Try adjusting your search criteria."
-                  : "Get started by adding your first salary payment record."}
+                  : tStatic("a3bfa34584e0")}
               </p>
               {Object.values(filters).some((v) => v) && (
                 <Button
@@ -258,8 +262,7 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
                   onClick={clearFilters}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm"
                 >
-                  Clear Filters
-                </Button>
+                  <LocalizedText id="381c4bf1d409" leading={""} trailing={"\n                "} /></Button>
               )}
             </div>
           ) : (
@@ -267,13 +270,13 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
               <table className="min-w-full divide-y divide-gray-200/50">
                 <thead className="bg-muted/50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Date</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Employee</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Amount</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Method</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Reference</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase">Paid By</th>
-                    <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase">Actions</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase"><LocalizedText id="eb9a4bc1c0c1" leading={""} trailing={""} /></th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase"><LocalizedText id="079711ea16f3" leading={""} trailing={""} /></th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase"><LocalizedText id="43dc8532f7e5" leading={""} trailing={""} /></th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase"><LocalizedText id="88306943fea7" leading={""} trailing={""} /></th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase"><LocalizedText id="db1c784524e1" leading={""} trailing={""} /></th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-muted-foreground uppercase"><LocalizedText id="2e06e8e0d2ab" leading={""} trailing={""} /></th>
+                    <th className="px-6 py-4 text-right text-xs font-bold text-muted-foreground uppercase"><LocalizedText id="c3cd636a585b" leading={""} trailing={""} /></th>
                   </tr>
                 </thead>
                 <tbody className="bg-card/50 divide-y divide-border/50">
@@ -340,7 +343,7 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
             <div className="bg-card rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto text-foreground border border-border">
               <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between">
                 <h2 className="text-xl font-bold text-foreground">
-                  {editingItem ? "Edit Salary" : "Add Salary"}
+                  {editingItem ? tStatic("65f7eaaccad8") : tStatic("f4d215dfe721")}
                 </h2>
                 <Button type="button" onClick={handleCloseForm} className="text-muted-foreground hover:text-foreground">
                   <X className="h-6 w-6" />
@@ -349,14 +352,14 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
 
               <form onSubmit={handleSubmitSalary} className="p-6 space-y-6 [&_label]:text-foreground">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Employee *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1"><LocalizedText id="27f4940bbceb" leading={""} trailing={""} /></label>
                   <SelectNative
                     required
                     value={salaryForm.employeeId}
                     onChange={(e) => setSalaryForm({ ...salaryForm, employeeId: e.target.value })}
                     className="w-full px-3 py-2 border border-input rounded-lg focus:ring-2 focus:ring-blue-500 bg-background text-foreground"
                   >
-                    <option value="">Select Employee</option>
+                    <option value=""><LocalizedText id="983c14972631" leading={""} trailing={""} /></option>
                     {employees.map((emp) => (
                       <option key={emp.id} value={emp.id}>
                         {emp.name} ({emp.email})
@@ -365,7 +368,7 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
                   </SelectNative>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Amount *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1"><LocalizedText id="76aa32f20786" leading={""} trailing={""} /></label>
                   <Input
                     type="number"
                     step="0.01"
@@ -376,7 +379,7 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Payment Date *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1"><LocalizedText id="1d4f8d3dbd20" leading={""} trailing={""} /></label>
                   <Input
                     type="date"
                     required
@@ -386,7 +389,7 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Payment Method *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1"><LocalizedText id="e9b0f1740a19" leading={""} trailing={""} /></label>
                   <SelectNative
                     required
                     value={salaryForm.method}
@@ -401,7 +404,7 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
                   </SelectNative>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Reference</label>
+                  <label className="block text-sm font-medium text-foreground mb-1"><LocalizedText id="db1c784524e1" leading={""} trailing={""} /></label>
                   <Input
                     type="text"
                     value={salaryForm.reference}
@@ -410,7 +413,7 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Notes</label>
+                  <label className="block text-sm font-medium text-foreground mb-1"><LocalizedText id="70440046a3dc" leading={""} trailing={""} /></label>
                   <Textarea
                     value={salaryForm.notes}
                     onChange={(e) => setSalaryForm({ ...salaryForm, notes: e.target.value })}
@@ -425,15 +428,14 @@ export const SalariesPanel = forwardRef<SalariesPanelHandle, SalariesPanelProps>
                     onClick={handleCloseForm}
                     className="px-4 py-2 text-foreground bg-muted rounded-lg hover:bg-muted/80 transition-colors"
                   >
-                    Cancel
-                  </Button>
+                    <LocalizedText id="77dfd2135f4d" leading={""} trailing={"\n                  "} /></Button>
                   <Button
                     type="submit"
                     disabled={submitting}
                     className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     <Save className="h-4 w-4" />
-                    {submitting ? "Saving..." : editingItem ? "Update" : "Create"}
+                    {submitting ? tStatic("ae7e887517b0") : editingItem ? tStatic("fb91e24fa52d") : tStatic("6e157c5da441")}
                   </Button>
                 </div>
               </form>

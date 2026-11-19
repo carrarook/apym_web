@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useCallback, useState } from "react";
 import useSWR from "swr";
 import { Button } from "@/components/ui/button";
@@ -11,6 +13,7 @@ import { Loader2, RefreshCw, CheckCircle, XCircle } from "lucide-react";
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export default function TasksPage() {
+  const tStatic = useStaticUiTranslations("static");
   const { data, mutate, isLoading } = useSWR("/api/admin/tasks", fetcher);
   const [syncing, setSyncing] = useState(false);
 
@@ -42,17 +45,17 @@ export default function TasksPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Tasks"
+        title={tStatic("090ec5f560fc")}
         description="Admin inbox — late payments, data issues, and items needing resolution."
         actions={
           <Button variant="outline" size="sm" onClick={sync} disabled={syncing}>
             {syncing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-            <span className="ml-2">Sync</span>
+            <span className="ml-2"><LocalizedText id="905f63092ff2" leading={""} trailing={""} /></span>
           </Button>
         }
       />
       {isLoading ? (
-        <p className="text-muted-foreground text-sm">Loading…</p>
+        <p className="text-muted-foreground text-sm"><LocalizedText id="33ce417454bf" leading={""} trailing={""} /></p>
       ) : (
         <div className="space-y-3">
           {tasks.map((t: { id: string; title: string; description: string; priority: string; status: string }) => (
@@ -67,16 +70,14 @@ export default function TasksPage() {
               {t.status === "PENDING" && (
                 <CardContent className="flex gap-2 pt-0">
                   <Button size="sm" onClick={() => resolve(t.id, "resolve")}>
-                    <CheckCircle className="h-4 w-4 mr-1" /> Resolve
-                  </Button>
+                    <CheckCircle className="h-4 w-4 mr-1" /> <LocalizedText id="ac7f958cc028" leading={""} trailing={"\n                  "} /></Button>
                   <Button size="sm" variant="outline" onClick={() => resolve(t.id, "dismiss")}>
-                    <XCircle className="h-4 w-4 mr-1" /> Dismiss
-                  </Button>
+                    <XCircle className="h-4 w-4 mr-1" /> <LocalizedText id="70afe9eff3f2" leading={""} trailing={"\n                  "} /></Button>
                 </CardContent>
               )}
             </Card>
           ))}
-          {tasks.length === 0 && <p className="text-muted-foreground text-sm">No tasks — run Sync to scan.</p>}
+          {tasks.length === 0 && <p className="text-muted-foreground text-sm"><LocalizedText id="ca10b5fece21" leading={""} trailing={""} /></p>}
         </div>
       )}
     </div>

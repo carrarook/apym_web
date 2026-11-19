@@ -1,15 +1,17 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { MemberDetailData } from "./member-detail-types";
 
 export function MemberDetailHeader({ member }: { member: MemberDetailData }) {
+  const tStatic = useStaticUiTranslations("static");
   return (
     <div className="mb-6 flex items-center gap-4">
       <Link href="/dashboard/members">
-        <Button variant="ghost" size="icon" aria-label="Back to members">
+        <Button variant="ghost" size="icon" aria-label={tStatic("dadf25fd6fe2")}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
       </Link>

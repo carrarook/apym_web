@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useCallback, useEffect, useState } from "react";
 import { DashboardPageHeader } from "@/components/dashboard/dashboard-page-header";
 import { Button } from "@/components/ui/button";
@@ -22,6 +24,7 @@ interface GymClassRow {
 }
 
 export default function ClassesPage() {
+  const tStatic = useStaticUiTranslations("static");
   const [classes, setClasses] = useState<GymClassRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,16 +43,16 @@ export default function ClassesPage() {
       const res = await fetch("/api/classes");
       const json = await res.json();
       if (!json.success) {
-        setError(json.error?.message ?? "Could not load classes");
+        setError(json.error?.message ?? tStatic("01032f5c6e96"));
         return;
       }
       setClasses(json.data.classes);
     } catch {
-      setError("Could not load classes");
+      setError(tStatic("01032f5c6e96"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [tStatic]);
 
   useEffect(() => {
     load();
@@ -73,7 +76,7 @@ export default function ClassesPage() {
       });
       const json = await res.json();
       if (!json.success) {
-        setError(json.error?.message ?? "Install Class Booking from Marketplace first");
+        setError(json.error?.message ?? tStatic("10b2998c3d12"));
         return;
       }
       setShowForm(false);
@@ -88,17 +91,16 @@ export default function ClassesPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Classes"
-        description="Schedule group classes and manage bookings"
+        title={tStatic("ed1846afee3b")}
+        description={tStatic("5be211b414b8")}
         actions={
           <div className="flex gap-2">
             <Button variant="outline" asChild size="sm">
-              <Link href="/dashboard/marketplace">Marketplace</Link>
+              <Link href="/dashboard/marketplace"><LocalizedText id="983095c0ea49" leading={""} trailing={""} /></Link>
             </Button>
             <Button size="sm" onClick={() => setShowForm((v) => !v)}>
               <Plus className="mr-1 h-4 w-4" />
-              New class
-            </Button>
+              <LocalizedText id="ed7a967c08bb" leading={""} trailing={"\n            "} /></Button>
           </div>
         }
       />
@@ -108,20 +110,20 @@ export default function ClassesPage() {
       {showForm && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Create class</CardTitle>
+            <CardTitle className="text-base"><LocalizedText id="184f5c77d91d" leading={""} trailing={""} /></CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={createClass} className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name"><LocalizedText id="709a23220f2c" leading={""} trailing={""} /></Label>
                 <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="trainer">Trainer</Label>
+                <Label htmlFor="trainer"><LocalizedText id="63deca910cbd" leading={""} trailing={""} /></Label>
                 <Input id="trainer" value={trainerName} onChange={(e) => setTrainerName(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="starts">Starts</Label>
+                <Label htmlFor="starts"><LocalizedText id="fc612a2fcc72" leading={""} trailing={""} /></Label>
                 <Input
                   id="starts"
                   type="datetime-local"
@@ -131,7 +133,7 @@ export default function ClassesPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="ends">Ends</Label>
+                <Label htmlFor="ends"><LocalizedText id="91856dcb7d93" leading={""} trailing={""} /></Label>
                 <Input
                   id="ends"
                   type="datetime-local"
@@ -141,7 +143,7 @@ export default function ClassesPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="capacity">Capacity</Label>
+                <Label htmlFor="capacity"><LocalizedText id="45bd908df490" leading={""} trailing={""} /></Label>
                 <Input
                   id="capacity"
                   type="number"
@@ -152,7 +154,7 @@ export default function ClassesPage() {
               </div>
               <div className="flex items-end">
                 <Button type="submit" disabled={saving}>
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : tStatic("efc007a393f6")}
                 </Button>
               </div>
             </form>
@@ -171,7 +173,7 @@ export default function ClassesPage() {
               <CardHeader>
                 <CardTitle className="text-lg">{c.name}</CardTitle>
                 {c.trainerName && (
-                  <p className="text-sm text-muted-foreground">Trainer: {c.trainerName}</p>
+                  <p className="text-sm text-muted-foreground"><LocalizedText id="490ef6c25523" leading={""} trailing={" "} />{c.trainerName}</p>
                 )}
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground space-y-1">
@@ -179,16 +181,15 @@ export default function ClassesPage() {
                   {formatDate(new Date(c.startsAt))} — {formatDate(new Date(c.endsAt))}
                 </p>
                 <p>
-                  Bookings: {c.bookingsCount} / {c.capacity}
+                  <LocalizedText id="cb680bb1a53f" leading={""} trailing={" "} />{c.bookingsCount} / {c.capacity}
                 </p>
-                <p className="capitalize">Status: {c.status.toLowerCase()}</p>
+                <p className="capitalize"><LocalizedText id="11dc9e195292" leading={""} trailing={" "} />{c.status.toLowerCase()}</p>
               </CardContent>
             </Card>
           ))}
           {classes.length === 0 && (
             <p className="text-muted-foreground col-span-full">
-              No classes yet. Install &quot;Class Booking&quot; from the marketplace, then create your first class.
-            </p>
+              <LocalizedText id="df5fcbab7321" leading={""} trailing={"\n            "} /></p>
           )}
         </div>
       )}

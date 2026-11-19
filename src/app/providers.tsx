@@ -3,6 +3,8 @@
 import { SessionProvider } from "next-auth/react";
 import { SWRConfig } from "swr";
 import { ThemeProvider } from "@/contexts/theme-context";
+import { NextIntlClientProvider } from "next-intl";
+import type { Locale } from "@/lib/i18n";
 
 const swrConfig = {
   revalidateOnFocus: false,
@@ -11,11 +13,21 @@ const swrConfig = {
   keepPreviousData: true,
 };
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  children,
+  locale,
+  messages,
+}: {
+  children: React.ReactNode;
+  locale: Locale;
+  messages: Record<string, unknown>;
+}) {
   return (
     <SWRConfig value={swrConfig}>
       <ThemeProvider>
-        <SessionProvider>{children}</SessionProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <SessionProvider>{children}</SessionProvider>
+        </NextIntlClientProvider>
       </ThemeProvider>
     </SWRConfig>
   );

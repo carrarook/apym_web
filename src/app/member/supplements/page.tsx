@@ -1,5 +1,8 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState, useEffect } from "react";
 import { ExternalLink, Loader2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +20,7 @@ type Product = {
 };
 
 export default function MemberSupplementsPage() {
+  const tStatic = useStaticUiTranslations("static");
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [invoices, setInvoices] = useState<
@@ -78,11 +82,9 @@ export default function MemberSupplementsPage() {
 
   return (
     <div className="space-y-4 max-w-lg mx-auto p-4">
-      <h1 className="text-xl font-semibold">Supplements</h1>
+      <h1 className="text-xl font-semibold"><LocalizedText id="7c63edf9a185" leading={""} trailing={""} /></h1>
       <p className="text-sm text-muted-foreground">
-        Prices are set by your gym and include GST where marked. We do not compare
-        prices to online marketplaces in the app.
-      </p>
+        <LocalizedText id="57e5adddc7a3" leading={""} trailing={"\n      "} /></p>
 
       {openRef && (
         <Card className="border-primary/40">
@@ -93,13 +95,11 @@ export default function MemberSupplementsPage() {
             <p className="text-muted-foreground">{openRef.disclaimer}</p>
             <Button asChild className="w-full">
               <a href={openRef.url} target="_blank" rel="noopener noreferrer">
-                Open reference listing
-                <ExternalLink className="h-4 w-4 ml-2" />
+                <LocalizedText id="29de7fcf4fc8" leading={""} trailing={"\n                "} /><ExternalLink className="h-4 w-4 ml-2" />
               </a>
             </Button>
             <Button variant="ghost" size="sm" onClick={() => setOpenRef(null)}>
-              Close
-            </Button>
+              <LocalizedText id="bbfa773e5a63" leading={""} trailing={"\n            "} /></Button>
           </CardContent>
         </Card>
       )}
@@ -112,7 +112,7 @@ export default function MemberSupplementsPage() {
               <span>{formatCurrency(p.priceInr)}</span>
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              HSN {p.hsnCode ?? "—"} · GST {p.gstRatePercent}%
+              <LocalizedText id="8087b8c84744" leading={""} trailing={" "} />{p.hsnCode ?? "—"} <LocalizedText id="59353faea606" leading={""} trailing={" "} />{p.gstRatePercent}%
             </p>
             {p.hasReferenceLink && (
               <Button
@@ -125,7 +125,7 @@ export default function MemberSupplementsPage() {
                 {refLoading === p.id ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  "View product reference"
+                  tStatic("9045e01588fa")
                 )}
               </Button>
             )}
@@ -138,8 +138,7 @@ export default function MemberSupplementsPage() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <FileText className="h-4 w-4" />
-              Your tax invoices
-            </CardTitle>
+              <LocalizedText id="fe23ff379537" leading={""} trailing={"\n            "} /></CardTitle>
           </CardHeader>
           <CardContent className="text-sm space-y-1">
             {invoices.map((inv) => (
@@ -148,8 +147,7 @@ export default function MemberSupplementsPage() {
               </p>
             ))}
             <p className="text-xs text-muted-foreground pt-2">
-              Request a PDF copy from the front desk.
-            </p>
+              <LocalizedText id="703d31e75ebd" leading={""} trailing={"\n            "} /></p>
           </CardContent>
         </Card>
       )}

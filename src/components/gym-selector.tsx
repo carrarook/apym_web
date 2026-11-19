@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { SelectNative } from "@/components/ui/select-native";
@@ -14,6 +16,7 @@ export function GymSelector({
   initialGyms: GymOption[];
   initialGymId: string | null;
 }) {
+  const tStatic = useStaticUiTranslations("static");
   const router = useRouter();
   const [gyms, setGyms] = React.useState(initialGyms);
   const [value, setValue] = React.useState(initialGymId ?? "");
@@ -68,13 +71,12 @@ export function GymSelector({
   return (
     <div className="hidden min-w-0 max-w-[11rem] flex-col gap-1 sm:flex md:max-w-[14rem]">
       <Label htmlFor={selectId} className="sr-only">
-        Active gym location
-      </Label>
+        <LocalizedText id="369432819f1d" leading={""} trailing={"\n      "} /></Label>
       <SelectNative
         id={selectId}
         value={value || gyms[0]?.id || ""}
         onChange={onChange}
-        aria-label="Active gym location"
+        aria-label={tStatic("369432819f1d")}
       >
         {gyms.map((g) => (
           <option key={g.id} value={g.id}>

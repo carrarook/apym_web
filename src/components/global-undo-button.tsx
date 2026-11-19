@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import { Loader2, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +10,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export function GlobalUndoButton() {
+  const tStatic = useStaticUiTranslations("static");
   const { data: session } = useSession();
   const router = useRouter();
   const signedIn = !!session?.user?.id;
@@ -29,7 +32,7 @@ export function GlobalUndoButton() {
       router.push(`/dashboard/members/${encodeURIComponent(item.memberId)}`);
       router.refresh();
     } else {
-      toast.error("Undo failed or expired");
+      toast.error(tStatic("c51f1b96da0e"));
     }
   };
 

@@ -34,7 +34,7 @@ function MemberPayContent() {
       });
       const json = await res.json();
       if (!res.ok) {
-        setError(json.error?.message ?? "OTP failed");
+        setError(translate("member.pay.otpFailed"));
         return;
       }
       setOtpSent(true);
@@ -48,7 +48,7 @@ function MemberPayContent() {
 
   const payNow = async () => {
     if (!memberId || !gymId || !payToken) {
-      setError("Missing memberId, gymId, or payToken in link");
+      setError(translate("member.pay.missingData"));
       return;
     }
     setLoading(true);
@@ -61,7 +61,7 @@ function MemberPayContent() {
           body: JSON.stringify({ gymId, phone, code: otpCode }),
         });
         if (!verify.ok) {
-          setError("Invalid OTP");
+          setError(translate("member.pay.invalidOtp"));
           return;
         }
       }
@@ -73,7 +73,7 @@ function MemberPayContent() {
       });
       const json = await res.json();
       if (!res.ok) {
-        setError(json.error?.message ?? "Could not create payment link");
+        setError(translate("member.pay.paymentLinkFailed"));
         return;
       }
       const url = json.data?.checkoutUrl ?? json.checkoutUrl;
@@ -92,34 +92,34 @@ function MemberPayContent() {
     <div className="space-y-4 max-w-md mx-auto p-4">
       <h1 className="text-xl font-semibold">{translate("member.pay.title")}</h1>
       <p className="text-sm text-muted-foreground">
-        Pay membership online via Razorpay when your gym has Online Payments enabled.
+        {translate("member.pay.description")}
       </p>
       {demo && (
         <p className="rounded-md bg-muted p-3 text-sm">
-          Demo mode — configure RAZORPAY_KEY_ID in production.
+          {translate("member.pay.demo")}
         </p>
       )}
 
       {!memberId || !gymId || !payToken ? (
         <p className="text-sm text-destructive">
-          Use the signed link from your gym: /member/pay?memberId=…&amp;gymId=…&amp;payToken=…
+          {translate("member.pay.signedLink")}
         </p>
       ) : (
         <>
           <div className="space-y-2">
-            <p className="text-xs text-muted-foreground">Verify phone (GTM-M-003)</p>
+            <p className="text-xs text-muted-foreground">{translate("member.pay.verifyPhone")}</p>
             <Input
-              placeholder="Your registered phone"
+              placeholder={translate("member.pay.registeredPhone")}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
             {!otpSent ? (
               <Button variant="outline" className="w-full" onClick={sendOtp} disabled={loading}>
-                Send OTP
+                {translate("member.pay.sendCode")}
               </Button>
             ) : (
               <Input
-                placeholder="6-digit OTP"
+                placeholder={translate("member.pay.codePlaceholder")}
                 value={otpCode}
                 onChange={(e) => setOtpCode(e.target.value)}
               />
@@ -130,14 +130,14 @@ function MemberPayContent() {
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <>
-                Pay with UPI / Card (Razorpay)
+                {translate("member.pay.payWith")}
                 <ExternalLink className="h-4 w-4 ml-2" />
               </>
             )}
           </Button>
           {checkoutUrl && !checkoutUrl.startsWith("http") && (
             <p className="text-xs text-muted-foreground">
-              Demo checkout: {checkoutUrl}
+              {translate("member.pay.demoCheckout")}: {checkoutUrl}
             </p>
           )}
         </>

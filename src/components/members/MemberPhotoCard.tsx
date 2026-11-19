@@ -1,5 +1,8 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useRef, useState } from "react";
 import { Camera, Sparkles, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +16,7 @@ type MemberPhotoCardProps = {
 };
 
 export function MemberPhotoCard({ memberId, name, photo, onPhotoChange }: MemberPhotoCardProps) {
+  const tStatic = useStaticUiTranslations("static");
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState<"upload" | "generate" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -29,11 +33,11 @@ export function MemberPhotoCard({ memberId, name, photo, onPhotoChange }: Member
       const res = await fetch("/api/members/photo", { method: "POST", body: form });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.error || body.message || "Upload failed");
+        throw new Error(body.error || body.message || tStatic("ad0d0603e2aa"));
       }
       onPhotoChange();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Upload failed");
+      setError(e instanceof Error ? e.message : tStatic("ad0d0603e2aa"));
     } finally {
       setBusy(null);
     }
@@ -50,11 +54,11 @@ export function MemberPhotoCard({ memberId, name, photo, onPhotoChange }: Member
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.error || body.message || "Generate failed");
+        throw new Error(body.error || body.message || tStatic("48bdcb40c58d"));
       }
       onPhotoChange();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Generate failed");
+      setError(e instanceof Error ? e.message : tStatic("48bdcb40c58d"));
     } finally {
       setBusy(null);
     }
@@ -71,10 +75,9 @@ export function MemberPhotoCard({ memberId, name, photo, onPhotoChange }: Member
       </div>
 
       <div className="flex-1 space-y-2">
-        <p className="text-sm font-medium">Member photo</p>
+        <p className="text-sm font-medium"><LocalizedText id="e65250a4316a" leading={""} trailing={""} /></p>
         <p className="text-xs text-muted-foreground">
-          Upload a photo or generate an initials avatar. Max 500KB (JPEG, PNG, WebP, GIF).
-        </p>
+          <LocalizedText id="6cb9f71bcf79" leading={""} trailing={"\n        "} /></p>
         {error ? <p className="text-xs text-destructive">{error}</p> : null}
         <div className="flex flex-wrap gap-2">
           <input
@@ -96,7 +99,7 @@ export function MemberPhotoCard({ memberId, name, photo, onPhotoChange }: Member
             onClick={() => inputRef.current?.click()}
           >
             <Upload className="mr-2 h-4 w-4" />
-            {busy === "upload" ? "Uploading…" : "Upload photo"}
+            {busy === "upload" ? tStatic("d921a79afac4") : tStatic("69abef728ddd")}
           </Button>
           <Button
             type="button"
@@ -106,7 +109,7 @@ export function MemberPhotoCard({ memberId, name, photo, onPhotoChange }: Member
             onClick={() => void handleGenerate()}
           >
             <Sparkles className="mr-2 h-4 w-4" />
-            {busy === "generate" ? "Generating…" : "Generate avatar"}
+            {busy === "generate" ? tStatic("11edad70c1ff") : tStatic("924a945cec68")}
           </Button>
         </div>
       </div>

@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState } from "react";
 import useSWR from "swr";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +24,7 @@ type OfferRow = {
 };
 
 export function OffersPanel() {
+  const tStatic = useStaticUiTranslations("static");
   const { data, isLoading, mutate } = useSWR<{ offers: OfferRow[] }>(
     "/api/offers",
     fetcher,
@@ -64,7 +67,7 @@ export function OffersPanel() {
   return (
     <Card>
       <CardHeader className="pb-2 flex flex-row items-center justify-between gap-2">
-        <CardTitle className="text-lg">Offers & promos</CardTitle>
+        <CardTitle className="text-lg"><LocalizedText id="2aa6b1fbb073" leading={""} trailing={""} /></CardTitle>
         <Button
           variant="outline"
           size="sm"
@@ -76,22 +79,21 @@ export function OffersPanel() {
           ) : (
             <>
               <Sparkles className="h-4 w-4 mr-1" />
-              From quiet hours
-            </>
+              <LocalizedText id="e2d868774f8b" leading={""} trailing={"\n            "} /></>
           )}
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-col sm:flex-row gap-2">
           <Input
-            placeholder="Offer name"
+            placeholder={tStatic("ad148afd3c80")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="flex-1"
           />
           <Input
             type="number"
-            placeholder="% off"
+            placeholder={tStatic("1d3e61873633")}
             value={discountPercent}
             onChange={(e) => setDiscountPercent(e.target.value)}
             className="w-24"
@@ -102,8 +104,7 @@ export function OffersPanel() {
         </div>
         {isLoading && (
           <p className="text-sm text-muted-foreground flex items-center gap-2">
-            <Loader2 className="h-4 w-4 animate-spin" /> Loading…
-          </p>
+            <Loader2 className="h-4 w-4 animate-spin" /> <LocalizedText id="33ce417454bf" leading={""} trailing={"\n          "} /></p>
         )}
         <ul className="space-y-2">
           {(data?.offers ?? []).map((o) => (
@@ -115,8 +116,7 @@ export function OffersPanel() {
               <div className="flex items-center gap-2 shrink-0">
                 {o.discountPercent != null && (
                   <span className="text-xs text-muted-foreground">
-                    {Number(o.discountPercent)}% off
-                  </span>
+                    {Number(o.discountPercent)}<LocalizedText id="1d3e61873633" leading={""} trailing={"\n                  "} /></span>
                 )}
                 <Badge variant={o.status === "ACTIVE" ? "default" : "secondary"}>
                   {o.status}
@@ -126,7 +126,7 @@ export function OffersPanel() {
           ))}
         </ul>
         {!isLoading && (data?.offers?.length ?? 0) === 0 && (
-          <p className="text-xs text-muted-foreground">No offers yet. Create one or suggest from attendance heatmap.</p>
+          <p className="text-xs text-muted-foreground"><LocalizedText id="bfaea0a895e3" leading={""} trailing={""} /></p>
         )}
       </CardContent>
     </Card>

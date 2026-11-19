@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -104,7 +105,7 @@ export default function BillDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-muted-foreground font-medium">Loading bill...</div>
+        <div className="text-muted-foreground font-medium"><LocalizedText id="e9d9039a2fac" leading={""} trailing={""} /></div>
       </div>
     );
   }
@@ -126,10 +127,10 @@ export default function BillDetailPage() {
           </Link>
           <div>
             <h1 className="text-3xl font-semibold text-foreground tracking-tight">
-              Bill #{bill.billNumber}
+              <LocalizedText id="bd114897574a" leading={""} trailing={""} />{bill.billNumber}
             </h1>
             <p className="text-sm text-muted-foreground mt-1 font-medium">
-              Generated on {formatDate(bill.createdAt)}
+              <LocalizedText id="bf4e8c03f53c" leading={""} trailing={" "} />{formatDate(bill.createdAt)}
             </p>
           </div>
         </div>
@@ -139,16 +140,14 @@ export default function BillDetailPage() {
             className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-200 font-semibold text-sm active:scale-[0.98]"
           >
             <Printer className="h-4 w-4" />
-            Print
-          </Button>
+            <LocalizedText id="5b221e9c2a45" leading={""} trailing={"\n          "} /></Button>
           <Button
             onClick={handleDelete}
             disabled={deleting || isQueued(`delete-bill:${billId}`)}
             className="inline-flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-xl hover:shadow-lg hover:shadow-red-500/30 transition-all duration-200 font-semibold text-sm active:scale-[0.98]"
           >
             <Trash2 className="h-4 w-4" />
-            Delete
-          </Button>
+            <LocalizedText id="f6fdbe48dc54" leading={""} trailing={"\n          "} /></Button>
         </div>
       </div>
 
@@ -159,26 +158,26 @@ export default function BillDetailPage() {
 
       {/* Bill Details */}
       <div className="bg-card rounded-2xl shadow-lg  p-6 border border-border">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Bill Information</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4"><LocalizedText id="dc5ae10ce7b5" leading={""} trailing={""} /></h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-muted-foreground font-medium mb-1">Bill Number</p>
+            <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="40c9c8b23254" leading={""} trailing={""} /></p>
             <p className="text-base font-mono font-semibold text-foreground">{bill.billNumber}</p>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground font-medium mb-1">Program Type</p>
+            <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="7dbed0f598c8" leading={""} trailing={""} /></p>
             <p className="text-base font-semibold text-foreground">
               {bill.programType.replace("_", " ")}
             </p>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground font-medium mb-1">Payment Method</p>
+            <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="f383f6a23c87" leading={""} trailing={""} /></p>
             <p className="text-base font-semibold text-foreground">{bill.paymentMethod}</p>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground font-medium mb-1">Amount</p>
+            <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="43dc8532f7e5" leading={""} trailing={""} /></p>
             {bill.hideAmount ? (
-              <p className="text-base text-muted-foreground italic">Hidden</p>
+              <p className="text-base text-muted-foreground italic"><LocalizedText id="d4c2792a7245" leading={""} trailing={""} /></p>
             ) : (
               <p className="text-base font-bold text-green-600">
                 {formatCurrency(Number(bill.amount))}
@@ -186,30 +185,30 @@ export default function BillDetailPage() {
             )}
           </div>
           <div>
-            <p className="text-sm text-muted-foreground font-medium mb-1">Month</p>
+            <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="082bc378cd60" leading={""} trailing={""} /></p>
             <p className="text-base font-semibold text-foreground">{bill.month}</p>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground font-medium mb-1">Validity Period</p>
+            <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="922f77237b7e" leading={""} trailing={""} /></p>
             <p className="text-base font-semibold text-foreground">
               {formatDate(bill.validFrom)} - {formatDate(bill.validTo)}
             </p>
           </div>
           {bill.nextPaymentDate && (
             <div>
-              <p className="text-sm text-muted-foreground font-medium mb-1">Next Payment Date</p>
+              <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="1305c34091c8" leading={""} trailing={""} /></p>
               <p className="text-base font-semibold text-foreground">
                 {formatDate(bill.nextPaymentDate)}
               </p>
             </div>
           )}
           <div>
-            <p className="text-sm text-muted-foreground font-medium mb-1">Generated By</p>
+            <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="4cf8f74b6e21" leading={""} trailing={""} /></p>
             <p className="text-base font-semibold text-foreground">{bill.generatedBy.name}</p>
           </div>
           {bill.notes && (
             <div className="md:col-span-2">
-              <p className="text-sm text-muted-foreground font-medium mb-1">Notes</p>
+              <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="70440046a3dc" leading={""} trailing={""} /></p>
               <p className="text-base text-foreground">{bill.notes}</p>
             </div>
           )}
@@ -218,25 +217,25 @@ export default function BillDetailPage() {
 
       {/* Member Details */}
       <div className="bg-card rounded-2xl shadow-lg  p-6 border border-border">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Member Details</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4"><LocalizedText id="1cdce95ccdbc" leading={""} trailing={""} /></h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-muted-foreground font-medium mb-1">Name</p>
+            <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="709a23220f2c" leading={""} trailing={""} /></p>
             <p className="text-base font-semibold text-foreground">{bill.member.name}</p>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground font-medium mb-1">Phone</p>
+            <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="77064d526523" leading={""} trailing={""} /></p>
             <p className="text-base font-semibold text-foreground">{bill.member.phone}</p>
           </div>
           {bill.member.email && (
             <div>
-              <p className="text-sm text-muted-foreground font-medium mb-1">Email</p>
+              <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="84add5b29527" leading={""} trailing={""} /></p>
               <p className="text-base font-semibold text-foreground">{bill.member.email}</p>
             </div>
           )}
           {bill.member.externalId && (
             <div>
-              <p className="text-sm text-muted-foreground font-medium mb-1">Member ID</p>
+              <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="7a88b2371d9a" leading={""} trailing={""} /></p>
               <p className="text-base font-mono font-semibold text-foreground">
                 {bill.member.externalId}
               </p>

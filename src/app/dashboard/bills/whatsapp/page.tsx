@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState, useEffect } from "react";
 import { ArrowLeft, Send, Loader2, CheckCircle, XCircle, MessageSquare, Calendar, Dumbbell } from "lucide-react";
 import Link from "next/link";
@@ -16,6 +18,7 @@ import {
   WHATSAPP_SETUP_HINT,
 } from "@/lib/messaging/whatsapp-copy";
 import { createLogger } from "@/lib/logger";
+import { STATIC_UI_KEYS } from "@/lib/i18n/static-keys";
 
 const logger = createLogger("dashboard-bills");
 
@@ -39,6 +42,7 @@ const PAYMENT_METHODS = [
 ];
 
 export default function WhatsAppServicePage() {
+  const tStatic = useStaticUiTranslations("static");
   const [serviceStatus, setServiceStatus] = useState<"checking" | "online" | "offline">("checking");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -172,7 +176,7 @@ export default function WhatsAppServicePage() {
 
       const result = await response.json();
       if (result.success) {
-        setMessage({ type: "success", text: "Admission card sent successfully!" });
+        setMessage({ type: "success", text: tStatic("4ae487953515") });
         setAdmissionForm({
           phone: "",
           name: "",
@@ -183,7 +187,7 @@ export default function WhatsAppServicePage() {
           validTill: "",
         });
       } else {
-        setMessage({ type: "error", text: result.error || "Failed to send admission card" });
+        setMessage({ type: "error", text: result.error || tStatic("7efc1307bffa") });
       }
     } catch (error) {
       setMessage({ type: "error", text: WHATSAPP_NOT_CONFIGURED });
@@ -216,7 +220,7 @@ export default function WhatsAppServicePage() {
 
       const result = await response.json();
       if (result.success) {
-        setMessage({ type: "success", text: "Renewal receipt sent successfully!" });
+        setMessage({ type: "success", text: tStatic("c4a66f0c0c7b") });
         setRenewalForm({
           phone: "",
           name: "",
@@ -227,7 +231,7 @@ export default function WhatsAppServicePage() {
           validTill: "",
         });
       } else {
-        setMessage({ type: "error", text: result.error || "Failed to send renewal receipt" });
+        setMessage({ type: "error", text: result.error || tStatic("174045f3f9c2") });
       }
     } catch (error) {
       setMessage({ type: "error", text: WHATSAPP_NOT_CONFIGURED });
@@ -258,13 +262,13 @@ export default function WhatsAppServicePage() {
 
       const result = await response.json();
       if (result.success) {
-        setMessage({ type: "success", text: "Workout plan sent successfully!" });
+        setMessage({ type: "success", text: tStatic("63e3f0c7543d") });
         setWorkoutForm({
           phone: "",
           name: "",
         });
       } else {
-        setMessage({ type: "error", text: result.error || "Failed to send workout plan" });
+        setMessage({ type: "error", text: result.error || tStatic("5e949171c1d8") });
       }
     } catch (error) {
       setMessage({ type: "error", text: WHATSAPP_NOT_CONFIGURED });
@@ -284,7 +288,7 @@ export default function WhatsAppServicePage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-3xl font-bold tracking-tight">{WHATSAPP_BUSINESS_LABEL} messages</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{WHATSAPP_BUSINESS_LABEL} <LocalizedText id="17f3467db103" leading={""} trailing={""} /></h1>
           <p className="text-muted-foreground mt-1">
             {WHATSAPP_FEATURE_DESCRIPTION}
           </p>
@@ -297,7 +301,7 @@ export default function WhatsAppServicePage() {
           ) : (
             <XCircle className="h-3 w-3 mr-1" />
           )}
-          {serviceStatus === "checking" ? "Checking..." : serviceStatus === "online" ? "API connected" : "Setup required"}
+          {serviceStatus === "checking" ? tStatic("494d0f681c44") : serviceStatus === "online" ? tStatic("053b61b2fb0c") : tStatic("9fa0e005a03c")}
         </Badge>
       </div>
 
@@ -305,7 +309,7 @@ export default function WhatsAppServicePage() {
       {serviceStatus === "offline" && (
         <Card className="border-orange-200 bg-orange-50">
           <CardHeader>
-            <CardTitle className="text-orange-900">{WHATSAPP_BUSINESS_LABEL} API not configured</CardTitle>
+            <CardTitle className="text-orange-900">{WHATSAPP_BUSINESS_LABEL} <LocalizedText id="176e61c91add" leading={""} trailing={""} /></CardTitle>
             <CardDescription className="text-orange-700">
               {WHATSAPP_SETUP_HINT}
             </CardDescription>
@@ -336,32 +340,28 @@ export default function WhatsAppServicePage() {
         <TabsList>
           <TabsTrigger value="admission">
             <Calendar className="h-4 w-4 mr-2" />
-            Admission Card
-          </TabsTrigger>
+            <LocalizedText id="62e4d5ed0cfe" leading={""} trailing={"\n          "} /></TabsTrigger>
           <TabsTrigger value="renewal">
             <MessageSquare className="h-4 w-4 mr-2" />
-            Renewal Receipt
-          </TabsTrigger>
+            <LocalizedText id="21b10fcf05e4" leading={""} trailing={"\n          "} /></TabsTrigger>
           <TabsTrigger value="workout">
             <Dumbbell className="h-4 w-4 mr-2" />
-            Workout Plan
-          </TabsTrigger>
+            <LocalizedText id="90e7eeed88d0" leading={""} trailing={"\n          "} /></TabsTrigger>
         </TabsList>
 
         {/* Admission Card Tab */}
         <TabsContent value="admission">
           <Card>
             <CardHeader>
-              <CardTitle>Send Admission Card</CardTitle>
+              <CardTitle><LocalizedText id="cb58a5e42404" leading={""} trailing={""} /></CardTitle>
               <CardDescription>
-                Send a formatted admission card to a member via WhatsApp
-              </CardDescription>
+                <LocalizedText id="16a2860321d4" leading={""} trailing={"\n              "} /></CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={sendAdmissionCard} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Phone Number *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="b94477dde32d" leading={""} trailing={""} /></label>
                     <Input
                       type="tel"
                       value={admissionForm.phone}
@@ -369,34 +369,34 @@ export default function WhatsAppServicePage() {
                         setAdmissionForm({ ...admissionForm, phone: e.target.value });
                         fetchMemberByPhone(e.target.value, "admission");
                       }}
-                      placeholder="Enter phone number"
+                      placeholder={tStatic("a22607853f3e")}
                       className="w-full px-4 py-2 border rounded-lg"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Name *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="d145bb830936" leading={""} trailing={""} /></label>
                     <Input
                       type="text"
                       value={admissionForm.name}
                       onChange={(e) => setAdmissionForm({ ...admissionForm, name: e.target.value })}
-                      placeholder="Member name"
+                      placeholder={tStatic("d2fbdd7c0d6a")}
                       className="w-full px-4 py-2 border rounded-lg"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Member ID</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="7a88b2371d9a" leading={""} trailing={""} /></label>
                     <Input
                       type="text"
                       value={admissionForm.memberId}
                       onChange={(e) => setAdmissionForm({ ...admissionForm, memberId: e.target.value })}
-                      placeholder="Auto-filled or enter manually"
+                      placeholder={tStatic("787485e1b23b")}
                       className="w-full px-4 py-2 border rounded-lg"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Plan Duration *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="5c9f5c396f64" leading={""} trailing={""} /></label>
                     <SelectNative
                       value={admissionForm.duration}
                       onChange={(e) => setAdmissionForm({ ...admissionForm, duration: e.target.value })}
@@ -405,13 +405,13 @@ export default function WhatsAppServicePage() {
                     >
                       {PLAN_DURATIONS.map((plan) => (
                         <option key={plan.value} value={plan.value}>
-                          {plan.label}
+                          {tStatic(STATIC_UI_KEYS[plan.label])}
                         </option>
                       ))}
                     </SelectNative>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Program Type *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="8a5add65be78" leading={""} trailing={""} /></label>
                     <SelectNative
                       value={admissionForm.programType}
                       onChange={(e) => setAdmissionForm({ ...admissionForm, programType: e.target.value })}
@@ -420,13 +420,13 @@ export default function WhatsAppServicePage() {
                     >
                       {PROGRAM_TYPES.map((type) => (
                         <option key={type.value} value={type.value}>
-                          {type.label}
+                          {tStatic(STATIC_UI_KEYS[type.label])}
                         </option>
                       ))}
                     </SelectNative>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Valid From *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="47ef36b5cf17" leading={""} trailing={""} /></label>
                     <Input
                       type="date"
                       value={admissionForm.validFrom}
@@ -436,7 +436,7 @@ export default function WhatsAppServicePage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Valid Till *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="4a3981021e69" leading={""} trailing={""} /></label>
                     <Input
                       type="date"
                       value={admissionForm.validTill}
@@ -454,13 +454,11 @@ export default function WhatsAppServicePage() {
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Sending...
-                    </>
+                      <LocalizedText id="c338c191ab1e" leading={""} trailing={"\n                    "} /></>
                   ) : (
                     <>
                       <Send className="h-4 w-4" />
-                      Send Admission Card
-                    </>
+                      <LocalizedText id="cb58a5e42404" leading={""} trailing={"\n                    "} /></>
                   )}
                 </Button>
               </form>
@@ -472,16 +470,15 @@ export default function WhatsAppServicePage() {
         <TabsContent value="renewal">
           <Card>
             <CardHeader>
-              <CardTitle>Send Renewal Receipt</CardTitle>
+              <CardTitle><LocalizedText id="6a90a941d5ce" leading={""} trailing={""} /></CardTitle>
               <CardDescription>
-                Send a formatted renewal receipt to a member via WhatsApp
-              </CardDescription>
+                <LocalizedText id="453439277717" leading={""} trailing={"\n              "} /></CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={sendRenewalReceipt} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Phone Number *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="b94477dde32d" leading={""} trailing={""} /></label>
                     <Input
                       type="tel"
                       value={renewalForm.phone}
@@ -489,24 +486,24 @@ export default function WhatsAppServicePage() {
                         setRenewalForm({ ...renewalForm, phone: e.target.value });
                         fetchMemberByPhone(e.target.value, "renewal");
                       }}
-                      placeholder="Enter phone number"
+                      placeholder={tStatic("a22607853f3e")}
                       className="w-full px-4 py-2 border rounded-lg"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Name *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="d145bb830936" leading={""} trailing={""} /></label>
                     <Input
                       type="text"
                       value={renewalForm.name}
                       onChange={(e) => setRenewalForm({ ...renewalForm, name: e.target.value })}
-                      placeholder="Member name"
+                      placeholder={tStatic("d2fbdd7c0d6a")}
                       className="w-full px-4 py-2 border rounded-lg"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Plan Duration *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="5c9f5c396f64" leading={""} trailing={""} /></label>
                     <SelectNative
                       value={renewalForm.duration}
                       onChange={(e) => setRenewalForm({ ...renewalForm, duration: e.target.value })}
@@ -515,24 +512,24 @@ export default function WhatsAppServicePage() {
                     >
                       {PLAN_DURATIONS.map((plan) => (
                         <option key={plan.value} value={plan.value}>
-                          {plan.label}
+                          {tStatic(STATIC_UI_KEYS[plan.label])}
                         </option>
                       ))}
                     </SelectNative>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Amount *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="76aa32f20786" leading={""} trailing={""} /></label>
                     <Input
                       type="number"
                       value={renewalForm.amount}
                       onChange={(e) => setRenewalForm({ ...renewalForm, amount: e.target.value })}
-                      placeholder="Enter amount"
+                      placeholder={tStatic("01f20462f88e")}
                       className="w-full px-4 py-2 border rounded-lg"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Payment Method *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="e9b0f1740a19" leading={""} trailing={""} /></label>
                     <SelectNative
                       value={renewalForm.paymentMethod}
                       onChange={(e) => setRenewalForm({ ...renewalForm, paymentMethod: e.target.value })}
@@ -541,13 +538,13 @@ export default function WhatsAppServicePage() {
                     >
                       {PAYMENT_METHODS.map((method) => (
                         <option key={method.value} value={method.value}>
-                          {method.label}
+                          {tStatic(STATIC_UI_KEYS[method.label])}
                         </option>
                       ))}
                     </SelectNative>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Valid From *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="47ef36b5cf17" leading={""} trailing={""} /></label>
                     <Input
                       type="date"
                       value={renewalForm.validFrom}
@@ -557,7 +554,7 @@ export default function WhatsAppServicePage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Valid Till *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="4a3981021e69" leading={""} trailing={""} /></label>
                     <Input
                       type="date"
                       value={renewalForm.validTill}
@@ -575,13 +572,11 @@ export default function WhatsAppServicePage() {
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Sending...
-                    </>
+                      <LocalizedText id="c338c191ab1e" leading={""} trailing={"\n                    "} /></>
                   ) : (
                     <>
                       <Send className="h-4 w-4" />
-                      Send Renewal Receipt
-                    </>
+                      <LocalizedText id="6a90a941d5ce" leading={""} trailing={"\n                    "} /></>
                   )}
                 </Button>
               </form>
@@ -593,16 +588,15 @@ export default function WhatsAppServicePage() {
         <TabsContent value="workout">
           <Card>
             <CardHeader>
-              <CardTitle>Send Workout Plan</CardTitle>
+              <CardTitle><LocalizedText id="7f5112426ab6" leading={""} trailing={""} /></CardTitle>
               <CardDescription>
-                Send a weekly workout plan to a member via WhatsApp
-              </CardDescription>
+                <LocalizedText id="825c84ce34e6" leading={""} trailing={"\n              "} /></CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={sendWorkoutPlan} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Phone Number *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="b94477dde32d" leading={""} trailing={""} /></label>
                     <Input
                       type="tel"
                       value={workoutForm.phone}
@@ -610,18 +604,18 @@ export default function WhatsAppServicePage() {
                         setWorkoutForm({ ...workoutForm, phone: e.target.value });
                         fetchMemberByPhone(e.target.value, "workout");
                       }}
-                      placeholder="Enter phone number"
+                      placeholder={tStatic("a22607853f3e")}
                       className="w-full px-4 py-2 border rounded-lg"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Name *</label>
+                    <label className="block text-sm font-medium text-foreground mb-2"><LocalizedText id="d145bb830936" leading={""} trailing={""} /></label>
                     <Input
                       type="text"
                       value={workoutForm.name}
                       onChange={(e) => setWorkoutForm({ ...workoutForm, name: e.target.value })}
-                      placeholder="Member name"
+                      placeholder={tStatic("d2fbdd7c0d6a")}
                       className="w-full px-4 py-2 border rounded-lg"
                       required
                     />
@@ -635,13 +629,11 @@ export default function WhatsAppServicePage() {
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Sending...
-                    </>
+                      <LocalizedText id="c338c191ab1e" leading={""} trailing={"\n                    "} /></>
                   ) : (
                     <>
                       <Send className="h-4 w-4" />
-                      Send Workout Plan
-                    </>
+                      <LocalizedText id="7f5112426ab6" leading={""} trailing={"\n                    "} /></>
                   )}
                 </Button>
               </form>

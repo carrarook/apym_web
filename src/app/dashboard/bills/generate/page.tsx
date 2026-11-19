@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale as useIntlLocale, useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, FileText, AlertCircle, Loader2 } from "lucide-react";
@@ -10,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { SelectNative } from "@/components/ui/select-native";
 import { CheckboxInput } from "@/components/ui/checkbox-input";
+import { STATIC_UI_KEYS } from "@/lib/i18n/static-keys";
 
 const logger = createLogger("dashboard-bills");
 
@@ -40,6 +43,8 @@ const PAYMENT_METHODS = [
 ];
 
 export default function GenerateBillPage() {
+  const tStatic = useStaticUiTranslations("static");
+  const locale = useIntlLocale();
   const router = useRouter();
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(false);
@@ -171,11 +176,9 @@ export default function GenerateBillPage() {
         </Link>
         <div>
           <h1 className="text-3xl font-semibold text-foreground tracking-tight">
-            Generate New Bill
-          </h1>
+            <LocalizedText id="c654781aecf5" leading={""} trailing={"\n          "} /></h1>
           <p className="text-sm text-muted-foreground mt-1 font-medium">
-            Create a receipt for Gym Khana member
-          </p>
+            <LocalizedText id="8a20825f551f" leading={""} trailing={"\n          "} /></p>
         </div>
       </div>
 
@@ -184,9 +187,9 @@ export default function GenerateBillPage() {
         <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
           <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-red-900">Missing Required Fields</p>
+            <p className="text-sm font-semibold text-red-900"><LocalizedText id="2cabe4715fb4" leading={""} trailing={""} /></p>
             <p className="text-sm text-red-700 mt-1">
-              Please fill in: {missingFields.join(", ")}
+              <LocalizedText id="46cdb08dd2a6" leading={""} trailing={" "} />{missingFields.map((field) => tStatic(STATIC_UI_KEYS[field])).join(", ")}
             </p>
           </div>
         </div>
@@ -195,23 +198,22 @@ export default function GenerateBillPage() {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Member Selection */}
         <div className="bg-card rounded-2xl shadow-lg  p-6 border border-border">
-          <h2 className="text-lg font-semibold text-foreground mb-4">Member Details</h2>
+          <h2 className="text-lg font-semibold text-foreground mb-4"><LocalizedText id="1cdce95ccdbc" leading={""} trailing={""} /></h2>
           
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-foreground mb-2">
-                Search Member (by Name, Phone, or Member ID) *
-              </label>
+                <LocalizedText id="4c4b65f65460" leading={""} trailing={"\n              "} /></label>
               <Input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Type to search..."
+                placeholder={tStatic("6d902248f0d9")}
                 className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-background font-medium"
                 disabled={!!selectedMember}
               />
               {searching && (
-                <p className="text-sm text-muted-foreground mt-2">Searching...</p>
+                <p className="text-sm text-muted-foreground mt-2"><LocalizedText id="ba2b5a5fc869" leading={""} trailing={""} /></p>
               )}
               {!selectedMember && members.length > 0 && (
                 <div className="mt-2 border border-border rounded-xl overflow-hidden max-h-60 overflow-y-auto">
@@ -252,8 +254,7 @@ export default function GenerateBillPage() {
                     onClick={() => setSelectedMember(null)}
                     className="text-sm text-blue-600 hover:text-blue-700 font-semibold"
                   >
-                    Change
-                  </Button>
+                    <LocalizedText id="64fbd995d3b6" leading={""} trailing={"\n                  "} /></Button>
                 </div>
               </div>
             )}
@@ -262,13 +263,12 @@ export default function GenerateBillPage() {
 
         {/* Program & Payment Details */}
         <div className="bg-card rounded-2xl shadow-lg  p-6 border border-border">
-          <h2 className="text-lg font-semibold text-foreground mb-4">Program & Payment</h2>
+          <h2 className="text-lg font-semibold text-foreground mb-4"><LocalizedText id="61059398077c" leading={""} trailing={""} /></h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-foreground mb-2">
-                Program Type *
-              </label>
+                <LocalizedText id="8a5add65be78" leading={""} trailing={"\n              "} /></label>
               <SelectNative
                 value={formData.programType}
                 onChange={(e) => setFormData({ ...formData, programType: e.target.value })}
@@ -276,19 +276,18 @@ export default function GenerateBillPage() {
               >
                 {PROGRAM_TYPES.map((type) => (
                   <option key={type.value} value={type.value}>
-                    {type.label}
+                    {tStatic(STATIC_UI_KEYS[type.label])}
                   </option>
                 ))}
               </SelectNative>
               <p className="text-xs text-muted-foreground mt-1">
-                {PROGRAM_TYPES.find((t) => t.value === formData.programType)?.description}
+                {tStatic(STATIC_UI_KEYS[PROGRAM_TYPES.find((t) => t.value === formData.programType)?.description ?? ""])}
               </p>
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-foreground mb-2">
-                Payment Method *
-              </label>
+                <LocalizedText id="e9b0f1740a19" leading={""} trailing={"\n              "} /></label>
               <SelectNative
                 value={formData.paymentMethod}
                 onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
@@ -296,7 +295,7 @@ export default function GenerateBillPage() {
               >
                 {PAYMENT_METHODS.map((method) => (
                   <option key={method.value} value={method.value}>
-                    {method.label}
+                    {tStatic(STATIC_UI_KEYS[method.label])}
                   </option>
                 ))}
               </SelectNative>
@@ -304,7 +303,7 @@ export default function GenerateBillPage() {
 
             <div>
               <label className="block text-sm font-semibold text-foreground mb-2">
-                Amount {!formData.hideAmount && "*"}
+                <LocalizedText id="43dc8532f7e5" leading={""} trailing={" "} />{!formData.hideAmount && "*"}
               </label>
               <Input
                 type="number"
@@ -312,15 +311,14 @@ export default function GenerateBillPage() {
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                 disabled={formData.hideAmount}
-                placeholder="Enter amount"
+                placeholder={tStatic("01f20462f88e")}
                 className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-background font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-foreground mb-2">
-                Month *
-              </label>
+                <LocalizedText id="3288785758ec" leading={""} trailing={"\n              "} /></label>
               <SelectNative
                 value={formData.month}
                 onChange={(e) => setFormData({ ...formData, month: e.target.value })}
@@ -328,7 +326,7 @@ export default function GenerateBillPage() {
               >
                 {MONTHS.map((month) => (
                   <option key={month} value={month}>
-                    {month}
+                    {new Date(2026, MONTHS.indexOf(month), 1).toLocaleDateString(locale, { month: "long" }).toLocaleUpperCase(locale)}
                   </option>
                 ))}
               </SelectNative>
@@ -342,25 +340,22 @@ export default function GenerateBillPage() {
                   className="w-4 h-4 text-blue-600 border-border rounded focus:ring-blue-500"
                 />
                 <span className="text-sm font-semibold text-foreground">
-                  Hide Amount (for friends & family)
-                </span>
+                  <LocalizedText id="b0c7aa314470" leading={""} trailing={"\n                "} /></span>
               </label>
               <p className="text-xs text-muted-foreground mt-1 ml-6">
-                Bill will be generated without showing the amount
-              </p>
+                <LocalizedText id="4d44817ff269" leading={""} trailing={"\n              "} /></p>
             </div>
           </div>
         </div>
 
         {/* Validity Period */}
         <div className="bg-card rounded-2xl shadow-lg  p-6 border border-border">
-          <h2 className="text-lg font-semibold text-foreground mb-4">Validity Period</h2>
+          <h2 className="text-lg font-semibold text-foreground mb-4"><LocalizedText id="922f77237b7e" leading={""} trailing={""} /></h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-semibold text-foreground mb-2">
-                Valid From *
-              </label>
+                <LocalizedText id="47ef36b5cf17" leading={""} trailing={"\n              "} /></label>
               <Input
                 type="date"
                 value={formData.validFrom}
@@ -371,8 +366,7 @@ export default function GenerateBillPage() {
 
             <div>
               <label className="block text-sm font-semibold text-foreground mb-2">
-                Valid To *
-              </label>
+                <LocalizedText id="efe457c2a0b9" leading={""} trailing={"\n              "} /></label>
               <Input
                 type="date"
                 value={formData.validTo}
@@ -383,8 +377,7 @@ export default function GenerateBillPage() {
 
             <div>
               <label className="block text-sm font-semibold text-foreground mb-2">
-                Next Payment Date
-              </label>
+                <LocalizedText id="1305c34091c8" leading={""} trailing={"\n              "} /></label>
               <Input
                 type="date"
                 value={formData.nextPaymentDate}
@@ -397,13 +390,13 @@ export default function GenerateBillPage() {
 
         {/* Additional Notes */}
         <div className="bg-card rounded-2xl shadow-lg  p-6 border border-border">
-          <h2 className="text-lg font-semibold text-foreground mb-4">Additional Notes</h2>
+          <h2 className="text-lg font-semibold text-foreground mb-4"><LocalizedText id="a6886107051f" leading={""} trailing={""} /></h2>
           
           <Textarea
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
             rows={3}
-            placeholder="Any additional notes or comments..."
+            placeholder={tStatic("e337f8d6419d")}
             className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-background font-medium"
           />
         </div>
@@ -414,8 +407,7 @@ export default function GenerateBillPage() {
             href="/dashboard/bills"
             className="px-6 py-3 border border-border text-foreground rounded-xl hover:bg-muted transition-all duration-200 font-semibold"
           >
-            Cancel
-          </Link>
+            <LocalizedText id="77dfd2135f4d" leading={""} trailing={"\n          "} /></Link>
           <Button
             type="submit"
             disabled={loading}
@@ -424,13 +416,11 @@ export default function GenerateBillPage() {
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Generating...
-              </>
+                <LocalizedText id="81362292e8ba" leading={""} trailing={"\n              "} /></>
             ) : (
               <>
                 <FileText className="h-4 w-4" />
-                Generate Bill
-              </>
+                <LocalizedText id="f8b7c84db79e" leading={""} trailing={"\n              "} /></>
             )}
           </Button>
         </div>

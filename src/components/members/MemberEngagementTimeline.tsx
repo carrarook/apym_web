@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import useSWR from "swr";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -31,12 +32,12 @@ export function MemberEngagementTimeline({ memberId }: { memberId: string }) {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Engagement timeline</CardTitle>
+        <CardTitle className="text-base"><LocalizedText id="32a13884d085" leading={""} trailing={""} /></CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
         {error && (
-          <p className="text-xs text-destructive">Could not load communications.</p>
+          <p className="text-xs text-destructive"><LocalizedText id="a5a47927e1b2" leading={""} trailing={""} /></p>
         )}
         <ul className="space-y-2 text-xs">
           {(data?.events ?? []).map((e) => (
@@ -54,7 +55,7 @@ export function MemberEngagementTimeline({ memberId }: { memberId: string }) {
           ))}
         </ul>
         {!isLoading && (data?.events?.length ?? 0) === 0 && (
-          <p className="text-xs text-muted-foreground">No communication events yet.</p>
+          <p className="text-xs text-muted-foreground"><LocalizedText id="34b6ea1cfd74" leading={""} trailing={""} /></p>
         )}
       </CardContent>
     </Card>

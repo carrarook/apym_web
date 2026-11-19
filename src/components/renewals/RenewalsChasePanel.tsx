@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState } from "react";
 import useSWR from "swr";
 import {
@@ -105,6 +107,7 @@ type GoalResponse = {
 };
 
 export function RenewalsChasePanel() {
+  const tStatic = useStaticUiTranslations("static");
   const [predictionFilter, setPredictionFilter] = useState<PredictionFilter>("ALL");
   const [refreshingPredictions, setRefreshingPredictions] = useState(false);
   const [refreshHint, setRefreshHint] = useState<string | null>(null);
@@ -245,7 +248,7 @@ export function RenewalsChasePanel() {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Recovered</span>
+              <span className="text-muted-foreground"><LocalizedText id="e9d2ef211be5" leading={""} trailing={""} /></span>
               <span className="font-semibold">
                 {formatCurrency(recovered)} / {formatCurrency(target)}
               </span>
@@ -256,7 +259,7 @@ export function RenewalsChasePanel() {
                 style={{ width: `${progressPct}%` }}
               />
             </div>
-            <p className="text-xs text-muted-foreground">{progressPct}% of goal</p>
+            <p className="text-xs text-muted-foreground">{progressPct}<LocalizedText id="55e1180561f3" leading={""} trailing={""} /></p>
           </CardContent>
         </Card>
       )}
@@ -265,13 +268,13 @@ export function RenewalsChasePanel() {
         <Card>
           <CardContent className="pt-4 flex flex-col sm:flex-row gap-2">
             <Input
-              placeholder="Recovery goal (₹), e.g. 100000"
+              placeholder={tStatic("1b6bf04ceaa8")}
               value={targetInput}
               onChange={(e) => setTargetInput(e.target.value)}
               className="flex-1"
             />
             <Button onClick={createGoal} disabled={savingGoal}>
-              {savingGoal ? <Loader2 className="h-4 w-4 animate-spin" /> : "Set goal"}
+              {savingGoal ? <Loader2 className="h-4 w-4 animate-spin" /> : tStatic("b2c6e9d3b76a")}
             </Button>
           </CardContent>
         </Card>
@@ -304,8 +307,7 @@ export function RenewalsChasePanel() {
               ) : (
                 <>
                   <RefreshCw className="h-4 w-4 mr-1" />
-                  Recompute
-                </>
+                  <LocalizedText id="d71095c651c2" leading={""} trailing={"\n                "} /></>
               )}
             </Button>
             {chaseMemberIds.length > 0 && (
@@ -320,23 +322,22 @@ export function RenewalsChasePanel() {
                 ) : (
                   <>
                     <Send className="h-4 w-4 mr-1" />
-                    Preview bulk ({chaseMemberIds.length})
+                    <LocalizedText id="60a96dffdf37" leading={""} trailing={""} />{chaseMemberIds.length})
                   </>
                 )}
               </Button>
             )}
             <Button variant="ghost" size="sm" onClick={() => mutate()}>
-              Refresh
-            </Button>
+              <LocalizedText id="56e3badc4e6c" leading={""} trailing={"\n            "} /></Button>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
             {(
               [
-                ["ALL", "All", plan?.summary.openCount],
-                ["LIKELY_TO_PAY", "High readiness", cohort.likelyToPay],
-                ["AT_RISK", "Mixed", cohort.atRisk],
-                ["UNLIKELY", "Low readiness", cohort.unlikely],
+                ["ALL", tStatic("6a72085653e4"), plan?.summary.openCount],
+                ["LIKELY_TO_PAY", tStatic("c2fb5eb9a44e"), cohort.likelyToPay],
+                ["AT_RISK", tStatic("c0dcb865ad81"), cohort.atRisk],
+                ["UNLIKELY", tStatic("b5501b74c368"), cohort.unlikely],
               ] as const
             ).map(([key, label, count]) => (
               <Button
@@ -355,15 +356,13 @@ export function RenewalsChasePanel() {
           {isLoading && (
             <p className="text-sm text-muted-foreground flex items-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin" />
-              Loading ranked list…
-            </p>
+              <LocalizedText id="8d37a5b8ce54" leading={""} trailing={"\n            "} /></p>
           )}
           {!isLoading && plan && (
             <>
               <p className="text-sm text-muted-foreground mb-1">
-                {plan.summary.openCount} open · {cohort.likelyToPay} high readiness ·{" "}
-                {formatCurrency(plan.summary.recoverableRevenue)} at risk
-              </p>
+                {plan.summary.openCount} <LocalizedText id="1ee4f64b8f00" leading={""} trailing={" "} />{cohort.likelyToPay} <LocalizedText id="749b265bd361" leading={""} trailing={""} />{" "}
+                {formatCurrency(plan.summary.recoverableRevenue)} <LocalizedText id="39ec48fa41f2" leading={""} trailing={"\n              "} /></p>
               {plan.cohortBrief?.headline && (
                 <div className="rounded-lg border border-primary/25 bg-primary/5 p-3 mb-3 text-sm">
                   <p className="font-medium">{plan.cohortBrief.headline}</p>
@@ -379,15 +378,14 @@ export function RenewalsChasePanel() {
               <p className="text-xs text-muted-foreground mb-3">
                 {aiEnabled
                   ? `Top ${plan.inference?.llmAssessedCount ?? 0} rows assessed with AI SDK generateObject; others use rules only.`
-                  : "Rules-only mode — add FITNESS360_AI_API_KEY or ANTHROPIC_API_KEY to .env.local."}
+                  : tStatic("fc78ff599f63")}
                 {plan.calibration && plan.calibration.sampleSize >= 5
                   ? ` Gym recovery ${Math.round(plan.calibration.recoveryRate * 100)}% (n=${plan.calibration.sampleSize}).`
                   : ""}
               </p>
               {plan.steps.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  No members in this cohort. Try another filter or run Recompute.
-                </p>
+                  <LocalizedText id="77d62b2302f7" leading={""} trailing={"\n                "} /></p>
               ) : (
                 <ul className="space-y-2">
                   {plan.steps.map((step) => (
@@ -421,8 +419,7 @@ export function RenewalsChasePanel() {
                             <Badge variant="outline" className="gap-1" asChild>
                               <Link href="/dashboard/overdue">
                                 <AlertTriangle className="h-3 w-3" />
-                                Overdue
-                              </Link>
+                                <LocalizedText id="07217c77199f" leading={""} trailing={"\n                              "} /></Link>
                             </Badge>
                           )}
                           <Badge
@@ -436,12 +433,12 @@ export function RenewalsChasePanel() {
                           </Badge>
                           {step.inferenceSource === "LLM" && (
                             <Badge variant="outline" className="text-xs">
-                              {plan.inference?.isDevMock ? "Mock LLM" : "LLM"}
+                              {plan.inference?.isDevMock ? tStatic("75a5b8d0eb0c") : "LLM"}
                             </Badge>
                           )}
                           {step.suggestedOfferName && (
                             <Badge variant="secondary" className="text-xs">
-                              Offer: {step.suggestedOfferName}
+                              <LocalizedText id="e902f65d2c7e" leading={""} trailing={" "} />{step.suggestedOfferName}
                             </Badge>
                           )}
                           <span className="text-xs text-muted-foreground ml-auto">
@@ -453,12 +450,12 @@ export function RenewalsChasePanel() {
                         </p>
                         {step.llmRecommendedAction && (
                           <p className="text-xs text-muted-foreground">
-                            Suggested: {step.llmRecommendedAction.replace(/_/g, " ")}
+                            <LocalizedText id="44b391319604" leading={""} trailing={" "} />{step.llmRecommendedAction.replace(/_/g, " ")}
                           </p>
                         )}
                         {step.llmError && (
                           <p className="text-xs text-destructive">
-                            LLM failed: {step.llmError}
+                            <LocalizedText id="0bbff8395fc3" leading={""} trailing={" "} />{step.llmError}
                           </p>
                         )}
                         <ul className="mt-1 text-xs text-muted-foreground list-disc list-inside">
@@ -480,10 +477,9 @@ export function RenewalsChasePanel() {
       {bulkPreview && (
         <Card className="border-amber-500/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Bulk send preview</CardTitle>
+            <CardTitle className="text-base"><LocalizedText id="64f6d15b5463" leading={""} trailing={""} /></CardTitle>
             <p className="text-xs text-muted-foreground">
-              {bulkPreview.total} messages — confirm before sending
-            </p>
+              {bulkPreview.total} <LocalizedText id="1118ad115391" leading={""} trailing={"\n            "} /></p>
           </CardHeader>
           <CardContent className="space-y-3">
             <ul className="max-h-48 overflow-y-auto text-xs space-y-2">
@@ -495,8 +491,7 @@ export function RenewalsChasePanel() {
               ))}
               {bulkPreview.drafts.length > 5 && (
                 <li className="text-muted-foreground">
-                  +{bulkPreview.drafts.length - 5} more…
-                </li>
+                  +{bulkPreview.drafts.length - 5} <LocalizedText id="ccd7d11fa11b" leading={""} trailing={"\n                "} /></li>
               )}
             </ul>
             <div className="flex gap-2">
@@ -508,7 +503,7 @@ export function RenewalsChasePanel() {
                 {bulkSending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  "Confirm & send"
+                  tStatic("f4213637b06e")
                 )}
               </Button>
               <Button
@@ -517,8 +512,7 @@ export function RenewalsChasePanel() {
                 onClick={() => setBulkPreview(null)}
                 disabled={bulkSending}
               >
-                Cancel
-              </Button>
+                <LocalizedText id="77dfd2135f4d" leading={""} trailing={"\n              "} /></Button>
             </div>
           </CardContent>
         </Card>

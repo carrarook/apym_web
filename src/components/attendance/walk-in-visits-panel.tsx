@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useCallback, useEffect, useState } from "react";
 import { Loader2, Trash2, Ticket, Sparkles } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -52,6 +54,7 @@ export function WalkInVisitsPanel({
   loadingVisits?: boolean;
   onRecordsChanged?: () => void;
 }) {
+  const tStatic = useStaticUiTranslations("static");
   const visits = visitsProp;
   const loadingList = loadingVisits;
   const [kind, setKind] = useState<WalkInKind>("FREE_TRIAL");
@@ -97,13 +100,13 @@ export function WalkInVisitsPanel({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim() || !phone.trim()) {
-      toast.error("Name and phone are required");
+      toast.error(tStatic("e7b59d052cf0"));
       return;
     }
     if (kind === "DAY_PASS") {
       const n = parseFloat(amount);
       if (!Number.isFinite(n) || n <= 0) {
-        toast.error("Enter a valid day pass amount");
+        toast.error(tStatic("c18ffe1e5218"));
         return;
       }
     }
@@ -128,11 +131,11 @@ export function WalkInVisitsPanel({
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(unwrapError(data, "Failed to save"));
+        throw new Error(unwrapError(data, tStatic("23778b5f7eb2")));
       }
 
       toast.success(
-        kind === "FREE_TRIAL" ? "Free trial recorded" : "Day pass recorded"
+        kind === "FREE_TRIAL" ? tStatic("7c11cf25f923") : tStatic("3170cea1b9ea")
       );
       setName("");
       setPhone("");
@@ -141,7 +144,7 @@ export function WalkInVisitsPanel({
       setSummary(null);
       onRecordsChanged?.();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to save");
+      toast.error(err instanceof Error ? err.message : tStatic("23778b5f7eb2"));
     } finally {
       setSubmitting(false);
     }
@@ -156,12 +159,12 @@ export function WalkInVisitsPanel({
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(unwrapError(data, "Failed to delete"));
+        throw new Error(unwrapError(data, tStatic("07931ff7dc8f")));
       }
-      toast.success("Entry removed");
+      toast.success(tStatic("2079fbc30dab"));
       onRecordsChanged?.();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to delete");
+      toast.error(err instanceof Error ? err.message : tStatic("07931ff7dc8f"));
     } finally {
       setDeletingId(null);
     }
@@ -175,11 +178,9 @@ export function WalkInVisitsPanel({
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-amber-600" />
-          Free trial &amp; day pass
-        </CardTitle>
+          <LocalizedText id="d58bd441a348" leading={""} trailing={"\n        "} /></CardTitle>
         <CardDescription>
-          Free trial: max 2 per phone (lifetime). Day pass: flexible amount for one visit.
-        </CardDescription>
+          <LocalizedText id="81edb40d7ba8" leading={""} trailing={"\n        "} /></CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-wrap gap-2">
@@ -189,8 +190,7 @@ export function WalkInVisitsPanel({
             variant={kind === "FREE_TRIAL" ? "default" : "outline"}
             onClick={() => setKind("FREE_TRIAL")}
           >
-            Free trial
-          </Button>
+            <LocalizedText id="22357ca6e782" leading={""} trailing={"\n          "} /></Button>
           <Button
             type="button"
             size="sm"
@@ -198,44 +198,43 @@ export function WalkInVisitsPanel({
             onClick={() => setKind("DAY_PASS")}
           >
             <Ticket className="h-3.5 w-3.5 mr-1" />
-            Day pass
-          </Button>
+            <LocalizedText id="fb5397eb7637" leading={""} trailing={"\n          "} /></Button>
         </div>
 
         {isPastOrToday ? (
           <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <Label htmlFor="walkin-name">Full name *</Label>
+              <Label htmlFor="walkin-name"><LocalizedText id="ca27b75468f7" leading={""} trailing={""} /></Label>
               <Input
                 id="walkin-name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Visitor name"
+                placeholder={tStatic("b497f209fe91")}
                 className="uppercase"
                 required
               />
             </div>
             <div>
-              <Label htmlFor="walkin-phone">Phone *</Label>
+              <Label htmlFor="walkin-phone"><LocalizedText id="187a5221838a" leading={""} trailing={""} /></Label>
               <Input
                 id="walkin-phone"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="10-digit mobile"
+                placeholder={tStatic("4622277a192a")}
                 inputMode="tel"
                 required
               />
               {kind === "FREE_TRIAL" && phone.replace(/\D/g, "").length >= 10 && (
                 <p className="mt-1 text-xs text-muted-foreground">
                   {summaryLoading ? (
-                    "Checking free trials…"
+                    tStatic("885fd56d3e6c")
                   ) : summary ? (
                     <>
-                      Free trials used: {summary.freeTrialUsed} / {summary.freeTrialMaxLifetime}
+                      <LocalizedText id="5d832dd79ead" leading={""} trailing={" "} />{summary.freeTrialUsed} / {summary.freeTrialMaxLifetime}
                       {summary.freeTrialRemaining === 0 ? (
-                        <span className="text-destructive font-medium"> — limit reached</span>
+                        <span className="text-destructive font-medium"> <LocalizedText id="c7ebdab708ed" leading={""} trailing={""} /></span>
                       ) : (
-                        <span> — {summary.freeTrialRemaining} remaining</span>
+                        <span> — {summary.freeTrialRemaining} <LocalizedText id="398658a601d9" leading={""} trailing={""} /></span>
                       )}
                     </>
                   ) : null}
@@ -244,7 +243,7 @@ export function WalkInVisitsPanel({
             </div>
             {kind === "DAY_PASS" ? (
               <div>
-                <Label htmlFor="walkin-amount">Amount (₹) *</Label>
+                <Label htmlFor="walkin-amount"><LocalizedText id="563e1cc2e7fc" leading={""} trailing={""} /></Label>
                 <Input
                   id="walkin-amount"
                   type="number"
@@ -260,13 +259,13 @@ export function WalkInVisitsPanel({
               <div className="hidden sm:block" aria-hidden />
             )}
             <div className="sm:col-span-2">
-              <Label htmlFor="walkin-notes">Notes (optional)</Label>
+              <Label htmlFor="walkin-notes"><LocalizedText id="4d56ca9be0c8" leading={""} trailing={""} /></Label>
               <Textarea
                 id="walkin-notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={2}
-                placeholder="Referral, trainer intro, etc."
+                placeholder={tStatic("36e8251b9664")}
               />
             </div>
             <div className="sm:col-span-2">
@@ -274,35 +273,31 @@ export function WalkInVisitsPanel({
                 {submitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    Saving…
-                  </>
+                    <LocalizedText id="56a2285c5b11" leading={""} trailing={"\n                  "} /></>
                 ) : kind === "FREE_TRIAL" ? (
-                  "Record free trial"
+                  tStatic("3f04145fc521")
                 ) : (
-                  "Record day pass"
+                  tStatic("81d254651a58")
                 )}
               </Button>
             </div>
           </form>
         ) : (
           <p className="text-sm text-muted-foreground">
-            Walk-ins can only be recorded for today or a past date.
-          </p>
+            <LocalizedText id="fa487a427185" leading={""} trailing={"\n          "} /></p>
         )}
 
         <div className="border-t border-border pt-3">
           <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-            Logged for {visitDate}
+            <LocalizedText id="4bcc6da7623b" leading={""} trailing={" "} />{visitDate}
           </div>
           {loadingList ? (
             <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
               <Loader2 className="h-4 w-4 animate-spin" />
-              Loading…
-            </div>
+              <LocalizedText id="33ce417454bf" leading={""} trailing={"\n            "} /></div>
           ) : visits.length === 0 ? (
             <p className="text-sm text-muted-foreground py-2">
-              No free trials or day passes this day.
-            </p>
+              <LocalizedText id="b62c3375d8b5" leading={""} trailing={"\n            "} /></p>
           ) : (
             <ul className="space-y-2 max-h-64 overflow-y-auto">
               {visits.map((v) => (
@@ -324,7 +319,7 @@ export function WalkInVisitsPanel({
                             : "bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-100"
                         )}
                       >
-                        {v.kind === "FREE_TRIAL" ? "Free trial" : "Day pass"}
+                        {v.kind === "FREE_TRIAL" ? tStatic("22357ca6e782") : tStatic("fb5397eb7637")}
                       </Badge>
                       {v.kind === "DAY_PASS" && v.amount != null && (
                         <span className="text-xs font-semibold text-foreground">
@@ -346,7 +341,7 @@ export function WalkInVisitsPanel({
                     className="shrink-0 text-muted-foreground hover:text-destructive"
                     disabled={deletingId === v.id}
                     onClick={() => void handleDelete(v.id)}
-                    title="Remove entry"
+                    title={tStatic("18ffc873a160")}
                   >
                     {deletingId === v.id ? (
                       <Loader2 className="h-4 w-4 animate-spin" />

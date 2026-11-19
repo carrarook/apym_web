@@ -1,5 +1,8 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import useSWR from "swr";
 import { formatCurrency } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,6 +24,7 @@ interface CashflowSummary {
 }
 
 export function CashflowWidgets({ compact = false }: { compact?: boolean }) {
+  const tStatic = useStaticUiTranslations("static");
   const { data, isLoading, error } = useSWR<CashflowSummary>(
     "/api/analytics/cashflow",
     fetcher,
@@ -43,15 +47,15 @@ export function CashflowWidgets({ compact = false }: { compact?: boolean }) {
 
   const items = compact
     ? [
-        { label: "Net cashflow", value: data.net, icon: Wallet, color: data.net >= 0 ? "text-emerald-600" : "text-red-600" },
-        { label: "Outstanding", value: data.outstanding, icon: AlertCircle, color: "text-orange-600" },
+        { label: tStatic("621eacdd8c15"), value: data.net, icon: Wallet, color: data.net >= 0 ? "text-emerald-600" : "text-red-600" },
+        { label: tStatic("f8ee57ec8645"), value: data.outstanding, icon: AlertCircle, color: "text-orange-600" },
       ]
     : [
-        { label: "Collected", value: data.collected, icon: TrendingUp, color: "text-emerald-600" },
-        { label: "Expenses", value: data.expenses, icon: TrendingDown, color: "text-red-600" },
-        { label: "Salaries", value: data.salaries, icon: TrendingDown, color: "text-rose-600" },
-        { label: "Net", value: data.net, icon: Wallet, color: data.net >= 0 ? "text-emerald-600" : "text-red-600" },
-        { label: "Outstanding", value: data.outstanding, icon: AlertCircle, color: "text-orange-600" },
+        { label: tStatic("5b0f7590d06f"), value: data.collected, icon: TrendingUp, color: "text-emerald-600" },
+        { label: tStatic("8d437dbf95ab"), value: data.expenses, icon: TrendingDown, color: "text-red-600" },
+        { label: tStatic("64f04cc76185"), value: data.salaries, icon: TrendingDown, color: "text-rose-600" },
+        { label: tStatic("9bb81c2eccbe"), value: data.net, icon: Wallet, color: data.net >= 0 ? "text-emerald-600" : "text-red-600" },
+        { label: tStatic("f8ee57ec8645"), value: data.outstanding, icon: AlertCircle, color: "text-orange-600" },
       ];
 
   return (
@@ -86,7 +90,7 @@ export function CashflowSection() {
   if (isLoading) {
     return (
       <Card>
-        <CardContent className="pt-6 text-center text-muted-foreground text-sm">Loading cashflow…</CardContent>
+        <CardContent className="pt-6 text-center text-muted-foreground text-sm"><LocalizedText id="7f5d06ff573c" leading={""} trailing={""} /></CardContent>
       </Card>
     );
   }
@@ -94,7 +98,7 @@ export function CashflowSection() {
   if (error || !data) {
     return (
       <Card className="border-red-200">
-        <CardContent className="pt-6 text-sm text-red-600">Failed to load cashflow data</CardContent>
+        <CardContent className="pt-6 text-sm text-red-600"><LocalizedText id="8701842ec92a" leading={""} trailing={""} /></CardContent>
       </Card>
     );
   }
@@ -103,7 +107,7 @@ export function CashflowSection() {
     <Card>
       <CardContent className="pt-6 space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Cashflow</h3>
+          <h3 className="text-lg font-semibold"><LocalizedText id="a252716d9256" leading={""} trailing={""} /></h3>
           <p className="text-xs text-muted-foreground">
             {data.period.startDate} — {data.period.endDate}
           </p>

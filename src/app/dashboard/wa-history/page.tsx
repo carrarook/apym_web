@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import useSWR from "swr";
 import { formatDate } from "@/lib/utils";
 import { DashboardPageHeader } from "@/components/dashboard/dashboard-page-header";
@@ -9,17 +11,18 @@ import { Badge } from "@/components/ui/badge";
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export default function WaHistoryPage() {
+  const tStatic = useStaticUiTranslations("static");
   const { data, isLoading } = useSWR("/api/admin/wa-log?limit=200", fetcher);
   const logs = data?.data ?? [];
 
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="WhatsApp send log"
-        description="Outbound WhatsApp messages for this gym (Meta Cloud API)."
+        title={tStatic("909e62b8898a")}
+        description={tStatic("c40d8ae8c49c")}
       />
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading…</p>
+        <p className="text-sm text-muted-foreground"><LocalizedText id="33ce417454bf" leading={""} trailing={""} /></p>
       ) : (
         <div className="space-y-2">
           {logs.map((log: {
@@ -40,7 +43,7 @@ export default function WaHistoryPage() {
               </CardContent>
             </Card>
           ))}
-          {logs.length === 0 && <p className="text-sm text-muted-foreground">No sends logged yet.</p>}
+          {logs.length === 0 && <p className="text-sm text-muted-foreground"><LocalizedText id="d48b47b890c2" leading={""} trailing={""} /></p>}
         </div>
       )}
     </div>

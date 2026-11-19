@@ -1,5 +1,8 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +23,7 @@ interface MarketplaceGridProps {
 }
 
 export function MarketplaceGrid({ showEcosystem = true, onInstallChange }: MarketplaceGridProps) {
+  const tStatic = useStaticUiTranslations("static");
   const [loading, setLoading] = useState(true);
   const [apps, setApps] = useState<MarketplaceApp[]>([]);
   const [installed, setInstalled] = useState<InstalledRow[]>([]);
@@ -82,7 +86,7 @@ export function MarketplaceGrid({ showEcosystem = true, onInstallChange }: Marke
               {app.icon}
             </span>
             <Badge variant={app.status === "available" ? "default" : "secondary"}>
-              {app.status === "available" ? "Available" : app.status === "beta" ? "Beta" : "Soon"}
+              {app.status === "available" ? tStatic("7c62a1424469") : app.status === "beta" ? tStatic("f03b60f7e52b") : tStatic("32d3b26b9020")}
             </Badge>
           </div>
           <CardTitle className="text-lg">{app.name}</CardTitle>
@@ -91,7 +95,7 @@ export function MarketplaceGrid({ showEcosystem = true, onInstallChange }: Marke
         <CardContent className="mt-auto space-y-3">
           <p className="text-sm text-muted-foreground">{app.description}</p>
           {app.envKeys?.length ? (
-            <p className="text-xs text-muted-foreground">Env: {app.envKeys.join(", ")}</p>
+            <p className="text-xs text-muted-foreground"><LocalizedText id="9b9526d9b049" leading={""} trailing={" "} />{app.envKeys.join(", ")}</p>
           ) : null}
           <div className="flex flex-wrap gap-2">
             <Button
@@ -100,21 +104,19 @@ export function MarketplaceGrid({ showEcosystem = true, onInstallChange }: Marke
               disabled={isBusy || app.status === "coming_soon"}
               onClick={() => toggle(app.slug, !isInstalled)}
             >
-              {isBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : isInstalled ? "Uninstall" : "Install"}
+              {isBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : isInstalled ? tStatic("a735da1d32d7") : tStatic("fd6c3ebf7bef")}
             </Button>
             {isInstalled && (
               <Button size="sm" variant="secondary" asChild>
                 <Link href={app.configurePath}>
-                  Configure
-                  <ExternalLink className="ml-1 h-3 w-3" />
+                  <LocalizedText id="792c81a4cfdc" leading={""} trailing={"\n                  "} /><ExternalLink className="ml-1 h-3 w-3" />
                 </Link>
               </Button>
             )}
             {app.memberPath && isInstalled && (
               <Button size="sm" variant="ghost" asChild>
                 <Link href={app.memberPath} target="_blank" rel="noreferrer">
-                  Open member view
-                </Link>
+                  <LocalizedText id="a8611dadefb0" leading={""} trailing={"\n                "} /></Link>
               </Button>
             )}
           </div>
@@ -129,8 +131,7 @@ export function MarketplaceGrid({ showEcosystem = true, onInstallChange }: Marke
       {ecosystem.length > 0 && (
         <div>
           <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            More apps
-          </h3>
+            <LocalizedText id="43370a81d869" leading={""} trailing={"\n          "} /></h3>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{ecosystem.map(renderCard)}</div>
         </div>
       )}

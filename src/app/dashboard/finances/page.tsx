@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useEffect, useRef, useState } from "react";
 import { ExpenseCategory, ExpenseStatus, ExpenseType } from "@prisma/client";
 import { DashboardPageHeader } from "@/components/dashboard/dashboard-page-header";
@@ -18,6 +20,7 @@ import { useFinancesData } from "@/hooks/use-finances-data";
 import { DollarSign, Plus, TrendingDown } from "lucide-react";
 
 export default function FinancesPage() {
+  const tStatic = useStaticUiTranslations("static");
   const [activeTab, setActiveTab] = useState<"salaries" | "expenses">("salaries");
   const [salaryFilters, setSalaryFilters] = useState<SalaryFilters>({
     employeeId: "",
@@ -68,8 +71,8 @@ export default function FinancesPage() {
   return (
     <div className="space-y-8 pb-8">
       <DashboardPageHeader
-        title="Salaries & expenses"
-        description="Manage payroll and track operational expenses"
+        title={tStatic("0d60d8213e83")}
+        description={tStatic("47a1b1fb5603")}
         actions={
           <Button
             onClick={() =>
@@ -80,7 +83,7 @@ export default function FinancesPage() {
             className="gap-2"
           >
             <Plus className="h-4 w-4" />
-            Add {activeTab === "salaries" ? "salary" : "expense"}
+            <LocalizedText id="61cc55aa0453" leading={""} trailing={" "} />{activeTab === "salaries" ? "salary" : "expense"}
           </Button>
         }
       />
@@ -98,7 +101,7 @@ export default function FinancesPage() {
           >
             <div className="flex items-center justify-center gap-2.5">
               <DollarSign className="h-5 w-5" />
-              <span>Salaries</span>
+              <span><LocalizedText id="64f04cc76185" leading={""} trailing={""} /></span>
             </div>
           </Button>
           <Button
@@ -112,7 +115,7 @@ export default function FinancesPage() {
           >
             <div className="flex items-center justify-center gap-2.5">
               <TrendingDown className="h-5 w-5" />
-              <span>Expenses</span>
+              <span><LocalizedText id="8d437dbf95ab" leading={""} trailing={""} /></span>
             </div>
           </Button>
         </div>

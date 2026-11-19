@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { Settings as SettingsIcon, Users, Bell, CreditCard, Shield, Loader2, Save, Plus, Edit, Trash2, Building2, Eye } from "lucide-react";
 import { AgentMcpIntegrations } from "@/components/settings/AgentMcpIntegrations";
 import { ErrorLogsPanel } from "@/components/settings/ErrorLogsPanel";
@@ -16,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import { CheckboxInput } from "@/components/ui/checkbox-input";
 import { Label } from "@/components/ui/label";
 import { createLogger } from "@/lib/logger";
-import { LanguageSwitcher } from "@/components/i18n/locale-provider";
 import { ServicesCatalogCard } from "@/components/settings/ServicesCatalogCard";
 import { WhatsAppLifecycleTemplatesCard } from "@/components/settings/WhatsAppLifecycleTemplatesCard";
 import { DashboardPageHeader } from "@/components/dashboard/dashboard-page-header";
@@ -55,6 +56,7 @@ function parseSettingsTab(value: string | null): SettingsTab {
 }
 
 export default function SettingsPage() {
+  const tStatic = useStaticUiTranslations("static");
   const { data: session } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -277,20 +279,18 @@ export default function SettingsPage() {
     return (
       <div className="space-y-6">
         <DashboardPageHeader
-          title="Settings"
-          description="Limited access for staff accounts"
+          title={tStatic("c7f73bb54d92")}
+          description={tStatic("8ef57ce21d13")}
         />
         <Card>
           <CardHeader>
-            <CardTitle>Administrator required</CardTitle>
+            <CardTitle><LocalizedText id="915effc6dfc6" leading={""} trailing={""} /></CardTitle>
             <CardDescription>
-              Gym configuration (plans, session timeout, team, audit logs) is available to administrators only.
-              Ask your gym owner to update settings, or sign in with an admin account.
-            </CardDescription>
+              <LocalizedText id="d4d688acee81" leading={""} trailing={"\n            "} /></CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild variant="outline">
-              <Link href="/dashboard">Back to dashboard</Link>
+              <Link href="/dashboard"><LocalizedText id="b3963db5ead8" leading={""} trailing={""} /></Link>
             </Button>
           </CardContent>
         </Card>
@@ -309,8 +309,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Settings"
-        description="Configure your gym and application settings"
+        title={tStatic("c7f73bb54d92")}
+        description={tStatic("a1eb5f29de06")}
       />
 
       <Tabs
@@ -319,15 +319,15 @@ export default function SettingsPage() {
         className="space-y-4"
       >
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-7">
-          <TabsTrigger value="users">Users & RBAC</TabsTrigger>
-          <TabsTrigger value="gym">Gym</TabsTrigger>
-          <TabsTrigger value="session">Session</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="plans">Plans</TabsTrigger>
-          <TabsTrigger value="agent">AI & MCP</TabsTrigger>
-          <TabsTrigger value="logs">Action Logs</TabsTrigger>
+          <TabsTrigger value="users"><LocalizedText id="6459fdcab4c8" leading={""} trailing={""} /></TabsTrigger>
+          <TabsTrigger value="gym"><LocalizedText id="bc4359231d61" leading={""} trailing={""} /></TabsTrigger>
+          <TabsTrigger value="session"><LocalizedText id="f7f1997c6cd1" leading={""} trailing={""} /></TabsTrigger>
+          <TabsTrigger value="notifications"><LocalizedText id="753a22b2eb61" leading={""} trailing={""} /></TabsTrigger>
+          <TabsTrigger value="plans"><LocalizedText id="cf2e5f26fef8" leading={""} trailing={""} /></TabsTrigger>
+          <TabsTrigger value="agent"><LocalizedText id="3552d09a937f" leading={""} trailing={""} /></TabsTrigger>
+          <TabsTrigger value="logs"><LocalizedText id="53f02efb2a61" leading={""} trailing={""} /></TabsTrigger>
           {session?.user?.role === "ADMIN" ? (
-            <TabsTrigger value="errors">Errors</TabsTrigger>
+            <TabsTrigger value="errors"><LocalizedText id="805e86a8cbf6" leading={""} trailing={""} /></TabsTrigger>
           ) : null}
         </TabsList>
 
@@ -336,20 +336,17 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
-                User Management & RBAC
-              </CardTitle>
-              <CardDescription>Manage employees, roles (Admin/Employee), and permissions</CardDescription>
+                <LocalizedText id="a63ccdedccc8" leading={""} trailing={"\n              "} /></CardTitle>
+              <CardDescription><LocalizedText id="6d6b4a918867" leading={""} trailing={""} /></CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/dashboard/employees">
                 <Button>
                   <Users className="h-4 w-4 mr-2" />
-                  Manage Employees
-                </Button>
+                  <LocalizedText id="adf8da5cf746" leading={""} trailing={"\n                "} /></Button>
               </Link>
               <p className="mt-4 text-sm text-muted-foreground">
-                Add, edit, or remove users. Assign Admin or Employee (SUB_ADMIN) roles. Employees have view-only access to members, payments, renewals, and reminders.
-              </p>
+                <LocalizedText id="ae5054f6dabb" leading={""} trailing={"\n              "} /></p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -359,80 +356,72 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Building2 className="h-5 w-5" />
-                Gym Profile
-              </CardTitle>
-              <CardDescription>Name, branding, currency, financial year, and charge policy</CardDescription>
+                <LocalizedText id="9f951d3e9a59" leading={""} trailing={"\n              "} /></CardTitle>
+              <CardDescription><LocalizedText id="172cb3dd86be" leading={""} trailing={""} /></CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <Label htmlFor="gymName">Gym name</Label>
+                  <Label htmlFor="gymName"><LocalizedText id="9ed77c8abd14" leading={""} trailing={""} /></Label>
                   <Input id="gymName" value={gymProfile.name} onChange={(e) => setGymProfile({ ...gymProfile, name: e.target.value })} className="mt-1" />
                 </div>
                 <div>
-                  <Label htmlFor="currencyCode">Currency code</Label>
+                  <Label htmlFor="currencyCode"><LocalizedText id="28a6fbbe9d2e" leading={""} trailing={""} /></Label>
                   <Input id="currencyCode" value={gymProfile.currencyCode} onChange={(e) => setGymProfile({ ...gymProfile, currencyCode: e.target.value.toUpperCase() })} className="mt-1" maxLength={3} />
                 </div>
                 <div className="md:col-span-2">
-                  <Label htmlFor="address">Address</Label>
+                  <Label htmlFor="address"><LocalizedText id="d70f93df5e8f" leading={""} trailing={""} /></Label>
                   <Input id="address" value={gymProfile.address} onChange={(e) => setGymProfile({ ...gymProfile, address: e.target.value })} className="mt-1" />
                 </div>
                 <div>
-                  <Label htmlFor="gymPhone">Phone</Label>
+                  <Label htmlFor="gymPhone"><LocalizedText id="77064d526523" leading={""} trailing={""} /></Label>
                   <Input id="gymPhone" value={gymProfile.phone} onChange={(e) => setGymProfile({ ...gymProfile, phone: e.target.value })} className="mt-1" />
                 </div>
                 <div>
-                  <Label htmlFor="gymEmail">Email</Label>
+                  <Label htmlFor="gymEmail"><LocalizedText id="84add5b29527" leading={""} trailing={""} /></Label>
                   <Input id="gymEmail" type="email" value={gymProfile.email} onChange={(e) => setGymProfile({ ...gymProfile, email: e.target.value })} className="mt-1" />
                 </div>
                 <div className="md:col-span-2">
-                  <Label htmlFor="logoUrl">Logo URL</Label>
+                  <Label htmlFor="logoUrl"><LocalizedText id="523eeafcdf89" leading={""} trailing={""} /></Label>
                   <Input id="logoUrl" value={gymProfile.logoUrl} onChange={(e) => setGymProfile({ ...gymProfile, logoUrl: e.target.value })} className="mt-1" placeholder="https://..." />
                 </div>
                 <div>
-                  <Label htmlFor="fyStart">Financial year start</Label>
+                  <Label htmlFor="fyStart"><LocalizedText id="dc7bafb5b6cf" leading={""} trailing={""} /></Label>
                   <Input id="fyStart" type="date" value={gymProfile.financialYearStart} onChange={(e) => setGymProfile({ ...gymProfile, financialYearStart: e.target.value })} className="mt-1" />
                 </div>
                 <div>
-                  <Label htmlFor="fyEnd">Financial year end</Label>
+                  <Label htmlFor="fyEnd"><LocalizedText id="d5669a0e7b2b" leading={""} trailing={""} /></Label>
                   <Input id="fyEnd" type="date" value={gymProfile.financialYearEnd} onChange={(e) => setGymProfile({ ...gymProfile, financialYearEnd: e.target.value })} className="mt-1" />
                 </div>
                 <div>
-                  <Label htmlFor="memberPrefix">Member code prefix</Label>
+                  <Label htmlFor="memberPrefix"><LocalizedText id="f189754728e1" leading={""} trailing={""} /></Label>
                   <Input id="memberPrefix" value={gymProfile.memberCodePrefix} onChange={(e) => setGymProfile({ ...gymProfile, memberCodePrefix: e.target.value })} className="mt-1" />
                 </div>
                 <div>
-                  <Label htmlFor="billPrefix">Bill code prefix</Label>
+                  <Label htmlFor="billPrefix"><LocalizedText id="f93ea4f2e2b5" leading={""} trailing={""} /></Label>
                   <Input id="billPrefix" value={gymProfile.billCodePrefix} onChange={(e) => setGymProfile({ ...gymProfile, billCodePrefix: e.target.value })} className="mt-1" />
                 </div>
               </div>
               <div className="border-t pt-4">
-                <h4 className="font-medium mb-3">Charge policy</h4>
+                <h4 className="font-medium mb-3"><LocalizedText id="4e0b4a5e3658" leading={""} trailing={""} /></h4>
                 <div className="grid gap-4 md:grid-cols-3">
                   <div>
-                    <Label htmlFor="admissionFee">Admission fee</Label>
+                    <Label htmlFor="admissionFee"><LocalizedText id="e8ef54df4341" leading={""} trailing={""} /></Label>
                     <Input id="admissionFee" type="number" min={0} value={gymProfile.chargeAdmissionFee} onChange={(e) => setGymProfile({ ...gymProfile, chargeAdmissionFee: parseFloat(e.target.value) || 0 })} className="mt-1" />
                   </div>
                   <div>
-                    <Label htmlFor="taxPercent">Tax %</Label>
+                    <Label htmlFor="taxPercent"><LocalizedText id="f93c5369e7d9" leading={""} trailing={""} /></Label>
                     <Input id="taxPercent" type="number" min={0} max={100} value={gymProfile.chargeTaxPercent} onChange={(e) => setGymProfile({ ...gymProfile, chargeTaxPercent: parseFloat(e.target.value) || 0 })} className="mt-1" />
                   </div>
                   <div>
-                    <Label htmlFor="discountPresets">Discount presets (comma-separated)</Label>
+                    <Label htmlFor="discountPresets"><LocalizedText id="9ba16bd3f068" leading={""} trailing={""} /></Label>
                     <Input id="discountPresets" value={gymProfile.chargeDiscountPresets} onChange={(e) => setGymProfile({ ...gymProfile, chargeDiscountPresets: e.target.value })} className="mt-1" placeholder="50, 100, 200" />
                   </div>
                 </div>
               </div>
               <Button onClick={saveGymProfile} disabled={saving}>
                 {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-                Save gym profile
-              </Button>
-              <div className="pt-4 border-t border-border">
-                <Label>Dashboard language</Label>
-                <div className="mt-2">
-                  <LanguageSwitcher />
-                </div>
-              </div>
+                <LocalizedText id="b792b3a0e1bf" leading={""} trailing={"\n              "} /></Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -442,13 +431,12 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                Session & Security
-              </CardTitle>
-              <CardDescription>Configure inactivity logout for non-admin users</CardDescription>
+                <LocalizedText id="7527e043b904" leading={""} trailing={"\n              "} /></CardTitle>
+              <CardDescription><LocalizedText id="6c59da24792a" leading={""} trailing={""} /></CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="timeout">Inactivity timeout (minutes)</Label>
+                <Label htmlFor="timeout"><LocalizedText id="b88895c50c22" leading={""} trailing={""} /></Label>
                 <Input
                   id="timeout"
                   type="number"
@@ -458,36 +446,31 @@ export default function SettingsPage() {
                   onChange={(e) => setSessionConfig({ ...sessionConfig, timeoutMinutes: parseInt(e.target.value) || 240 })}
                   className="mt-1 max-w-xs"
                 />
-                <p className="text-xs text-muted-foreground mt-1">Non-admin users will be logged out after this many minutes of inactivity. Session timeout is not applicable to admins. Default: 240 (4 hours).</p>
+                <p className="text-xs text-muted-foreground mt-1"><LocalizedText id="2cbf837fc909" leading={""} trailing={""} /></p>
               </div>
               <Button onClick={saveSessionConfig} disabled={saving}>
                 {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-                Save
-              </Button>
+                <LocalizedText id="efc007a393f6" leading={""} trailing={"\n              "} /></Button>
               {session?.user?.role === "ADMIN" ? (
                 <div className="border-t pt-4 space-y-3">
                   <h4 className="font-medium flex items-center gap-2">
                     <Eye className="h-4 w-4" />
-                    Employee preview
-                  </h4>
+                    <LocalizedText id="96ce458aad2d" leading={""} trailing={"\n                  "} /></h4>
                   <p className="text-sm text-muted-foreground">
-                    See the dashboard as staff — limited sidebar and mobile nav.
-                  </p>
+                    <LocalizedText id="dfa152038aa9" leading={""} trailing={"\n                  "} /></p>
                   <div className="flex gap-2">
                     <Button
                       type="button"
                       variant={assumeEmployeeView ? "default" : "outline"}
                       onClick={() => setAssumeEmployeeView(true, { router, navigate: true })}
                     >
-                      Enter preview
-                    </Button>
+                      <LocalizedText id="0ee18d8352c0" leading={""} trailing={"\n                    "} /></Button>
                     <Button
                       type="button"
                       variant={!assumeEmployeeView ? "default" : "outline"}
                       onClick={() => setAssumeEmployeeView(false, { router, navigate: true })}
                     >
-                      Exit preview
-                    </Button>
+                      <LocalizedText id="e9960a900463" leading={""} trailing={"\n                    "} /></Button>
                   </div>
                 </div>
               ) : null}
@@ -500,9 +483,8 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bell className="h-5 w-5" />
-                Notification Settings
-              </CardTitle>
-              <CardDescription>Configure renewal reminders and WhatsApp Business API preferences</CardDescription>
+                <LocalizedText id="e0a9fb92d49f" leading={""} trailing={"\n              "} /></CardTitle>
+              <CardDescription><LocalizedText id="69072bebbce6" leading={""} trailing={""} /></CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-2">
@@ -512,10 +494,10 @@ export default function SettingsPage() {
                   onChange={(e) => setNotifConfig({ ...notifConfig, whatsappEnabled: e.target.checked })}
                   className="rounded border-input"
                 />
-                <Label htmlFor="whatsapp">WhatsApp Business reminders enabled</Label>
+                <Label htmlFor="whatsapp"><LocalizedText id="604c2146d8a1" leading={""} trailing={""} /></Label>
               </div>
               <div>
-                <Label htmlFor="renewalDays">Renewal reminder (days before expiry)</Label>
+                <Label htmlFor="renewalDays"><LocalizedText id="dc3b9a23e0d4" leading={""} trailing={""} /></Label>
                 <Input
                   id="renewalDays"
                   type="number"
@@ -527,7 +509,7 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="overdueDays">Overdue reminder (days after expiry)</Label>
+                <Label htmlFor="overdueDays"><LocalizedText id="08246850b92f" leading={""} trailing={""} /></Label>
                 <Input
                   id="overdueDays"
                   type="number"
@@ -545,12 +527,11 @@ export default function SettingsPage() {
                   onChange={(e) => setNotifConfig({ ...notifConfig, birthdayEnabled: e.target.checked })}
                   className="rounded border-input"
                 />
-                <Label htmlFor="birthday">Birthday reminders enabled</Label>
+                <Label htmlFor="birthday"><LocalizedText id="b028179081c8" leading={""} trailing={""} /></Label>
               </div>
               <Button onClick={saveNotifConfig} disabled={saving}>
                 {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-                Save
-              </Button>
+                <LocalizedText id="efc007a393f6" leading={""} trailing={"\n              "} /></Button>
             </CardContent>
           </Card>
           <WhatsAppLifecycleTemplatesCard />
@@ -561,78 +542,74 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="h-5 w-5" />
-                Plan Management
-              </CardTitle>
+                <LocalizedText id="41a4b20c3d3a" leading={""} trailing={"\n              "} /></CardTitle>
               <CardDescription>
-                Add price variations for membership plans. Multiple prices can exist for the same duration (e.g., Monthly Gym at ₹699, ₹700, ₹750, ₹800).
-              </CardDescription>
+                <LocalizedText id="57f5d0aeab46" leading={""} trailing={"\n              "} /></CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Button onClick={() => setPlanForm({ name: "", durationDays: 30, price: 0 } as PlanFormData)}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add Price Variant
-              </Button>
+                <LocalizedText id="d4d7f12ae92c" leading={""} trailing={"\n              "} /></Button>
 
               {planForm && (
                 <div className="p-4 rounded-lg border bg-muted/30 space-y-3">
-                  <h4 className="font-medium">{planForm.id ? "Edit Price Variant" : "New Price Variant"}</h4>
+                  <h4 className="font-medium">{planForm.id ? tStatic("f8dd85dd4747") : tStatic("9f7d9d237550")}</h4>
                   <div className="grid gap-3 md:grid-cols-4">
                     <div>
-                      <Label>Plan Type</Label>
+                      <Label><LocalizedText id="45061ce8ef30" leading={""} trailing={""} /></Label>
                       <select
                         value={planForm.planType || 'GYM'}
                         onChange={(e) => setPlanForm({ ...planForm, planType: e.target.value as 'GYM' | 'PT' })}
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
-                        <option value="GYM">💪 Gym</option>
-                        <option value="PT">🏋️ Personal Training</option>
+                        <option value="GYM"><LocalizedText id="29ac58c50df6" leading={""} trailing={""} /></option>
+                        <option value="PT"><LocalizedText id="f62eaea8f5ff" leading={""} trailing={""} /></option>
                       </select>
-                      <p className="text-xs text-muted-foreground mt-1">Gym or PT plan</p>
+                      <p className="text-xs text-muted-foreground mt-1"><LocalizedText id="fac996712931" leading={""} trailing={""} /></p>
                     </div>
                     <div>
-                      <Label>Plan Name</Label>
+                      <Label><LocalizedText id="ec0632cbbffa" leading={""} trailing={""} /></Label>
                       <Input
                         value={planForm.name}
                         onChange={(e) => setPlanForm({ ...planForm, name: e.target.value })}
-                        placeholder="e.g. Monthly Gym"
+                        placeholder={tStatic("eadc5c104956")}
                       />
-                      <p className="text-xs text-muted-foreground mt-1">Use same name for price variations</p>
+                      <p className="text-xs text-muted-foreground mt-1"><LocalizedText id="fed344163b27" leading={""} trailing={""} /></p>
                     </div>
                     <div>
-                      <Label>Duration (days)</Label>
+                      <Label><LocalizedText id="07c607417610" leading={""} trailing={""} /></Label>
                       <Input
                         type="number"
                         min={1}
                         value={planForm.durationDays}
                         onChange={(e) => setPlanForm({ ...planForm, durationDays: parseInt(e.target.value) || 30 })}
                       />
-                      <p className="text-xs text-muted-foreground mt-1">30 = Monthly, 90 = 3 Months</p>
+                      <p className="text-xs text-muted-foreground mt-1"><LocalizedText id="10edf7ea0775" leading={""} trailing={""} /></p>
                     </div>
                     <div>
-                      <Label>Price (₹)</Label>
+                      <Label><LocalizedText id="420225828381" leading={""} trailing={""} /></Label>
                       <Input
                         type="number"
                         min={0}
                         value={planForm.price}
                         onChange={(e) => setPlanForm({ ...planForm, price: parseFloat(e.target.value) || 0 })}
                       />
-                      <p className="text-xs text-muted-foreground mt-1">Historical or current price</p>
+                      <p className="text-xs text-muted-foreground mt-1"><LocalizedText id="a31de5d7793c" leading={""} trailing={""} /></p>
                     </div>
                   </div>
                   <div>
-                    <Label>Description (optional)</Label>
+                    <Label><LocalizedText id="388de6fa3aa3" leading={""} trailing={""} /></Label>
                     <Input
                       value={planForm.description || ""}
                       onChange={(e) => setPlanForm({ ...planForm, description: e.target.value || undefined })}
-                      placeholder="e.g. Old pricing, New rate, PT included"
+                      placeholder={tStatic("d37e2e3553ff")}
                     />
                   </div>
                   <div className="flex gap-2">
                     <Button onClick={savePlan} disabled={saving}>
                       {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-                      Save
-                    </Button>
-                    <Button variant="outline" onClick={() => setPlanForm(null)}>Cancel</Button>
+                      <LocalizedText id="efc007a393f6" leading={""} trailing={"\n                    "} /></Button>
+                    <Button variant="outline" onClick={() => setPlanForm(null)}><LocalizedText id="77dfd2135f4d" leading={""} trailing={""} /></Button>
                   </div>
                 </div>
               )}
@@ -642,7 +619,7 @@ export default function SettingsPage() {
                 <div>
                   <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 pb-2 border-b-2 border-purple-500">
                     <span className="text-2xl">💪</span>
-                    <span>Gym Plans</span>
+                    <span><LocalizedText id="913d699d9f63" leading={""} trailing={""} /></span>
                     <span className="text-sm font-normal text-muted-foreground">({plans.filter(p => p.planType === 'GYM').length})</span>
                   </h3>
                   <div className="space-y-4">
@@ -660,13 +637,13 @@ export default function SettingsPage() {
                         { bg: 'bg-purple-500/40', border: 'border-l-purple-700', text: 'text-purple-800 dark:text-purple-200' };
                       
                       const durationLabel = 
-                        duration === 30 ? 'Monthly' :
-                        duration === 90 ? '3 Months' :
-                        duration === 180 ? '6 Months' : '12 Months';
+                        duration === 30 ? tStatic("d31edb7b8a94") :
+                        duration === 90 ? tStatic("8ce49e113d27") :
+                        duration === 180 ? tStatic("422c023cc898") : tStatic("2de83657ffcd");
                       
                       return (
                         <div key={duration} className={`rounded-lg border-l-4 ${durationColor.border} ${durationColor.bg} p-3`}>
-                          <h4 className={`font-semibold text-sm mb-2 ${durationColor.text}`}>{durationLabel} ({duration} days)</h4>
+                          <h4 className={`font-semibold text-sm mb-2 ${durationColor.text}`}>{durationLabel} ({duration} <LocalizedText id="8d77a9d1d747" leading={""} trailing={""} /></h4>
                           <div className="space-y-2">
                             {durationPlans.map(p => (
                               <div key={p.id} className="flex items-center justify-between gap-2 p-2 rounded bg-card/50 hover:bg-card transition-colors">
@@ -674,7 +651,7 @@ export default function SettingsPage() {
                                   <div className="flex items-center gap-2 flex-wrap">
                                     <span className="font-semibold text-foreground">₹{Number(p.price).toLocaleString('en-IN')}</span>
                                     <span className={`text-xs px-2 py-0.5 rounded font-medium ${p.isActive ? "bg-green-500/10 text-green-700 dark:text-green-400" : "bg-muted text-muted-foreground"}`}>
-                                      {p.isActive ? "Active" : "Inactive"}
+                                      {p.isActive ? tStatic("a733b809d2f1") : tStatic("09af574c7f20")}
                                     </span>
                                   </div>
                                   {p.description && (
@@ -714,13 +691,13 @@ export default function SettingsPage() {
                 <div>
                   <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 pb-2 border-b-2 border-amber-500">
                     <span className="text-2xl">🏋️</span>
-                    <span>PT Plans</span>
-                    <span className="text-sm font-normal text-muted-foreground">({plans.filter(p => p.planType === 'PT').length})</span>
+                    <span><LocalizedText id="910c575544be" leading={""} trailing={""} /></span>
+                    <span className="text-sm font-normal text-muted-foreground">({plans.filter(p => p.planType === tStatic("7c4c910b08dc")).length})</span>
                   </h3>
                   <div className="space-y-4">
                     {[30, 90, 180, 365].map(duration => {
                       const durationPlans = plans
-                        .filter(p => p.planType === 'PT' && p.durationDays === duration)
+                        .filter(p => p.planType === tStatic("7c4c910b08dc") && p.durationDays === duration)
                         .sort((a, b) => Number(a.price) - Number(b.price));
                       
                       if (durationPlans.length === 0) return null;
@@ -732,13 +709,13 @@ export default function SettingsPage() {
                         { bg: 'bg-amber-500/40', border: 'border-l-amber-700', text: 'text-amber-800 dark:text-amber-200' };
                       
                       const durationLabel = 
-                        duration === 30 ? 'Monthly' :
-                        duration === 90 ? '3 Months' :
-                        duration === 180 ? '6 Months' : '12 Months';
+                        duration === 30 ? tStatic("d31edb7b8a94") :
+                        duration === 90 ? tStatic("8ce49e113d27") :
+                        duration === 180 ? tStatic("422c023cc898") : tStatic("2de83657ffcd");
                       
                       return (
                         <div key={duration} className={`rounded-lg border-l-4 ${durationColor.border} ${durationColor.bg} p-3`}>
-                          <h4 className={`font-semibold text-sm mb-2 ${durationColor.text}`}>{durationLabel} ({duration} days)</h4>
+                          <h4 className={`font-semibold text-sm mb-2 ${durationColor.text}`}>{durationLabel} ({duration} <LocalizedText id="8d77a9d1d747" leading={""} trailing={""} /></h4>
                           <div className="space-y-2">
                             {durationPlans.map(p => (
                               <div key={p.id} className="flex items-center justify-between gap-2 p-2 rounded bg-card/50 hover:bg-card transition-colors">
@@ -746,7 +723,7 @@ export default function SettingsPage() {
                                   <div className="flex items-center gap-2 flex-wrap">
                                     <span className="font-semibold text-foreground">₹{Number(p.price).toLocaleString('en-IN')}</span>
                                     <span className={`text-xs px-2 py-0.5 rounded font-medium ${p.isActive ? "bg-green-500/10 text-green-700 dark:text-green-400" : "bg-muted text-muted-foreground"}`}>
-                                      {p.isActive ? "Active" : "Inactive"}
+                                      {p.isActive ? tStatic("a733b809d2f1") : tStatic("09af574c7f20")}
                                     </span>
                                   </div>
                                   {p.description && (
@@ -786,51 +763,51 @@ export default function SettingsPage() {
               <div className="grid md:grid-cols-2 gap-4 mt-4">
                 {/* Color Legend */}
                 <div className="p-4 rounded-lg bg-muted/30 border">
-                  <p className="text-sm text-foreground font-medium mb-3">🎨 Color Legend:</p>
+                  <p className="text-sm text-foreground font-medium mb-3"><LocalizedText id="66204e89ab4a" leading={""} trailing={""} /></p>
                   <div className="space-y-3">
                     <div className="text-sm">
                       <span className="font-semibold flex items-center gap-2 mb-2">
-                        💪 Gym Plans <span className="text-xs font-normal text-muted-foreground">(Purple shades)</span>
+                        <LocalizedText id="8985811cb781" leading={""} trailing={" "} /><span className="text-xs font-normal text-muted-foreground"><LocalizedText id="01122f9a9972" leading={""} trailing={""} /></span>
                       </span>
                       <div className="grid grid-cols-2 gap-2 ml-2">
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 rounded bg-purple-400"></div>
-                          <span className="text-xs text-muted-foreground">Monthly (lighter)</span>
+                          <span className="text-xs text-muted-foreground"><LocalizedText id="c11bbfb53e78" leading={""} trailing={""} /></span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 rounded bg-purple-500"></div>
-                          <span className="text-xs text-muted-foreground">3 Month</span>
+                          <span className="text-xs text-muted-foreground"><LocalizedText id="95485fa47762" leading={""} trailing={""} /></span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 rounded bg-purple-600"></div>
-                          <span className="text-xs text-muted-foreground">6 Month</span>
+                          <span className="text-xs text-muted-foreground"><LocalizedText id="171a2f28b0ce" leading={""} trailing={""} /></span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 rounded bg-purple-700"></div>
-                          <span className="text-xs text-muted-foreground">12 Month (darker)</span>
+                          <span className="text-xs text-muted-foreground"><LocalizedText id="34b52e27b804" leading={""} trailing={""} /></span>
                         </div>
                       </div>
                     </div>
                     <div className="text-sm">
                       <span className="font-semibold flex items-center gap-2 mb-2">
-                        🏋️ PT Plans <span className="text-xs font-normal text-muted-foreground">(Golden shades)</span>
+                        <LocalizedText id="a673eb45ab67" leading={""} trailing={" "} /><span className="text-xs font-normal text-muted-foreground"><LocalizedText id="743decdd00b9" leading={""} trailing={""} /></span>
                       </span>
                       <div className="grid grid-cols-2 gap-2 ml-2">
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 rounded bg-amber-400"></div>
-                          <span className="text-xs text-muted-foreground">Monthly (lighter)</span>
+                          <span className="text-xs text-muted-foreground"><LocalizedText id="c11bbfb53e78" leading={""} trailing={""} /></span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 rounded bg-amber-500"></div>
-                          <span className="text-xs text-muted-foreground">3 Month</span>
+                          <span className="text-xs text-muted-foreground"><LocalizedText id="95485fa47762" leading={""} trailing={""} /></span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 rounded bg-amber-600"></div>
-                          <span className="text-xs text-muted-foreground">6 Month</span>
+                          <span className="text-xs text-muted-foreground"><LocalizedText id="171a2f28b0ce" leading={""} trailing={""} /></span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 rounded bg-amber-700"></div>
-                          <span className="text-xs text-muted-foreground">12 Month (darker)</span>
+                          <span className="text-xs text-muted-foreground"><LocalizedText id="34b52e27b804" leading={""} trailing={""} /></span>
                         </div>
                       </div>
                     </div>
@@ -839,14 +816,14 @@ export default function SettingsPage() {
 
                 {/* Plan Rules */}
                 <div className="p-4 rounded-lg bg-blue-500/5 border border-blue-500/20">
-                  <p className="text-sm text-foreground font-medium mb-2">💡 Plan Structure & Rules:</p>
+                  <p className="text-sm text-foreground font-medium mb-2"><LocalizedText id="ce30fd106c42" leading={""} trailing={""} /></p>
                   <ul className="text-sm text-muted-foreground space-y-1 ml-4 list-disc">
-                    <li><strong>Gym Plans</strong>: Monthly (₹699-800), 3 Month (₹1799-2099), 6 Month (₹2999-3599), 12 Month (₹4899-5999)</li>
-                    <li><strong>PT Plans</strong>: Monthly (₹1500-2000), 3 Month (₹3600-5400), 6 Month (₹7200-9000), 12 Month (₹9000-14000)</li>
-                    <li><strong>Combination</strong>: Members can have 1 Gym + 1 PT plan (tracked separately for renewals & overdue)</li>
-                    <li><strong>Restrictions</strong>: No 2 Gym plans or 2 PT plans for same member</li>
-                    <li>System will auto-match payments to the closest price variant</li>
-                    <li>Deactivate old prices to hide them from new member forms</li>
+                    <li><strong><LocalizedText id="913d699d9f63" leading={""} trailing={""} /></strong><LocalizedText id="a80191b44dc2" leading={""} trailing={""} /></li>
+                    <li><strong><LocalizedText id="910c575544be" leading={""} trailing={""} /></strong><LocalizedText id="17eac8f85660" leading={""} trailing={""} /></li>
+                    <li><strong><LocalizedText id="db316d38e0f2" leading={""} trailing={""} /></strong><LocalizedText id="975d2173033f" leading={""} trailing={""} /></li>
+                    <li><strong><LocalizedText id="38ad8517f1df" leading={""} trailing={""} /></strong><LocalizedText id="62ef07ae7503" leading={""} trailing={""} /></li>
+                    <li><LocalizedText id="22a4dc277b7c" leading={""} trailing={""} /></li>
+                    <li><LocalizedText id="f315f6f0f1d8" leading={""} trailing={""} /></li>
                   </ul>
                 </div>
               </div>
@@ -861,11 +838,9 @@ export default function SettingsPage() {
           ) : (
             <Card>
               <CardHeader>
-                <CardTitle>Agent &amp; MCP integrations</CardTitle>
+                <CardTitle><LocalizedText id="7c148dfd5f7c" leading={""} trailing={""} /></CardTitle>
                 <CardDescription>
-                  Available when ENABLE_AGENT_API is enabled for your deployment. Developer
-                  docs and the public playground live on the marketing site.
-                </CardDescription>
+                  <LocalizedText id="337a929bdb8a" leading={""} trailing={"\n                "} /></CardDescription>
               </CardHeader>
               <CardContent>
                 <a
@@ -874,8 +849,7 @@ export default function SettingsPage() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Open developers portal →
-                </a>
+                  <LocalizedText id="06a45567af2a" leading={""} trailing={"\n                "} /></a>
               </CardContent>
             </Card>
           )}
@@ -886,9 +860,8 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <SettingsIcon className="h-5 w-5" />
-                Action Logs
-              </CardTitle>
-              <CardDescription>View all actions performed by users on the portal</CardDescription>
+                <LocalizedText id="53f02efb2a61" leading={""} trailing={"\n              "} /></CardTitle>
+              <CardDescription><LocalizedText id="26529518ce64" leading={""} trailing={""} /></CardDescription>
             </CardHeader>
             <CardContent>
               <ActionLogsViewer />
@@ -905,6 +878,7 @@ export default function SettingsPage() {
 }
 
 function ActionLogsViewer() {
+  const tStatic = useStaticUiTranslations("static");
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -942,26 +916,24 @@ function ActionLogsViewer() {
   if (logs.length === 0) {
     return (
       <div className="text-center py-12 text-muted-foreground">
-        No action logs found.
-      </div>
+        <LocalizedText id="2b68cd1c5234" leading={""} trailing={"\n      "} /></div>
     );
   }
 
   return (
     <div className="space-y-4">
       <div className="text-sm text-muted-foreground">
-        Showing {offset + 1}-{Math.min(offset + limit, total)} of {total} logs
-      </div>
+        <LocalizedText id="163d8174ff4b" leading={""} trailing={" "} />{offset + 1}-{Math.min(offset + limit, total)} <LocalizedText id="de04fa0e29f9" leading={""} trailing={" "} />{total} <LocalizedText id="474c797713f3" leading={""} trailing={"\n      "} /></div>
 
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-border">
           <thead className="bg-muted">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Date</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">User</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Action</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Entity</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Details</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"><LocalizedText id="eb9a4bc1c0c1" leading={""} trailing={""} /></th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"><LocalizedText id="9f8a2389a20c" leading={""} trailing={""} /></th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"><LocalizedText id="97c89a4d6630" leading={""} trailing={""} /></th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"><LocalizedText id="c7fb31772579" leading={""} trailing={""} /></th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"><LocalizedText id="dc3decbb9384" leading={""} trailing={""} /></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border bg-background">
@@ -971,7 +943,7 @@ function ActionLogsViewer() {
                   {formatDate(log.createdAt)}
                 </td>
                 <td className="px-4 py-3 text-sm">
-                  <div className="font-medium text-foreground">{log.User?.name || "Unknown"}</div>
+                  <div className="font-medium text-foreground">{log.User?.name || tStatic("bc7819b34ff8")}</div>
                   <div className="text-xs text-muted-foreground">{log.User?.contactNumber}</div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
@@ -1001,16 +973,14 @@ function ActionLogsViewer() {
           onClick={() => setOffset(Math.max(0, offset - limit))}
           disabled={offset === 0}
         >
-          Previous
-        </Button>
+          <LocalizedText id="50f94286ba30" leading={""} trailing={"\n        "} /></Button>
         <Button
           variant="outline"
           size="sm"
           onClick={() => setOffset(offset + limit)}
           disabled={offset + limit >= total}
         >
-          Next
-        </Button>
+          <LocalizedText id="bc981983e7f5" leading={""} trailing={"\n        "} /></Button>
       </div>
     </div>
   );

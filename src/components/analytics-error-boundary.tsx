@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import React from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -39,16 +40,15 @@ export class AnalyticsErrorBoundary extends React.Component<Props, State> {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5 text-destructive" />
-                <CardTitle>Analytics Error</CardTitle>
+                <CardTitle><LocalizedText id="8061dc876199" leading={""} trailing={""} /></CardTitle>
               </div>
               <CardDescription>
-                Something went wrong while loading the analytics data.
-              </CardDescription>
+                <LocalizedText id="d92c56ee7844" leading={""} trailing={"\n              "} /></CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {this.state.error && (
                 <div className="bg-muted p-3 rounded text-sm font-mono text-muted-foreground">
-                  {this.state.error instanceof Error ? this.state.error.message : String(this.state.error)}
+                  <LocalizedText id="0e7155936917" />
                 </div>
               )}
               <Button
@@ -59,8 +59,7 @@ export class AnalyticsErrorBoundary extends React.Component<Props, State> {
                 className="w-full"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Reload Page
-              </Button>
+                <LocalizedText id="6e41ee3f309a" leading={""} trailing={"\n              "} /></Button>
             </CardContent>
           </Card>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import useSWR from "swr";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
@@ -43,21 +44,19 @@ export function AttendanceHeatmap() {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg">Attendance heatmap (IST)</CardTitle>
+        <CardTitle className="text-lg"><LocalizedText id="65e8fa1ce40c" leading={""} trailing={""} /></CardTitle>
         {data?.period && (
           <p className="text-xs text-muted-foreground">
-            {data.period.startDate} → {data.period.endDate} · {data.totalCheckIns} check-ins
-          </p>
+            {data.period.startDate} → {data.period.endDate} · {data.totalCheckIns} <LocalizedText id="75eebc0aa1c6" leading={""} trailing={"\n          "} /></p>
         )}
       </CardHeader>
       <CardContent>
         {isLoading && (
           <p className="text-sm text-muted-foreground flex items-center gap-2">
-            <Loader2 className="h-4 w-4 animate-spin" /> Loading…
-          </p>
+            <Loader2 className="h-4 w-4 animate-spin" /> <LocalizedText id="33ce417454bf" leading={""} trailing={"\n          "} /></p>
         )}
         {error && (
-          <p className="text-sm text-destructive">Could not load heatmap.</p>
+          <p className="text-sm text-destructive"><LocalizedText id="d57dee326686" leading={""} trailing={""} /></p>
         )}
         {data && (
           <>
@@ -88,12 +87,12 @@ export function AttendanceHeatmap() {
             <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
               {data.peak && (
                 <span>
-                  Peak: <strong className="text-foreground">{data.peak.dayLabel} {data.peak.hour}:00</strong> ({data.peak.count})
+                  <LocalizedText id="45266caa9391" leading={""} trailing={" "} /><strong className="text-foreground">{data.peak.dayLabel} {data.peak.hour}:00</strong> ({data.peak.count})
                 </span>
               )}
               {data.quiet && (
                 <span>
-                  Quiet: <strong className="text-foreground">{data.quiet.dayLabel} {data.quiet.hour}:00</strong> ({data.quiet.count})
+                  <LocalizedText id="f2b5752d7c4e" leading={""} trailing={" "} /><strong className="text-foreground">{data.quiet.dayLabel} {data.quiet.hour}:00</strong> ({data.quiet.count})
                 </span>
               )}
             </div>

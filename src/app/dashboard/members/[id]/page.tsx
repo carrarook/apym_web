@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
@@ -61,6 +63,7 @@ interface Member {
 }
 
 export default function MemberDetailPage() {
+  const tStatic = useStaticUiTranslations("static");
   const router = useRouter();
   const params = useParams();
   const memberId = params.id as string;
@@ -249,7 +252,7 @@ export default function MemberDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-muted-foreground font-medium">Loading...</div>
+        <div className="text-muted-foreground font-medium"><LocalizedText id="b04ba49f8486" leading={""} trailing={""} /></div>
       </div>
     );
   }
@@ -284,8 +287,7 @@ export default function MemberDetailPage() {
               {member.name}
             </h1>
             <p className="text-sm text-muted-foreground mt-1.5 font-medium">
-              Member Details & History
-            </p>
+              <LocalizedText id="2039fac590f2" leading={""} trailing={"\n            "} /></p>
           </div>
         </div>
         {!editing ? (
@@ -294,8 +296,7 @@ export default function MemberDetailPage() {
             className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 text-primary-foreground px-5 py-2.5 rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-200 font-semibold active:scale-[0.98]"
           >
             <Edit2 className="h-4 w-4" />
-            Edit
-          </Button>
+            <LocalizedText id="5301648dcf6b" leading={""} trailing={"\n          "} /></Button>
         ) : (
           <div className="flex gap-2">
             <Button
@@ -306,15 +307,14 @@ export default function MemberDetailPage() {
               className="inline-flex items-center gap-2 border border-border text-foreground px-5 py-2.5 rounded-xl hover:bg-muted transition-all duration-200 font-semibold"
             >
               <X className="h-4 w-4" />
-              Cancel
-            </Button>
+              <LocalizedText id="77dfd2135f4d" leading={""} trailing={"\n            "} /></Button>
             <Button
               onClick={handleSave}
               disabled={saving}
               className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 text-primary-foreground px-5 py-2.5 rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold active:scale-[0.98]"
             >
               <Save className="h-4 w-4" />
-              {saving ? "Saving..." : "Save"}
+              {saving ? tStatic("ae7e887517b0") : tStatic("efc007a393f6")}
             </Button>
           </div>
         )}
@@ -331,8 +331,7 @@ export default function MemberDetailPage() {
         <MemberDetailTabs
           overview={
             <p className="text-sm text-muted-foreground">
-              Use the tabs below for payments, plans, AI insights, and WhatsApp history.
-            </p>
+              <LocalizedText id="5b41ee73685a" leading={""} trailing={"\n            "} /></p>
           }
           payments={
             <MemberPaymentHistory memberId={memberId} payments={member.Payment} />
@@ -347,22 +346,21 @@ export default function MemberDetailPage() {
 
       {/* Member Information */}
       <div className="bg-card rounded-2xl shadow-lg  p-6 border border-border">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Member Information</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4"><LocalizedText id="1cee9a897db1" leading={""} trailing={""} /></h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-semibold text-foreground">
-                Full Name {editing && "*"}
+                <LocalizedText id="64346b483c0a" leading={""} trailing={" "} />{editing && "*"}
               </label>
               {!editing && editingField !== "name" && (
                 <Button
                   onClick={() => handleStartEditField("name", member.name)}
                   className="text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50/50 border border-blue-200/50 hover:bg-blue-100 hover:border-blue-300 transition-all"
-                  title="Edit field"
+                  title={tStatic("e5e03f979065")}
                 >
                   <Pencil className="h-4 w-4" />
-                  Edit
-                </Button>
+                  <LocalizedText id="5301648dcf6b" leading={""} trailing={"\n                "} /></Button>
               )}
             </div>
             {editing ? (
@@ -405,17 +403,16 @@ export default function MemberDetailPage() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-semibold text-foreground">
-                Phone Number {editing && "*"}
+                <LocalizedText id="ab25d61bb124" leading={""} trailing={" "} />{editing && "*"}
               </label>
               {!editing && editingField !== "phone" && (
                 <Button
                   onClick={() => handleStartEditField("phone", member.phone)}
                   className="text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50/50 border border-blue-200/50 hover:bg-blue-100 hover:border-blue-300 transition-all"
-                  title="Edit field"
+                  title={tStatic("e5e03f979065")}
                 >
                   <Pencil className="h-4 w-4" />
-                  Edit
-                </Button>
+                  <LocalizedText id="5301648dcf6b" leading={""} trailing={"\n                "} /></Button>
               )}
             </div>
             {editing ? (
@@ -457,16 +454,15 @@ export default function MemberDetailPage() {
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-semibold text-foreground">Gender</label>
+              <label className="block text-sm font-semibold text-foreground"><LocalizedText id="8a754c61c2ce" leading={""} trailing={""} /></label>
               {!editing && editingField !== "gender" && (
                 <Button
                   onClick={() => handleStartEditField("gender", member.gender || "")}
                   className="text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50/50 border border-blue-200/50 hover:bg-blue-100 hover:border-blue-300 transition-all"
-                  title="Edit field"
+                  title={tStatic("e5e03f979065")}
                 >
                   <Pencil className="h-4 w-4" />
-                  Edit
-                </Button>
+                  <LocalizedText id="5301648dcf6b" leading={""} trailing={"\n                "} /></Button>
               )}
             </div>
             {editing ? (
@@ -475,10 +471,10 @@ export default function MemberDetailPage() {
                 onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                 className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-background font-medium"
               >
-                <option value="">Select Gender</option>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-                <option value="OTHER">Other</option>
+                <option value=""><LocalizedText id="e90701121015" leading={""} trailing={""} /></option>
+                <option value="MALE"><LocalizedText id="3f3a489c72de" leading={""} trailing={""} /></option>
+                <option value="FEMALE"><LocalizedText id="b7c17e97d3d6" leading={""} trailing={""} /></option>
+                <option value="OTHER"><LocalizedText id="6e6a6f2086bb" leading={""} trailing={""} /></option>
               </SelectNative>
             ) : editingField === "gender" ? (
               <div className="flex items-center gap-2">
@@ -488,10 +484,10 @@ export default function MemberDetailPage() {
                   className="flex-1 px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-background font-medium"
                   autoFocus
                 >
-                  <option value="">Select Gender</option>
-                  <option value="MALE">Male</option>
-                  <option value="FEMALE">Female</option>
-                  <option value="OTHER">Other</option>
+                  <option value=""><LocalizedText id="e90701121015" leading={""} trailing={""} /></option>
+                  <option value="MALE"><LocalizedText id="3f3a489c72de" leading={""} trailing={""} /></option>
+                  <option value="FEMALE"><LocalizedText id="b7c17e97d3d6" leading={""} trailing={""} /></option>
+                  <option value="OTHER"><LocalizedText id="6e6a6f2086bb" leading={""} trailing={""} /></option>
                 </SelectNative>
                 <Button
                   onClick={() => handleSaveField("gender")}
@@ -509,23 +505,22 @@ export default function MemberDetailPage() {
               </div>
             ) : (
               <p className="text-foreground font-medium">
-                {member.gender || <span className="text-muted-foreground italic">Not set</span>}
+                {member.gender || <span className="text-muted-foreground italic"><LocalizedText id="93039e609d94" leading={""} trailing={""} /></span>}
               </p>
             )}
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-semibold text-foreground">Date of Birth</label>
+              <label className="block text-sm font-semibold text-foreground"><LocalizedText id="133160594d08" leading={""} trailing={""} /></label>
               {!editing && editingField !== "dateOfBirth" && (
                 <Button
                   onClick={() => handleStartEditField("dateOfBirth", member.dateOfBirth ? member.dateOfBirth.split("T")[0] : "")}
                   className="text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50/50 border border-blue-200/50 hover:bg-blue-100 hover:border-blue-300 transition-all"
-                  title="Edit field"
+                  title={tStatic("e5e03f979065")}
                 >
                   <Pencil className="h-4 w-4" />
-                  Edit
-                </Button>
+                  <LocalizedText id="5301648dcf6b" leading={""} trailing={"\n                "} /></Button>
               )}
             </div>
             {editing ? (
@@ -560,23 +555,22 @@ export default function MemberDetailPage() {
               </div>
             ) : (
               <p className="text-foreground font-medium">
-                {member.dateOfBirth ? formatDate(member.dateOfBirth) : <span className="text-muted-foreground italic">Not set</span>}
+                {member.dateOfBirth ? formatDate(member.dateOfBirth) : <span className="text-muted-foreground italic"><LocalizedText id="93039e609d94" leading={""} trailing={""} /></span>}
               </p>
             )}
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-semibold text-foreground">Status</label>
+              <label className="block text-sm font-semibold text-foreground"><LocalizedText id="bae7d5be7082" leading={""} trailing={""} /></label>
               {!editing && editingField !== "status" && (
                 <Button
                   onClick={() => handleStartEditField("status", member.status)}
                   className="text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50/50 border border-blue-200/50 hover:bg-blue-100 hover:border-blue-300 transition-all"
-                  title="Edit field"
+                  title={tStatic("e5e03f979065")}
                 >
                   <Pencil className="h-4 w-4" />
-                  Edit
-                </Button>
+                  <LocalizedText id="5301648dcf6b" leading={""} trailing={"\n                "} /></Button>
               )}
             </div>
             {editing ? (
@@ -587,8 +581,8 @@ export default function MemberDetailPage() {
                 }
                 className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-background font-medium"
               >
-                <option value="ACTIVE">Active</option>
-                <option value="EXPIRED">Expired</option>
+                <option value="ACTIVE"><LocalizedText id="a733b809d2f1" leading={""} trailing={""} /></option>
+                <option value="EXPIRED"><LocalizedText id="a689a999a5e6" leading={""} trailing={""} /></option>
               </SelectNative>
             ) : editingField === "status" ? (
               <div className="flex items-center gap-2">
@@ -598,8 +592,8 @@ export default function MemberDetailPage() {
                   className="flex-1 px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-background font-medium"
                   autoFocus
                 >
-                  <option value="ACTIVE">Active</option>
-                  <option value="EXPIRED">Expired</option>
+                  <option value="ACTIVE"><LocalizedText id="a733b809d2f1" leading={""} trailing={""} /></option>
+                  <option value="EXPIRED"><LocalizedText id="a689a999a5e6" leading={""} trailing={""} /></option>
                 </SelectNative>
                 <Button
                   onClick={() => handleSaveField("status")}
@@ -629,17 +623,15 @@ export default function MemberDetailPage() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-semibold text-foreground">
-                Emergency Contact
-              </label>
+                <LocalizedText id="0d16c6e19d1f" leading={""} trailing={"\n              "} /></label>
               {!editing && editingField !== "emergencyContact" && (
                 <Button
                   onClick={() => handleStartEditField("emergencyContact", member.emergencyContact || "")}
                   className="text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50/50 border border-blue-200/50 hover:bg-blue-100 hover:border-blue-300 transition-all"
-                  title="Edit field"
+                  title={tStatic("e5e03f979065")}
                 >
                   <Pencil className="h-4 w-4" />
-                  Edit
-                </Button>
+                  <LocalizedText id="5301648dcf6b" leading={""} trailing={"\n                "} /></Button>
               )}
             </div>
             {editing ? (
@@ -676,14 +668,14 @@ export default function MemberDetailPage() {
               </div>
             ) : (
               <p className="text-foreground font-medium">
-                {member.emergencyContact || <span className="text-muted-foreground italic">Not set</span>}
+                {member.emergencyContact || <span className="text-muted-foreground italic"><LocalizedText id="93039e609d94" leading={""} trailing={""} /></span>}
               </p>
             )}
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-semibold text-foreground">Join Date</label>
+              <label className="block text-sm font-semibold text-foreground"><LocalizedText id="2e672f856b41" leading={""} trailing={""} /></label>
               {!editing && (
                 <Button
                   onClick={() => {
@@ -692,8 +684,7 @@ export default function MemberDetailPage() {
                   }}
                   className="text-xs text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  Fix Date
-                </Button>
+                  <LocalizedText id="b3cc2b1233b2" leading={""} trailing={"\n                "} /></Button>
               )}
             </div>
             {fixingDate === "joinDate" ? (
@@ -709,8 +700,7 @@ export default function MemberDetailPage() {
                   disabled={saving}
                   className="px-3 py-2 bg-blue-600 text-primary-foreground rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm font-semibold"
                 >
-                  Save
-                </Button>
+                  <LocalizedText id="efc007a393f6" leading={""} trailing={"\n                "} /></Button>
                 <Button
                   onClick={() => {
                     setFixingDate(null);
@@ -718,8 +708,7 @@ export default function MemberDetailPage() {
                   }}
                   className="px-3 py-2 border border-border rounded-xl hover:bg-muted transition-colors text-sm font-semibold"
                 >
-                  Cancel
-                </Button>
+                  <LocalizedText id="77dfd2135f4d" leading={""} trailing={"\n                "} /></Button>
               </div>
             ) : (
               <p className="text-foreground font-medium">{formatDate(member.joinDate)}</p>
@@ -728,16 +717,15 @@ export default function MemberDetailPage() {
 
           <div className="md:col-span-2">
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-semibold text-foreground">Address</label>
+              <label className="block text-sm font-semibold text-foreground"><LocalizedText id="d70f93df5e8f" leading={""} trailing={""} /></label>
               {!editing && editingField !== "address" && (
                 <Button
                   onClick={() => handleStartEditField("address", member.address || "")}
                   className="text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50/50 border border-blue-200/50 hover:bg-blue-100 hover:border-blue-300 transition-all"
-                  title="Edit field"
+                  title={tStatic("e5e03f979065")}
                 >
                   <Pencil className="h-4 w-4" />
-                  Edit
-                </Button>
+                  <LocalizedText id="5301648dcf6b" leading={""} trailing={"\n                "} /></Button>
               )}
             </div>
             {editing ? (
@@ -763,27 +751,25 @@ export default function MemberDetailPage() {
                     className="px-3 py-2 bg-blue-600 text-primary-foreground rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 text-sm font-semibold"
                   >
                     <Save className="h-4 w-4 inline mr-1" />
-                    Save
-                  </Button>
+                    <LocalizedText id="efc007a393f6" leading={""} trailing={"\n                  "} /></Button>
                   <Button
                     onClick={handleCancelEditField}
                     className="px-3 py-2 border border-border rounded-xl hover:bg-muted transition-colors text-sm font-semibold"
                   >
                     <X className="h-4 w-4 inline mr-1" />
-                    Cancel
-                  </Button>
+                    <LocalizedText id="77dfd2135f4d" leading={""} trailing={"\n                  "} /></Button>
                 </div>
               </div>
             ) : (
               <p className="text-foreground font-medium">
-                {member.address || <span className="text-muted-foreground italic">Not set</span>}
+                {member.address || <span className="text-muted-foreground italic"><LocalizedText id="93039e609d94" leading={""} trailing={""} /></span>}
               </p>
             )}
           </div>
 
           {member.externalId && (
             <div>
-              <label className="block text-sm font-semibold text-foreground mb-2">Member ID</label>
+              <label className="block text-sm font-semibold text-foreground mb-2"><LocalizedText id="7a88b2371d9a" leading={""} trailing={""} /></label>
               <p className="text-foreground font-mono font-medium">{member.externalId}</p>
             </div>
           )}
@@ -794,7 +780,7 @@ export default function MemberDetailPage() {
       {currentMembership && (
         <div className="bg-card rounded-2xl shadow-lg  p-6 border border-border">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-foreground">Current Membership</h2>
+            <h2 className="text-lg font-semibold text-foreground"><LocalizedText id="61fd97f6b3a7" leading={""} trailing={""} /></h2>
             <div className="flex gap-2">
               {(() => {
                 // Check if expiry date seems incorrect (more than 1 year from latest payment)
@@ -831,8 +817,7 @@ export default function MemberDetailPage() {
                         className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-primary-foreground px-4 py-2 rounded-xl hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-200 font-semibold text-sm active:scale-[0.98]"
                       >
                         <Calendar className="h-4 w-4" />
-                        Fix Expiry Date
-                      </Button>
+                        <LocalizedText id="7ba68293fab1" leading={""} trailing={"\n                      "} /></Button>
                     );
                   }
                 }
@@ -843,33 +828,31 @@ export default function MemberDetailPage() {
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-primary-foreground px-4 py-2 rounded-xl hover:shadow-lg hover:shadow-green-500/30 transition-all duration-200 font-semibold text-sm active:scale-[0.98]"
               >
                 <Plus className="h-4 w-4" />
-                Renew/Extend
-              </Link>
+                <LocalizedText id="1e003c13707c" leading={""} trailing={"\n              "} /></Link>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-muted-foreground font-medium">Plan</p>
+                <p className="text-sm text-muted-foreground font-medium"><LocalizedText id="ae2f98a099fe" leading={""} trailing={""} /></p>
                 <Link
                   href={`/dashboard/members/${memberId}/renew`}
                   className="text-xs text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1"
                 >
                   <Pencil className="h-3 w-3" />
-                  Edit
-                </Link>
+                  <LocalizedText id="5301648dcf6b" leading={""} trailing={"\n                "} /></Link>
               </div>
               <p className="text-lg font-semibold text-foreground">{currentMembership.Plan.name}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground font-medium mb-1">Amount Paid</p>
+              <p className="text-sm text-muted-foreground font-medium mb-1"><LocalizedText id="a2dc17b529cb" leading={""} trailing={""} /></p>
               <p className="text-lg font-semibold text-green-600">
                 {formatCurrency(currentMembership.amount)}
               </p>
             </div>
             <div>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-muted-foreground font-medium">Start Date</p>
+                <p className="text-sm text-muted-foreground font-medium"><LocalizedText id="9d7ab1a55796" leading={""} trailing={""} /></p>
                 <Button
                   onClick={() => {
                     setFixingDate("membershipStartDate");
@@ -877,8 +860,7 @@ export default function MemberDetailPage() {
                   }}
                   className="text-xs text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  Fix
-                </Button>
+                  <LocalizedText id="99a423164819" leading={""} trailing={"\n                "} /></Button>
               </div>
               {fixingDate === "membershipStartDate" ? (
                 <div className="flex items-center gap-2 mt-1">
@@ -893,8 +875,7 @@ export default function MemberDetailPage() {
                     disabled={saving}
                     className="px-2 py-1.5 bg-blue-600 text-primary-foreground rounded-lg hover:bg-blue-700 text-xs disabled:opacity-50"
                   >
-                    Save
-                  </Button>
+                    <LocalizedText id="efc007a393f6" leading={""} trailing={"\n                  "} /></Button>
                   <Button
                     onClick={() => {
                       setFixingDate(null);
@@ -902,8 +883,7 @@ export default function MemberDetailPage() {
                     }}
                     className="px-2 py-1.5 border border-border rounded-lg hover:bg-muted text-xs"
                   >
-                    Cancel
-                  </Button>
+                    <LocalizedText id="77dfd2135f4d" leading={""} trailing={"\n                  "} /></Button>
                 </div>
               ) : (
                 <p className="text-sm font-medium text-foreground">
@@ -913,7 +893,7 @@ export default function MemberDetailPage() {
             </div>
             <div>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-muted-foreground font-medium">Expiry Date</p>
+                <p className="text-sm text-muted-foreground font-medium"><LocalizedText id="8d007050838a" leading={""} trailing={""} /></p>
                 <Button
                   onClick={() => {
                     setFixingDate("membershipEndDate");
@@ -921,8 +901,7 @@ export default function MemberDetailPage() {
                   }}
                   className="text-xs text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  Fix
-                </Button>
+                  <LocalizedText id="99a423164819" leading={""} trailing={"\n                "} /></Button>
               </div>
               {fixingDate === "membershipEndDate" ? (
                 <div className="flex items-center gap-2 mt-1">
@@ -937,8 +916,7 @@ export default function MemberDetailPage() {
                     disabled={saving}
                     className="px-2 py-1.5 bg-blue-600 text-primary-foreground rounded-lg hover:bg-blue-700 text-xs disabled:opacity-50"
                   >
-                    Save
-                  </Button>
+                    <LocalizedText id="efc007a393f6" leading={""} trailing={"\n                  "} /></Button>
                   <Button
                     onClick={() => {
                       setFixingDate(null);
@@ -946,8 +924,7 @@ export default function MemberDetailPage() {
                     }}
                     className="px-2 py-1.5 border border-border rounded-lg hover:bg-muted text-xs"
                   >
-                    Cancel
-                  </Button>
+                    <LocalizedText id="77dfd2135f4d" leading={""} trailing={"\n                  "} /></Button>
                 </div>
               ) : (
                 <>
@@ -967,7 +944,7 @@ export default function MemberDetailPage() {
                       {daysUntil < 0
                         ? `Expired ${Math.abs(daysUntil)} days ago`
                         : daysUntil === 0
-                        ? "Expires today"
+                        ? tStatic("a2f6b366e0d3")
                         : `${daysUntil} days remaining`}
                     </p>
                   )}
@@ -991,12 +968,11 @@ export default function MemberDetailPage() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-foreground mb-1">
-                    Membership Validity Status
-                  </p>
+                    <LocalizedText id="664e9374681e" leading={""} trailing={"\n                  "} /></p>
                   <p className={`text-sm font-medium ${
                     validityStatus.isValid ? 'text-green-700' : 'text-red-700'
                   }`}>
-                    {validityStatus.isValid ? '✓ Valid' : '✗ Invalid'}
+                    {validityStatus.isValid ? tStatic("8df186a8eca5") : tStatic("41a6f3ac4a20")}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {validityStatus.reason}

@@ -3,7 +3,6 @@
 import { MarketplaceGrid } from "@/components/marketplace/marketplace-grid";
 import { DashboardPageHeader } from "@/components/dashboard/dashboard-page-header";
 import { useLocale } from "@/components/i18n/locale-provider";
-import { LanguageSwitcher } from "@/components/i18n/locale-provider";
 export default function MarketplacePage() {
   const { translate } = useLocale();
 
@@ -12,7 +11,6 @@ export default function MarketplacePage() {
       <DashboardPageHeader
         title={translate("marketplace.title")}
         description={translate("marketplace.subtitle")}
-        actions={<LanguageSwitcher />}
       />
       <MarketplaceGrid />
     </div>

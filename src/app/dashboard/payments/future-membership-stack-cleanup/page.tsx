@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import useSWR from "swr";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +12,7 @@ import { useState } from "react";
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export default function FutureStackCleanupPage() {
+  const tStatic = useStaticUiTranslations("static");
   const { data, mutate, isLoading } = useSWR("/api/payments/future-membership-stack-cleanup", fetcher);
   const [applying, setApplying] = useState(false);
   const rows = data?.data?.rows ?? [];
@@ -33,17 +36,16 @@ export default function FutureStackCleanupPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Future membership stack cleanup"
-        description="Remove duplicate future-dated memberships stacked on the same member."
+        title={tStatic("17ba91f5fd32")}
+        description={tStatic("ca3873780e73")}
         actions={
           <Button size="sm" onClick={applyAll} disabled={applying || rows.length === 0}>
             {applying && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-            Delete all safe rows
-          </Button>
+            <LocalizedText id="f1f9d62069ef" leading={""} trailing={"\n          "} /></Button>
         }
       />
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Scanning…</p>
+        <p className="text-sm text-muted-foreground"><LocalizedText id="36c4a06fc249" leading={""} trailing={""} /></p>
       ) : (
         <div className="space-y-2">
           {rows.map((r: { membershipId: string; memberName: string; startDate: string; endDate: string; reason: string }) => (
@@ -54,7 +56,7 @@ export default function FutureStackCleanupPage() {
               </CardHeader>
             </Card>
           ))}
-          {rows.length === 0 && <p className="text-sm text-muted-foreground">No stacked future memberships found.</p>}
+          {rows.length === 0 && <p className="text-sm text-muted-foreground"><LocalizedText id="b289676e0d5c" leading={""} trailing={""} /></p>}
         </div>
       )}
     </div>

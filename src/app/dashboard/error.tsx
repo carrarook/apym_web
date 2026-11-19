@@ -1,5 +1,8 @@
 "use client";
 
+
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useEffect } from "react";
 import { AlertCircle, RefreshCw, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -15,6 +18,7 @@ export default function DashboardError({
   error: (Error & { digest?: string }) | unknown;
   reset: () => void;
 }) {
+  const tStatic = useStaticUiTranslations("static");
   const router = useRouter();
 
   useEffect(() => {
@@ -31,16 +35,14 @@ export default function DashboardError({
         </div>
         
         <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 text-center">
-          Dashboard Error
-        </h2>
+          <LocalizedText id="e96f2942ee8e" leading={""} trailing={"\n        "} /></h2>
         
         <p className="text-muted-foreground text-center mb-2">
-          We couldn&apos;t load this page. This might be a temporary issue.
-        </p>
+          <LocalizedText id="1714f25c9c2c" leading={""} trailing={"\n        "} /></p>
         
         <div className="mb-6 mt-6 rounded-xl border border-destructive/20 bg-destructive/10 p-4 dark:bg-destructive/15">
           <p className="break-words font-mono text-sm text-destructive">
-            {error instanceof Error ? error.message : String(error)}
+            {tStatic("0e7155936917")}
           </p>
         </div>
         
@@ -50,23 +52,21 @@ export default function DashboardError({
             className="inline-flex items-center justify-center gap-2 bg-red-600 text-white px-6 py-3 rounded-xl hover:bg-red-700 transition-colors font-semibold"
           >
             <RefreshCw className="h-5 w-5" />
-            Reload Page
-          </Button>
+            <LocalizedText id="6e41ee3f309a" leading={""} trailing={"\n          "} /></Button>
           
           <Button
             onClick={() => router.back()}
             className="inline-flex items-center justify-center gap-2 bg-muted text-foreground px-6 py-3 rounded-xl hover:bg-muted/80 transition-colors font-semibold"
           >
             <ArrowLeft className="h-5 w-5" />
-            Go Back
-          </Button>
+            <LocalizedText id="f03e2d07687c" leading={""} trailing={"\n          "} /></Button>
         </div>
         
         {error instanceof Error &&
         "digest" in error &&
         typeof (error as Error & { digest?: string }).digest === "string" ? (
           <p className="mt-6 text-center text-xs text-muted-foreground">
-            Error ID: {(error as Error & { digest?: string }).digest}
+            <LocalizedText id="013173f56453" leading={""} trailing={" "} />{(error as Error & { digest?: string }).digest}
           </p>
         ) : null}
 
@@ -75,8 +75,8 @@ export default function DashboardError({
             {error instanceof Error &&
             "digest" in error &&
             typeof (error as Error & { digest?: string }).digest === "string"
-              ? "If this keeps happening, contact support and share the error ID above."
-              : "If this keeps happening, contact support and describe what you were doing when it failed."}
+              ? tStatic("08d6b0520e44")
+              : tStatic("f5aa02ead8e3")}
           </p>
         </div>
       </div>

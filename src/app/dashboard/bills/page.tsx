@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations as useStaticUiTranslations } from "next-intl";
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState } from "react";
 import { FileText, Search, Filter, Eye, Download, MessageSquare, Send, Loader2, Bell } from "lucide-react";
 import Link from "next/link";
@@ -49,6 +51,7 @@ interface RenewalCandidate {
 }
 
 export default function BillsPage() {
+  const tStatic = useStaticUiTranslations("static");
   const [activeTab, setActiveTab] = useState("bills");
   const { bills, billsLoading: loading, mutateBills } = useBillsList();
   const [searchTerm, setSearchTerm] = useState("");
@@ -147,21 +150,19 @@ export default function BillsPage() {
   return (
     <div className="space-y-6">
       <DashboardPageHeader
-        title="Bills & Receipts"
-        description="Generate and manage member bills"
+        title={tStatic("2ea2406a47b0")}
+        description={tStatic("502f6f4aa295")}
         actions={
           <>
             <Button asChild className="gap-2 bg-emerald-600 hover:bg-emerald-700">
               <Link href="/dashboard/bills/whatsapp">
                 <MessageSquare className="h-4 w-4" />
-                {WHATSAPP_BUSINESS_LABEL} messages
-              </Link>
+                {WHATSAPP_BUSINESS_LABEL} <LocalizedText id="17f3467db103" leading={""} trailing={"\n              "} /></Link>
             </Button>
             <Button asChild className="gap-2">
               <Link href="/dashboard/bills/generate">
                 <FileText className="h-4 w-4" />
-                Generate new bill
-              </Link>
+                <LocalizedText id="ab55f0db928d" leading={""} trailing={"\n              "} /></Link>
             </Button>
           </>
         }
@@ -169,9 +170,9 @@ export default function BillsPage() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-3 max-w-md">
-          <TabsTrigger value="bills">Bills</TabsTrigger>
-          <TabsTrigger value="not-sent">Bills Not Sent</TabsTrigger>
-          <TabsTrigger value="reminders">Renewal Reminders</TabsTrigger>
+          <TabsTrigger value="bills"><LocalizedText id="815465782c33" leading={""} trailing={""} /></TabsTrigger>
+          <TabsTrigger value="not-sent"><LocalizedText id="22e5442a3a86" leading={""} trailing={""} /></TabsTrigger>
+          <TabsTrigger value="reminders"><LocalizedText id="fffce63b9fe6" leading={""} trailing={""} /></TabsTrigger>
         </TabsList>
 
         <TabsContent value="bills" className="space-y-6">
@@ -182,7 +183,7 @@ export default function BillsPage() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="text"
-              placeholder="Search by name, phone, Member ID, or bill number..."
+              placeholder={tStatic("6bd51bfb07b3")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-input rounded-xl focus:ring-2 focus:ring-ring focus:border-ring transition-all duration-200 bg-background text-foreground font-medium"
@@ -195,10 +196,10 @@ export default function BillsPage() {
               onChange={(e) => setFilterProgram(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-input rounded-xl focus:ring-2 focus:ring-ring focus:border-ring transition-all duration-200 bg-background text-foreground font-medium appearance-none"
             >
-              <option value="ALL">All Programs</option>
-              <option value="MAINTENANCE">Maintenance</option>
-              <option value="BODYBUILDING">Bodybuilding</option>
-              <option value="WEIGHT_LOSS">Weight Loss</option>
+              <option value="ALL"><LocalizedText id="4c90d2aaa896" leading={""} trailing={""} /></option>
+              <option value="MAINTENANCE"><LocalizedText id="94de303bbef8" leading={""} trailing={""} /></option>
+              <option value="BODYBUILDING"><LocalizedText id="f714c474680a" leading={""} trailing={""} /></option>
+              <option value="WEIGHT_LOSS"><LocalizedText id="a63eb5b5e3f1" leading={""} trailing={""} /></option>
             </SelectNative>
           </div>
         </div>
@@ -207,23 +208,23 @@ export default function BillsPage() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl shadow-md p-5 border border-border">
-          <p className="text-xs font-semibold text-muted-foreground mb-1">Total Bills</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-1"><LocalizedText id="db42991e5feb" leading={""} trailing={""} /></p>
           <p className="text-2xl font-bold text-card-foreground">{bills.length}</p>
         </div>
         <div className="bg-card rounded-xl shadow-md p-5 border border-border">
-          <p className="text-xs font-semibold text-muted-foreground mb-1">Maintenance</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-1"><LocalizedText id="94de303bbef8" leading={""} trailing={""} /></p>
           <p className="text-2xl font-bold text-blue-600">
             {bills.filter((b) => b.programType === "MAINTENANCE").length}
           </p>
         </div>
         <div className="bg-card rounded-xl shadow-md p-5 border border-border">
-          <p className="text-xs font-semibold text-muted-foreground mb-1">Bodybuilding</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-1"><LocalizedText id="f714c474680a" leading={""} trailing={""} /></p>
           <p className="text-2xl font-bold text-purple-600">
             {bills.filter((b) => b.programType === "BODYBUILDING").length}
           </p>
         </div>
         <div className="bg-card rounded-xl shadow-md p-5 border border-border">
-          <p className="text-xs font-semibold text-muted-foreground mb-1">Weight Loss</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-1"><LocalizedText id="a63eb5b5e3f1" leading={""} trailing={""} /></p>
           <p className="text-2xl font-bold text-green-600">
             {bills.filter((b) => b.programType === "WEIGHT_LOSS").length}
           </p>
@@ -233,10 +234,10 @@ export default function BillsPage() {
       {/* Bills Table */}
       <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-muted-foreground font-medium">Loading bills...</div>
+          <div className="p-12 text-center text-muted-foreground font-medium"><LocalizedText id="b166c74f2282" leading={""} trailing={""} /></div>
         ) : filteredBills.length === 0 ? (
           <div className="p-12 text-center text-muted-foreground font-medium">
-            {searchTerm || filterProgram !== "ALL" ? "No bills match your filters" : "No bills generated yet"}
+            {searchTerm || filterProgram !== "ALL" ? tStatic("fe576fd7fe7e") : tStatic("74bf26646df5")}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -244,38 +245,27 @@ export default function BillsPage() {
               <thead className="bg-muted">
                 <tr>
                   <th className="px-6 py-3.5 text-left text-xs font-bold text-foreground uppercase tracking-wider">
-                    Bill Number
-                  </th>
+                    <LocalizedText id="40c9c8b23254" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-6 py-3.5 text-left text-xs font-bold text-foreground uppercase tracking-wider">
-                    Member
-                  </th>
+                    <LocalizedText id="6853c98a6f43" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-6 py-3.5 text-left text-xs font-bold text-foreground uppercase tracking-wider">
-                    Program
-                  </th>
+                    <LocalizedText id="9d68007b0763" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-6 py-3.5 text-left text-xs font-bold text-foreground uppercase tracking-wider">
-                    Month
-                  </th>
+                    <LocalizedText id="082bc378cd60" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-6 py-3.5 text-left text-xs font-bold text-foreground uppercase tracking-wider">
-                    Amount
-                  </th>
+                    <LocalizedText id="43dc8532f7e5" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-6 py-3.5 text-left text-xs font-bold text-foreground uppercase tracking-wider">
-                    Status
-                  </th>
+                    <LocalizedText id="bae7d5be7082" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-6 py-3.5 text-left text-xs font-bold text-foreground uppercase tracking-wider">
-                    Paid
-                  </th>
+                    <LocalizedText id="dc9d4584a554" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-6 py-3.5 text-left text-xs font-bold text-foreground uppercase tracking-wider">
-                    Due
-                  </th>
+                    <LocalizedText id="145caf292855" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-6 py-3.5 text-left text-xs font-bold text-foreground uppercase tracking-wider">
-                    Validity
-                  </th>
+                    <LocalizedText id="dbc5c52e0738" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-6 py-3.5 text-left text-xs font-bold text-foreground uppercase tracking-wider">
-                    Generated
-                  </th>
+                    <LocalizedText id="8eefdd52ad2d" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-6 py-3.5 text-left text-xs font-bold text-foreground uppercase tracking-wider">
-                    Actions
-                  </th>
+                    <LocalizedText id="c3cd636a585b" leading={""} trailing={"\n                  "} /></th>
                 </tr>
               </thead>
               <tbody className="bg-card divide-y divide-border">
@@ -310,7 +300,7 @@ export default function BillsPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {bill.hideAmount ? (
-                        <span className="text-sm text-muted-foreground italic">Hidden</span>
+                        <span className="text-sm text-muted-foreground italic"><LocalizedText id="d4c2792a7245" leading={""} trailing={""} /></span>
                       ) : (
                         <div className="text-sm font-bold text-green-600">
                           {formatCurrency(Number(bill.amount))}
@@ -342,7 +332,7 @@ export default function BillsPage() {
                         <Link
                           href={`/dashboard/bills/${bill.id}`}
                           className="text-blue-600 hover:text-blue-700 font-semibold transition-colors p-2 hover:bg-blue-50 rounded-lg"
-                          title="View Bill"
+                          title={tStatic("38e8e7f2479d")}
                         >
                           <Eye className="h-4 w-4" />
                         </Link>
@@ -350,7 +340,7 @@ export default function BillsPage() {
                           type="button"
                           onClick={() => window.open(`/api/bills/${bill.id}/pdf`, "_blank")}
                           className="text-purple-600 hover:text-purple-700 font-semibold transition-colors p-2 hover:bg-purple-50 rounded-lg"
-                          title="Download PDF"
+                          title={tStatic("98e5ef062b2a")}
                         >
                           <Download className="h-4 w-4" />
                         </Button>
@@ -358,7 +348,7 @@ export default function BillsPage() {
                           type="button"
                           onClick={() => window.open(`/dashboard/bills/${bill.id}/print`, "_blank")}
                           className="text-green-600 hover:text-green-700 font-semibold transition-colors p-2 hover:bg-green-50 rounded-lg"
-                          title="Print Bill"
+                          title={tStatic("30706866e7d7")}
                         >
                           <FileText className="h-4 w-4" />
                         </Button>
@@ -377,23 +367,23 @@ export default function BillsPage() {
         <TabsContent value="not-sent" className="space-y-4">
           <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
             <div className="px-6 py-4 border-b border-border bg-muted/30">
-              <h3 className="font-semibold">Payments without bill sent</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">All payments after Disha Karmakar (or cutoff). Enable {WHATSAPP_BUSINESS_LABEL} API in Settings → Notifications to send receipts.</p>
+              <h3 className="font-semibold"><LocalizedText id="5c49c0580d36" leading={""} trailing={""} /></h3>
+              <p className="text-xs text-muted-foreground mt-0.5"><LocalizedText id="a4e426fb3bb2" leading={""} trailing={" "} />{WHATSAPP_BUSINESS_LABEL} <LocalizedText id="f30196667cc9" leading={""} trailing={""} /></p>
             </div>
             {paymentsLoading ? (
               <div className="p-12 text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" /></div>
             ) : paymentsNotSent.length === 0 ? (
-              <div className="p-12 text-center text-muted-foreground">No payments pending bill send</div>
+              <div className="p-12 text-center text-muted-foreground"><LocalizedText id="25b7a93aa227" leading={""} trailing={""} /></div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-border">
                   <thead className="bg-muted">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-bold uppercase">Date</th>
-                      <th className="px-4 py-3 text-left text-xs font-bold uppercase">Member</th>
-                      <th className="px-4 py-3 text-left text-xs font-bold uppercase">Amount</th>
-                      <th className="px-4 py-3 text-left text-xs font-bold uppercase">Type</th>
-                      <th className="px-4 py-3 text-left text-xs font-bold uppercase">Action</th>
+                      <th className="px-4 py-3 text-left text-xs font-bold uppercase"><LocalizedText id="eb9a4bc1c0c1" leading={""} trailing={""} /></th>
+                      <th className="px-4 py-3 text-left text-xs font-bold uppercase"><LocalizedText id="6853c98a6f43" leading={""} trailing={""} /></th>
+                      <th className="px-4 py-3 text-left text-xs font-bold uppercase"><LocalizedText id="43dc8532f7e5" leading={""} trailing={""} /></th>
+                      <th className="px-4 py-3 text-left text-xs font-bold uppercase"><LocalizedText id="3deb74565196" leading={""} trailing={""} /></th>
+                      <th className="px-4 py-3 text-left text-xs font-bold uppercase"><LocalizedText id="97c89a4d6630" leading={""} trailing={""} /></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
@@ -418,8 +408,7 @@ export default function BillsPage() {
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-50"
                           >
                             {sendingBillId === p.id || isQueued(`send-bill:${p.id}`) ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                            Send bill
-                          </Button>
+                            <LocalizedText id="2f26202f0f01" leading={""} trailing={"\n                          "} /></Button>
                         </td>
                       </tr>
                     ))}
@@ -432,23 +421,23 @@ export default function BillsPage() {
 
         <TabsContent value="reminders" className="space-y-4">
           <div className="bg-card rounded-2xl shadow-lg p-4 border border-border">
-            <h3 className="font-semibold mb-3">Renewal reminder candidates</h3>
+            <h3 className="font-semibold mb-3"><LocalizedText id="d74bd8281cdf" leading={""} trailing={""} /></h3>
             <div className="flex flex-wrap gap-3 items-end">
               <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Lookback (days)</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1"><LocalizedText id="423b1895a606" leading={""} trailing={""} /></label>
                 <SelectNative
                   value={reminderLookback}
                   onChange={(e) => { setReminderLookback(e.target.value); setReminderFromDate(""); }}
                   className="px-3 py-2 border rounded-lg text-sm"
                 >
-                  <option value="30">30 days</option>
-                  <option value="45">45 days</option>
-                  <option value="60">60 days</option>
-                  <option value="90">90 days</option>
+                  <option value="30"><LocalizedText id="7d4278a87590" leading={""} trailing={""} /></option>
+                  <option value="45"><LocalizedText id="6e26ebb4f40e" leading={""} trailing={""} /></option>
+                  <option value="60"><LocalizedText id="46be8e49c50b" leading={""} trailing={""} /></option>
+                  <option value="90"><LocalizedText id="170621ac0842" leading={""} trailing={""} /></option>
                 </SelectNative>
               </div>
               <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Or from date (custom)</label>
+                <label className="block text-xs font-medium text-muted-foreground mb-1"><LocalizedText id="07e707d42be6" leading={""} trailing={""} /></label>
                 <Input
                   type="date"
                   value={reminderFromDate}
@@ -462,7 +451,7 @@ export default function BillsPage() {
                 disabled={remindersLoading}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
               >
-                {remindersLoading ? "Loading..." : "Refresh"}
+                {remindersLoading ? tStatic("b04ba49f8486") : tStatic("56e3badc4e6c")}
               </Button>
             </div>
           </div>
@@ -470,19 +459,18 @@ export default function BillsPage() {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
               <div className="px-4 py-3 bg-amber-100 dark:bg-amber-900/30 border-b flex items-center justify-between">
-                <h4 className="font-semibold">Due in 7 days ({dueIn7Days.length})</h4>
+                <h4 className="font-semibold"><LocalizedText id="747b7307660e" leading={""} trailing={""} />{dueIn7Days.length})</h4>
                 <Button
                   type="button"
                   onClick={() => sendBulkReminders(dueIn7Days.map((m) => m.id))}
                   disabled={dueIn7Days.length === 0 || sendingReminders || isQueued("send-bulk-renewal-reminders")}
                   className="px-3 py-1.5 bg-amber-600 text-white rounded-lg text-xs font-medium hover:bg-amber-700 disabled:opacity-50"
                 >
-                  Send all
-                </Button>
+                  <LocalizedText id="8bc6132233d5" leading={""} trailing={"\n                "} /></Button>
               </div>
               <div className="max-h-64 overflow-y-auto">
                 {dueIn7Days.length === 0 ? (
-                  <div className="p-4 text-sm text-muted-foreground">None</div>
+                  <div className="p-4 text-sm text-muted-foreground"><LocalizedText id="6eef6648406c" leading={""} trailing={""} /></div>
                 ) : (
                   <ul className="divide-y divide-border">
                     {dueIn7Days.map((m) => (
@@ -501,19 +489,18 @@ export default function BillsPage() {
 
             <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
               <div className="px-4 py-3 bg-red-100 dark:bg-red-900/30 border-b flex items-center justify-between">
-                <h4 className="font-semibold">Due in 3 days ({dueIn3Days.length})</h4>
+                <h4 className="font-semibold"><LocalizedText id="53c5ef34cb15" leading={""} trailing={""} />{dueIn3Days.length})</h4>
                 <Button
                   type="button"
                   onClick={() => sendBulkReminders(dueIn3Days.map((m) => m.id))}
                   disabled={dueIn3Days.length === 0 || sendingReminders || isQueued("send-bulk-renewal-reminders")}
                   className="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs font-medium hover:bg-red-700 disabled:opacity-50"
                 >
-                  Send all
-                </Button>
+                  <LocalizedText id="8bc6132233d5" leading={""} trailing={"\n                "} /></Button>
               </div>
               <div className="max-h-64 overflow-y-auto">
                 {dueIn3Days.length === 0 ? (
-                  <div className="p-4 text-sm text-muted-foreground">None</div>
+                  <div className="p-4 text-sm text-muted-foreground"><LocalizedText id="6eef6648406c" leading={""} trailing={""} /></div>
                 ) : (
                   <ul className="divide-y divide-border">
                     {dueIn3Days.map((m) => (

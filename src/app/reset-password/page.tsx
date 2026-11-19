@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import { useTranslations, useTranslations as useStaticUiTranslations } from "next-intl";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Dumbbell, Loader2, Lock } from "lucide-react";
@@ -9,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 function ResetPasswordForm() {
+  const tStatic = useStaticUiTranslations("static");
+  const t = useTranslations("auth");
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token") ?? "";
@@ -23,15 +26,15 @@ function ResetPasswordForm() {
     setError("");
 
     if (!token) {
-      setError("Missing reset token. Use the link from your reset email.");
+      setError(t("missingToken"));
       return;
     }
     if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
+      setError(t("passwordLength"));
       return;
     }
     if (password !== confirm) {
-      setError("Passwords do not match.");
+      setError(t("passwordMismatch"));
       return;
     }
 
@@ -47,10 +50,10 @@ function ResetPasswordForm() {
         setSuccess(true);
         setTimeout(() => router.push("/login"), 2000);
       } else {
-        setError(data.error || "Failed to reset password");
+        setError(t("resetFailed"));
       }
     } catch {
-      setError("An error occurred. Please try again.");
+      setError(t("genericError"));
     } finally {
       setLoading(false);
     }
@@ -65,7 +68,7 @@ function ResetPasswordForm() {
           className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span className="text-sm">Back to sign in</span>
+          <span className="text-sm">{t("backToSignIn")}</span>
         </Link>
       </header>
 
@@ -74,15 +77,15 @@ function ResetPasswordForm() {
           <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 shadow-lg mb-6">
             <Dumbbell className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight mb-2">Set new password</h1>
-          <p className="text-white/50 text-sm mb-6">Enter your new password below.</p>
+          <h1 className="text-2xl font-bold tracking-tight mb-2">{t("resetTitle")}</h1>
+          <p className="text-white/50 text-sm mb-6">{t("resetDescription")}</p>
 
           {success ? (
-            <p className="text-green-400 text-sm">Password updated! Redirecting to sign in…</p>
+            <p className="text-green-400 text-sm">{t("passwordUpdated")}</p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="password" className="text-white/80">New password</Label>
+                <Label htmlFor="password" className="text-white/80">{t("newPassword")}</Label>
                 <div className="relative mt-1">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
                   <Input
@@ -97,7 +100,7 @@ function ResetPasswordForm() {
                 </div>
               </div>
               <div>
-                <Label htmlFor="confirm" className="text-white/80">Confirm password</Label>
+                <Label htmlFor="confirm" className="text-white/80">{t("confirmPassword")}</Label>
                 <Input
                   id="confirm"
                   type="password"
@@ -113,7 +116,7 @@ function ResetPasswordForm() {
                 disabled={loading}
                 className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-semibold rounded-xl"
               >
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Reset password"}
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : tStatic("5c4bc97ee5d0")}
               </Button>
             </form>
           )}

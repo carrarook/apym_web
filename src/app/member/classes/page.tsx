@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocale } from "@/components/i18n/locale-provider";
-import { formatDate } from "@/lib/utils";
+import { formatDate } from "@/i18n/format";
 import { Loader2 } from "lucide-react";
 
 interface GymClassRow {
@@ -15,7 +15,7 @@ interface GymClassRow {
 }
 
 export default function MemberClassesPage() {
-  const { translate } = useLocale();
+  const { translate, locale } = useLocale();
   const [classes, setClasses] = useState<GymClassRow[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -37,14 +37,14 @@ export default function MemberClassesPage() {
       {loading ? (
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       ) : classes.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No upcoming classes. Ask staff to publish a schedule.</p>
+        <p className="text-sm text-muted-foreground">{translate("member.classes.empty")}</p>
       ) : (
         <ul className="space-y-3">
           {classes.map((c) => (
             <li key={c.id} className="rounded-lg border border-border p-3">
               <p className="font-medium">{c.name}</p>
               <p className="text-sm text-muted-foreground">
-                {formatDate(new Date(c.startsAt))} · {c.bookingsCount}/{c.capacity} spots
+                {formatDate(new Date(c.startsAt), locale)} · {c.bookingsCount}/{c.capacity} {translate("member.classes.spots")}
               </p>
             </li>
           ))}

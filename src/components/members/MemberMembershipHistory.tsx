@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { MemberDetailData } from "./member-detail-types";
 import { Badge } from "@/components/ui/badge";
@@ -22,18 +23,18 @@ export function MemberMembershipHistory({
   return (
     <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
       <div className="px-6 py-5 border-b border-border">
-        <h2 className="text-lg font-semibold text-foreground">Membership History</h2>
+        <h2 className="text-lg font-semibold text-foreground"><LocalizedText id="596aacf58dd7" leading={""} trailing={""} /></h2>
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-border">
           <thead className="bg-muted/50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">Plan</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">Start</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">End</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">Amount</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">Lifecycle</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">Chain</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase"><LocalizedText id="ae2f98a099fe" leading={""} trailing={""} /></th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase"><LocalizedText id="952f375412e8" leading={""} trailing={""} /></th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase"><LocalizedText id="a2bb9d34b8a1" leading={""} trailing={""} /></th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase"><LocalizedText id="43dc8532f7e5" leading={""} trailing={""} /></th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase"><LocalizedText id="033df3d297c2" leading={""} trailing={""} /></th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase"><LocalizedText id="d81f3692d7cd" leading={""} trailing={""} /></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">

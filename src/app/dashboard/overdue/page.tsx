@@ -1,5 +1,6 @@
 "use client";
 
+import { LocalizedText } from "@/components/i18n/localized-text";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/lib/utils";
@@ -63,16 +64,15 @@ export default function OverduePage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Overdue Payments</h1>
+          <h1 className="text-2xl font-semibold text-foreground"><LocalizedText id="b69bd0635cda" leading={""} trailing={""} /></h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Members who haven&apos;t paid yet
-          </p>
+            <LocalizedText id="b97053d8815b" leading={""} trailing={"\n          "} /></p>
         </div>
         <Card>
           <CardContent className="pt-6">
             <div className="flex flex-col items-center justify-center py-8 space-y-4">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">Loading overdue members...</p>
+              <p className="text-sm text-muted-foreground"><LocalizedText id="b17dad713590" leading={""} trailing={""} /></p>
             </div>
           </CardContent>
         </Card>
@@ -96,7 +96,7 @@ export default function OverduePage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold text-foreground">Overdue Payments</h1>
+            <h1 className="text-2xl font-semibold text-foreground"><LocalizedText id="b69bd0635cda" leading={""} trailing={""} /></h1>
             <div className="flex items-center gap-2">
               {urgencyCounts.red > 0 && (
                 <Badge className="bg-red-500/10 text-red-700 dark:text-red-400 font-semibold">
@@ -116,8 +116,7 @@ export default function OverduePage() {
             </div>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            {data.totalOverdue} member{data.totalOverdue !== 1 ? "s" : ""} • Rolling 30-day window
-          </p>
+            {data.totalOverdue} <LocalizedText id="6467baa3b187" leading={""} trailing={""} />{data.totalOverdue !== 1 ? "s" : ""} <LocalizedText id="27d80a6a84d3" leading={""} trailing={"\n          "} /></p>
         </div>
         <div className="flex items-center gap-2">
           <DashboardQuickEntryButton
@@ -131,8 +130,7 @@ export default function OverduePage() {
             disabled={isLoading}
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
+            <LocalizedText id="56e3badc4e6c" leading={""} trailing={"\n          "} /></Button>
         </div>
       </div>
 
@@ -155,8 +153,8 @@ export default function OverduePage() {
             <div className="flex flex-col items-center justify-center py-8 space-y-4">
               <CheckCircle className="h-12 w-12 text-green-600 dark:text-green-400" />
               <div className="text-center">
-                <h3 className="text-lg font-semibold text-foreground">All Clear!</h3>
-                <p className="text-sm text-muted-foreground mt-1">No overdue payments at the moment.</p>
+                <h3 className="text-lg font-semibold text-foreground"><LocalizedText id="2e777ac0fd22" leading={""} trailing={""} /></h3>
+                <p className="text-sm text-muted-foreground mt-1"><LocalizedText id="f326e5fac307" leading={""} trailing={""} /></p>
               </div>
             </div>
           </CardContent>
@@ -179,26 +177,19 @@ export default function OverduePage() {
               <thead className="bg-muted/50">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                    Member
-                  </th>
+                    <LocalizedText id="6853c98a6f43" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                    Contact
-                  </th>
+                    <LocalizedText id="b37456c4530b" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                    Plan
-                  </th>
+                    <LocalizedText id="ae2f98a099fe" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                    Due Date
-                  </th>
+                    <LocalizedText id="a1b308ec704a" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                    Days Overdue
-                  </th>
+                    <LocalizedText id="3f5eea2477f8" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">
-                    Amount
-                  </th>
+                    <LocalizedText id="43dc8532f7e5" leading={""} trailing={"\n                  "} /></th>
                   <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase">
-                    Actions
-                  </th>
+                    <LocalizedText id="c3cd636a585b" leading={""} trailing={"\n                  "} /></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -239,17 +230,16 @@ function OverdueMemberCard({ member }: { member: OverdueMember }) {
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-medium truncate">{member.name}</span>
             <Badge className={badgeClass}>
-              {member.daysSinceExpiry}d overdue
-            </Badge>
+              {member.daysSinceExpiry}<LocalizedText id="ead5ff11db31" leading={""} trailing={"\n            "} /></Badge>
           </div>
           <div className="mt-1 text-xs text-muted-foreground">
             {member.phone} · {member.planName} · ₹{member.amount.toLocaleString('en-IN')}
           </div>
           <div className="mt-1 text-xs text-muted-foreground">
-            Due: {formatDate(member.membershipEndDate)}
+            <LocalizedText id="7513f9647738" leading={""} trailing={" "} />{formatDate(member.membershipEndDate)}
           </div>
         </div>
-        <span className="text-primary font-semibold text-sm shrink-0">View →</span>
+        <span className="text-primary font-semibold text-sm shrink-0"><LocalizedText id="cf3dbdab782e" leading={""} trailing={""} /></span>
       </div>
     </Link>
   );
@@ -299,8 +289,7 @@ function OverdueMemberRow({ member }: { member: OverdueMember }) {
       <td className="px-4 py-4 whitespace-nowrap text-right">
         <Link href={`/dashboard/members/${member.memberId}`}>
           <Button variant="ghost" size="sm">
-            View
-          </Button>
+            <LocalizedText id="69bd4ef9fbd0" leading={""} trailing={"\n          "} /></Button>
         </Link>
       </td>
     </tr>
